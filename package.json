@@ -6,8 +6,8 @@
   "main": "server/main.js",
   "scripts": {
     "start": "node server/main.js",
-    "recognize:yolo": "node server/recognition/yolo/detect-yolo.mjs",
-    "recognize:mediapipe": "node server/recognition/mediapipe/detect-mediapipe.js"
+    "recognize:yolo": "node lib/cloud/recognition/yolo/detect-yolo.mjs",
+    "recognize:mediapipe": "node lib/cloud/recognition/mediapipe/detect-mediapipe.js"
   },
   "engines": {
     "node": ">=18.0.0"

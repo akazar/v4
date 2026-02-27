@@ -6,9 +6,9 @@
 
 import express from 'express';
 import { setupFrontendHosting } from './hosting-server.js';
-import { setupServerLogic } from './api-server.js';
-import { setupRecognitionServer } from './recognition-server.js';
-import { setupReasoningServer } from './reasoning-server.js';
+import { setupApiServer } from '../lib/cloud/api-server.js';
+import { setupRecognitionServer } from '../lib/cloud/recognition-server.js';
+import { setupReasoningServer } from '../lib/cloud/reasoning-server.js';
 
 const PORT = process.env.PORT || 3001;
 
@@ -26,7 +26,7 @@ const app = express();
 setupFrontendHosting(app);
 
 // Setup server logic (API endpoints, middleware)
-setupServerLogic(app);
+setupApiServer(app);
 
 // Setup recognition API (POST /api/recognize)
 setupRecognitionServer(app);

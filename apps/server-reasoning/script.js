@@ -3,8 +3,8 @@
  * with prompt and model (ChatGPT/Gemini), then show the reasoning text.
  */
 
-import CONFIG from '../../config.js';
-import { toDataUrl } from '../../lib/image-format.js';
+import CONFIG from '../../config/config.js';
+import { toDataUrl } from '../../lib/edge/image-format.js';
 
 /** Base URL for POST /api/reasoning. Default '' = same origin (main server). Override via CONFIG.reasoningServerUrl. */
 const REASONING_SERVER_URL = CONFIG.reasoning?.reasoningServerUrl ?? '';

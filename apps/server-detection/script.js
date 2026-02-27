@@ -3,10 +3,10 @@
  * then show bounding boxes and allow download. Uses drawBoundingBoxes and action from lib.
  */
 
-import CONFIG from '../../config.js';
-import { toDataUrl, dataUrlToCanvas } from '../../lib/image-format.js';
-import { drawBoundingBoxes } from '../../lib/bounding-boxes.js';
-import { action } from '../../lib/actions.js';
+import CONFIG from '../../config/config.js';
+import { toDataUrl, dataUrlToCanvas } from '../../lib/edge/image-format.js';
+import { drawBoundingBoxes } from '../../lib/edge/bounding-boxes.js';
+import { action } from '../../lib/edge/actions.js';
 
 /** Base URL for POST /api/recognize. Default '' = same origin (main server). Override via CONFIG.recognitionServerUrl. */
 const RECOGNITION_SERVER_URL = CONFIG.recognitionServerUrl ?? '';

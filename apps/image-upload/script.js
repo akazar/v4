@@ -2,12 +2,12 @@
  * Image upload client: load image from file or URL, run YOLO recognition, show bounding boxes, download result.
  */
 
-import CONFIG from '../../config.js';
-import { imageToCanvas } from '../../lib/source-to-canvas.js';
-import { recognize } from '../../lib/recognition/mediapipe/detect-mediapipe.js';
-import { recognizeWithYolo, getImageFromSource } from '../../lib/recognition/yolo/detect-yolo.js';
-import { drawBoundingBoxes } from '../../lib/bounding-boxes.js';
-import { action } from '../../lib/actions.js';
+import CONFIG from '../../config/config.js';
+import { imageToCanvas } from '../../lib/edge/source-to-canvas.js';
+import { recognize } from '../../lib/edge/recognition/mediapipe/detect-mediapipe.js';
+import { recognizeWithYolo, getImageFromSource } from '../../lib/edge/recognition/yolo/detect-yolo.js';
+import { drawBoundingBoxes } from '../../lib/edge/bounding-boxes.js';
+import { action } from '../../lib/edge/actions.js';
 
 const fileInput = document.getElementById('fileInput');
 const urlInput = document.getElementById('urlInput');

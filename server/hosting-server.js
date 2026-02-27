@@ -1,7 +1,7 @@
 /**
  * hosting-server.js — Front-end hosting for the v4 app.
- * Registers Express routes and static middleware for: root landing page, /config,
- * /camera-stream, /image-upload, /server-detection, and /server-reasoning. Serves the v4 root for shared lib/ and config.js.
+ * Registers Express routes and static middleware for: root landing page, /config-creator,
+ * /camera-stream, /image-upload, /server-detection, and /server-reasoning. Serves the v4 root for shared lib/ and config/.
  */
 
 import express from 'express';
@@ -18,34 +18,34 @@ const __dirname = path.dirname(__filename);
 export function setupFrontendHosting(app) {
   // Path definitions
   const v4Root = path.join(__dirname, '..');
-  const clientPath = path.join(__dirname, '..', 'client');
-  const landingPath = path.join(__dirname, '..', 'client', 'landing');
-  const configPath = path.join(__dirname, '..', 'config');
-  const cameraStreamPath = path.join(__dirname, '..', 'client', 'camera-stream');
-  const imageUploadPath = path.join(__dirname, '..', 'client', 'image-upload');
-  const serverDetectionPath = path.join(__dirname, '..', 'client', 'server-detection');
-  const serverReasoningPath = path.join(__dirname, '..', 'client', 'server-reasoning');
+  const appsPath = path.join(__dirname, '..', 'apps');
+  const landingPath = path.join(__dirname, '..', 'apps', 'landing');
+  const configCreatorPath = path.join(__dirname, '..', 'apps', 'config-creator');
+  const cameraStreamPath = path.join(__dirname, '..', 'apps', 'camera-stream');
+  const imageUploadPath = path.join(__dirname, '..', 'apps', 'image-upload');
+  const serverDetectionPath = path.join(__dirname, '..', 'apps', 'server-detection');
+  const serverReasoningPath = path.join(__dirname, '..', 'apps', 'server-reasoning');
 
-  // Landing page at root (index + styles from client/landing)
+  // Landing page at root (index + styles from apps/landing)
   app.get('/', (req, res) => {
     res.sendFile(path.join(landingPath, 'index.html'));
   });
   app.use(express.static(landingPath));
 
-  // v4 root (config.js, lib/, etc.) at / for module imports from both clients
-  // This must come before client static to ensure module imports work
+  // v4 root (config/, lib/, etc.) at / for module imports from all apps
+  // This must come before apps static to ensure module imports work
   app.use(express.static(v4Root));
 
-  // Serve client static files (other client assets)
-  app.use(express.static(clientPath));
+  // Serve apps static files (other app assets)
+  app.use(express.static(appsPath));
 
-  // Config generator at /config
-  app.use('/config', express.static(configPath));
-  app.get('/config', (req, res) => {
-    res.sendFile(path.join(configPath, 'index.html'));
+  // Config generator at /config-creator
+  app.use('/config-creator', express.static(configCreatorPath));
+  app.get('/config-creator', (req, res) => {
+    res.sendFile(path.join(configCreatorPath, 'index.html'));
   });
-  app.get('/config/', (req, res) => {
-    res.sendFile(path.join(configPath, 'index.html'));
+  app.get('/config-creator/', (req, res) => {
+    res.sendFile(path.join(configCreatorPath, 'index.html'));
   });
 
   // Camera-stream client at /camera-stream
