@@ -1,0 +1,141 @@
+/**
+ * Server-detection client: load image from file or URL, send to recognition server API,
+ * then show bounding boxes and allow download. Uses drawBoundingBoxes and action from lib.
+ */
+
+import CONFIG from '../../config.js';
+import { toDataUrl, dataUrlToCanvas } from '../../lib/image-format.js';
+import { drawBoundingBoxes } from '../../lib/bounding-boxes.js';
+import { action } from '../../lib/actions.js';
+
+/** Base URL for POST /api/recognize. Default '' = same origin (main server). Override via CONFIG.recognitionServerUrl. */
+const RECOGNITION_SERVER_URL = CONFIG.recognitionServerUrl ?? '';
+
+const fileInput = document.getElementById('fileInput');
+const urlInput = document.getElementById('urlInput');
+const modelSelect = document.getElementById('modelSelect');
+const recognizeBtn = document.getElementById('recognizeBtn');
+const downloadBtn = document.getElementById('downloadBtn');
+const previewCanvas = document.getElementById('previewCanvas');
+const placeholder = document.getElementById('placeholder');
+
+/** Current image source: Blob (from file) or HTMLImageElement (from URL). Cleared after conversion to canvas. */
+let currentImageSource = null;
+/** Canvas with image + bounding boxes after recognition (used for display and download). */
+let resultCanvas = null;
+
+/**
+ * Run recognition via server API and show result canvas with bounding boxes; log results and show Download.
+ * Accepts unified data URL; derives canvas for drawing from it.
+ */
+async function runRecognition(dataUrl, model) {
+    try {
+        const res = await fetch(`${RECOGNITION_SERVER_URL}/api/recognize`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ image: dataUrl, config: { ...CONFIG, serverRecognition: { ...CONFIG.serverRecognition, model: model ?? CONFIG.serverRecognition?.model } } }),
+        });
+        const data = await res.json();
+        if (!data.success) {
+            throw new Error(data.error ?? 'Recognition failed');
+        }
+        const results = data.detections ?? [];
+
+        const canvas = await dataUrlToCanvas(dataUrl);
+        const out = document.createElement('canvas');
+        out.width = canvas.width;
+        out.height = canvas.height;
+        const ctx = out.getContext('2d');
+        ctx.drawImage(canvas, 0, 0);
+        const boxes = results.map((r) => ({
+            x: r.coordinates.x,
+            y: r.coordinates.y,
+            width: r.size.width,
+            height: r.size.height,
+            label: `${r.class} ${(r.confidence * 100).toFixed(0)}%`,
+        }));
+        drawBoundingBoxes(ctx, boxes);
+
+        resultCanvas = out;
+        previewCanvas.width = out.width;
+        previewCanvas.height = out.height;
+        previewCanvas.getContext('2d').drawImage(out, 0, 0);
+
+        return results;
+    } catch (err) {
+        console.error('Recognition error:', err);
+        alert('Recognition failed: ' + (err.message || 'Unknown error'));
+    }
+}
+
+/**
+ * Download the result image (with bounding boxes) as JPG.
+ */
+function downloadResult() {
+    if (!resultCanvas) return;
+    const dataUrl = resultCanvas.toDataURL('image/jpeg', 0.95);
+    const a = document.createElement('a');
+    a.href = dataUrl;
+    a.download = `recognition-${Date.now()}.jpg`;
+    a.click();
+}
+
+// File selected
+fileInput.addEventListener('change', () => {
+    const file = fileInput.files?.[0];
+    if (file) {
+        currentImageSource = file;
+        urlInput.value = '';
+    }
+});
+
+/**
+ * Load image from URL into an HTMLImageElement and set as current source.
+ */
+function loadImageFromUrl(url) {
+    return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.onload = () => {
+            currentImageSource = img;
+            resolve(img);
+        };
+        img.onerror = () => reject(new Error('Failed to load image from URL'));
+        img.src = url;
+    });
+}
+
+/**
+ * Load image from URL input if present. Returns true to proceed, false to stop (e.g. load error).
+ */
+async function ensureImageSourceFromUrl() {
+    const url = urlInput.value?.trim();
+    if (!url) return true;
+    try {
+        await loadImageFromUrl(url);
+        return true;
+    } catch (e) {
+        alert('Could not load image from URL. ' + (e.message || ''));
+        return false;
+    }
+}
+
+recognizeBtn.addEventListener('click', async () => {
+    if (!(await ensureImageSourceFromUrl())) return;
+    if (!currentImageSource) {
+        alert('Please select an image file or enter a valid image URL first.');
+        return;
+    }
+    recognizeBtn.disabled = true;
+    const dataUrl = await toDataUrl(currentImageSource);
+    const model = modelSelect.value ?? 'YOLO';
+    const recognitionResults = await runRecognition(dataUrl, model);
+    if (CONFIG.manualRecognitionActionFunctions.length > 0) {
+        action(recognitionResults, CONFIG.manualRecognitionActionFunctions);  
+    }
+    placeholder.classList.add('hidden');
+    downloadBtn.hidden = false;
+    recognizeBtn.disabled = false;
+});
+
+downloadBtn.addEventListener('click', downloadResult);
