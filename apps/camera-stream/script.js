@@ -1,8 +1,8 @@
 import CONFIG from '../../config/config.js';
 import { getCameraStream, attachCameraStreamToVideo, waitForVideoAndPlay } from '../../lib/edge/capture.js';
 import { toDataUrl } from '../../lib/edge/image-format.js';
-import { recognize } from '../../lib/edge/recognition/mediapipe/detect-mediapipe.js';
-import { recognizeWithYolo } from '../../lib/edge/recognition/yolo/detect-yolo.js';
+import { recognize } from '../../lib/edge/recognition/mediapipe/recognize-mediapipe.js';
+import { recognizeWithYolo } from '../../lib/edge/recognition/yolo/recognize-yolo.js';
 import { boundingBoxes, clearBoundingBoxes } from '../../lib/edge/bounding-boxes.js';
 import { action } from '../../lib/edge/actions.js';
 

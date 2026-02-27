@@ -4,8 +4,8 @@
 
 import CONFIG from '../../config/config.js';
 import { imageToCanvas } from '../../lib/edge/source-to-canvas.js';
-import { recognize } from '../../lib/edge/recognition/mediapipe/detect-mediapipe.js';
-import { recognizeWithYolo, getImageFromSource } from '../../lib/edge/recognition/yolo/detect-yolo.js';
+import { recognize } from '../../lib/edge/recognition/mediapipe/recognize-mediapipe.js';
+import { recognizeWithYolo, getImageFromSource } from '../../lib/edge/recognition/yolo/recognize-yolo.js';
 import { drawBoundingBoxes } from '../../lib/edge/bounding-boxes.js';
 import { action } from '../../lib/edge/actions.js';
 
