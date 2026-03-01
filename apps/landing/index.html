@@ -46,6 +46,39 @@
             </section>
 
             <section class="modules">
+                <div class="module-card module-card-demo">
+                    <div class="module-header">
+                        <div class="module-header-title">
+                            <h2>Production Demo</h2>
+                            <span class="demo-badge">Flexible configuration</span>
+                        </div>
+                        <a href="/factory/web" class="cta-button cta-button-primary">Launch Demo</a>
+                    </div>
+                    <div class="module-content">
+                        <h3>Flexible Functionality Configuration — Web Version</h3>
+                        <p>
+                            A single-page production demo that runs the full vision pipeline from your browser using
+                            <code>config-factory.js</code>. Switch between YOLO and MediaPipe, control recognition and
+                            regular actions, and toggle the UI—all driven by one configuration file.
+                        </p>
+                        <h4>Capabilities:</h4>
+                        <ul>
+                            <li><strong>Config-driven:</strong> Behavior is defined by <code>config-factory.js</code> (classes, thresholds, model, actions)</li>
+                            <li><strong>Dual model:</strong> Choose YOLO or MediaPipe for local object detection</li>
+                            <li><strong>Camera stream:</strong> Live camera feed with bounding boxes and configurable recognition interval</li>
+                            <li><strong>Local actions:</strong> Recognition action functions and regular (periodic) action functions with throttling</li>
+                            <li><strong>Optional UI:</strong> Show/hide control buttons via <code>config.ui</code>; headless mode for automation</li>
+                        </ul>
+                        <h4>Use Cases:</h4>
+                        <ul>
+                            <li>Try the platform with the reference configuration</li>
+                            <li>Validate config changes before deploying to other modules</li>
+                            <li>Demo or testing of the flexible configuration web version</li>
+                        </ul>
+                        <p class="demo-note">Use the <a href="/config-creator">Config Generator</a> to build a custom <code>config.js</code>, then replace <code>config-factory.js</code> or point the demo to your config for a tailored experience.</p>
+                    </div>
+                </div>
+
                 <div class="module-card">
                     <div class="module-header">
                         <h2>Camera Stream</h2>

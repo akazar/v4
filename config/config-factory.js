@@ -34,12 +34,12 @@ const CONFIG = {
         interval: 1000
     },
     localRecognitionActionFunctions: [
-        {
-            func: (recognitionResults) => {
-                console.log(`[Factory - Recognition Action] Detected ${recognitionResults.length} object(s)` + ' (5000ms delay)');
-            },
-            interval: 5000 // min ms between runs of this function (null = no throttle) 
-        },
+        // {
+        //     func: (recognitionResults) => {
+        //         console.log(`[Factory - Recognition Action] Detected ${recognitionResults.length} object(s)` + ' (5000ms delay)');
+        //     },
+        //     interval: 5000 // min ms between runs of this function (null = no throttle) 
+        // },
         // {
         //     func: (recognitionResults) => {
         //         fetch(`/api/notify`, {
@@ -60,18 +60,18 @@ const CONFIG = {
         // }  
     ],
     localRegularActionFunctions: [
-        {
-            func: (recognitionResults) => {
-                console.log('[Factory - Local Regular Action] Results (12000ms delay):', recognitionResults);
-            },
-            interval: 12000, //number of milliseconds between each recognition
-        },
-        {
-            func: (recognitionResults) => {
-                console.log('[Factory - Local Regular Action] Results (16000ms delay):', recognitionResults);
-            },
-            interval: 16000, //number of milliseconds between each recognition
-        },
+        // {
+        //     func: (recognitionResults) => {
+        //         console.log('[Factory - Local Regular Action] Results (12000ms delay):', recognitionResults);
+        //     },
+        //     interval: 12000, //number of milliseconds between each recognition
+        // },
+        // {
+        //     func: (recognitionResults) => {
+        //         console.log('[Factory - Local Regular Action] Results (16000ms delay):', recognitionResults);
+        //     },
+        //     interval: 16000, //number of milliseconds between each recognition
+        // },
         // {
         //     func: (recognitionResults, reasoningResults) => {
         //         console.log('[Factory - Local Regular Action] Results (20000ms delay):', recognitionResults);
@@ -111,28 +111,28 @@ const CONFIG = {
         prompt: 'Describe this image in detail. What objects, people, or scene do you see?'
     },   
     serverRecognitionActionFunctions: [
-        {
-            func: (recognitionResults) => {
-                console.log('[Server Recognition Action] Results:', recognitionResults);
-            },
-            interval: 5000
-        }
+        // {
+        //     func: (recognitionResults) => {
+        //         console.log('[Server Recognition Action] Results:', recognitionResults);
+        //     },
+        //     interval: 5000
+        // }
     ],
     serverReasoningActionFunctions: [
-        {
-            func: (recognitionResults, description) => {
-                console.log('[Server Reasoning Action] Description:', recognitionResults, description);
-            },
-            interval: 5000
-        }
+        // {
+        //     func: (recognitionResults, description) => {
+        //         console.log('[Server Reasoning Action] Description:', recognitionResults, description);
+        //     },
+        //     interval: 5000
+        // }
     ],
     serverRegularActionFunctions: [
-        {
-            func: (recognitionResults,description) => {
-                console.log('[Server Regular Action] Description:', recognitionResults, description);
-            },
-            interval: 10000
-        }
+        // {
+        //     func: (recognitionResults,description) => {
+        //         console.log('[Server Regular Action] Description:', recognitionResults, description);
+        //     },
+        //     interval: 10000
+        // }
     ],
 };
 

@@ -1,7 +1,7 @@
 /**
  * hosting-server.js — Front-end hosting for the v4 app.
- * Registers Express routes and static middleware for: root landing page, /config-creator,
- * /camera-stream, /image-upload, /server-detection, and /server-reasoning. Serves the v4 root for shared lib/ and config/.
+ * Registers Express routes and static middleware for: root landing page, /factory (production demo),
+ * /config-creator, /camera-stream, /image-upload, /server-detection, and /server-reasoning. Serves the v4 root for shared lib/ and config/.
  */
 
 import express from 'express';
@@ -25,6 +25,7 @@ export function setupFrontendHosting(app) {
   const imageUploadPath = path.join(__dirname, '..', 'apps', 'image-upload');
   const serverDetectionPath = path.join(__dirname, '..', 'apps', 'server-detection');
   const serverReasoningPath = path.join(__dirname, '..', 'apps', 'server-reasoning');
+  const factoryWebPath = path.join(__dirname, '..', 'factory', 'web');
 
   // Landing page at root (index + styles from apps/landing)
   app.get('/', (req, res) => {
@@ -38,6 +39,15 @@ export function setupFrontendHosting(app) {
 
   // Serve apps static files (other app assets)
   app.use(express.static(appsPath));
+
+  // Production demo: flexible configuration web version at /factory
+  app.use('/factory', express.static(factoryWebPath));
+  app.get('/factory', (req, res) => {
+    res.sendFile(path.join(factoryWebPath, 'index.html'));
+  });
+  app.get('/factory/', (req, res) => {
+    res.sendFile(path.join(factoryWebPath, 'index.html'));
+  });
 
   // Config generator at /config-creator
   app.use('/config-creator', express.static(configCreatorPath));
