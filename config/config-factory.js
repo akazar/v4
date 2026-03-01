@@ -39,12 +39,23 @@ const CONFIG = {
             },
             interval: 5000 // min ms between runs of this function (null = no throttle) 
         },
-        {
-            func: (recognitionResults) => {
-                console.log(`[Factory - Recognition Action] Detected ${recognitionResults.length} object(s)` + ' (3000ms delay)');
-            },
-            interval: 3000 // min ms between runs of this function (null = no throttle)  
-        }        
+        // {
+        //     func: (recognitionResults) => {
+        //         fetch(`/api/notify`, {
+        //             method: 'POST',
+        //             headers: { 'Content-Type': 'application/json' },
+        //             body: JSON.stringify({
+        //                 recognitionResults: recognitionResults,
+        //                 channel: 'email',
+        //                 recipient: 'test@test.com'
+        //             })
+        //         })
+        //             .then(response => response.json())
+        //             .then(data => console.log('[Notify]', data))
+        //             .catch(error => console.error('[Notify] Failed to fetch. Is the server running?', error));
+        //     },
+        //     interval: 10000 // min ms between runs of this function (null = no throttle)
+        // }  
     ],
     localRegularActionFunctions: [
         {
@@ -58,7 +69,20 @@ const CONFIG = {
                 console.log('[Factory - Local Regular Action] Results (16000ms delay):', recognitionResults);
             },
             interval: 16000, //number of milliseconds between each recognition
-        }
+        },
+        // {
+        //     func: (recognitionResults) => {
+        //         console.log('[Factory - Local Regular Action] Results (20000ms delay):', recognitionResults);
+        //         fetch(`/api/db`, {
+        //             method: 'POST',
+        //             headers: { 'Content-Type': 'application/json' },
+        //             body: JSON.stringify({
+        //                 recognitionResults: recognitionResults,
+        //             })
+        //         })
+        //     },
+        //     interval: 20000, //number of milliseconds between each recognition
+        // }
     ],
 
     /////////////////////// SERVER CONFIG ///////////////////////

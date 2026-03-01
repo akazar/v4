@@ -9,6 +9,8 @@ import { setupFrontendHosting } from './hosting-server.js';
 import { setupApiServer } from '../lib/cloud/api-server.js';
 import { setupRecognitionServer } from '../lib/cloud/recognition-server.js';
 import { setupReasoningServer } from '../lib/cloud/reasoning-server.js';
+import { setupNotificationServer } from '../lib/cloud/notification-server.js';
+import { setupDbServer } from '../lib/cloud/db-server.js';
 
 const PORT = process.env.PORT || 3001;
 
