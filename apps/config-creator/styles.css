@@ -251,6 +251,31 @@ body {
     color: var(--text);
 }
 
+.action-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.25rem;
+    align-items: center;
+}
+
+.btn-preset {
+    padding: 0.4rem 0.75rem;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    background: var(--surface-alt);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+
+.btn-preset:hover {
+    border-color: var(--accent-hover);
+    color: var(--text);
+    background: var(--border);
+}
+
 .actions-footer {
     padding-top: 0.5rem;
 }

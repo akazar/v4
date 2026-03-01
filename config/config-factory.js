@@ -47,6 +47,7 @@ const CONFIG = {
         //             headers: { 'Content-Type': 'application/json' },
         //             body: JSON.stringify({
         //                 recognitionResults: recognitionResults,
+        //                 reasoningResults: reasoningResults,
         //                 channel: 'email',
         //                 recipient: 'test@test.com'
         //             })
@@ -72,13 +73,14 @@ const CONFIG = {
             interval: 16000, //number of milliseconds between each recognition
         },
         // {
-        //     func: (recognitionResults) => {
+        //     func: (recognitionResults, reasoningResults) => {
         //         console.log('[Factory - Local Regular Action] Results (20000ms delay):', recognitionResults);
         //         fetch(`/api/db`, {
         //             method: 'POST',
         //             headers: { 'Content-Type': 'application/json' },
         //             body: JSON.stringify({
         //                 recognitionResults: recognitionResults,
+        //                 reasoningResults: reasoningResults
         //             })
         //         })
         //     },
