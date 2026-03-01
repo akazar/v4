@@ -3,6 +3,7 @@
  */
 const CONFIG = {
     /////////////////////// LOCAL CONFIG ///////////////////////
+    ui: true,
     localRecognition: {
         classes: [
             'person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus', 'train', 'truck', 'boat', 'traffic light',

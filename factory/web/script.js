@@ -5,6 +5,7 @@ import { recognize } from '../../lib/edge/recognition/mediapipe/recognize-mediap
 import { recognizeWithYolo } from '../../lib/edge/recognition/yolo/recognize-yolo.js';
 import { boundingBoxes, clearBoundingBoxes } from '../../lib/edge/bounding-boxes.js';
 import { action, localRecognitionActions } from '../../lib/edge/actions.js';
+import { injectTopButtons } from '../../lib/edge/ui.js';
 
 let cameraStream = null;
 let videoElement = null;
@@ -93,13 +94,31 @@ async function initCameraBackground() {
     }
 }
 
-// Initialize camera when page loads
+
 window.addEventListener('DOMContentLoaded', () => {
     initCameraBackground();
-    startRecognitionLoop();
+    if (CONFIG.ui) {
+        injectTopButtons(document, CONFIG);
+    } else { 
+        startRecognitionLoop();
+    }
 });
 
-// Clean up when page unloads
+if (CONFIG.ui) {
+    document.addEventListener('ui:state', (event) => {
+        const { active } = event.detail;
+        if (active) {
+            startRecognitionLoop();
+        } else {
+            stopRecognitionLoop();
+            clearBoundingBoxes();
+        }
+    });
+} else {
+    startRecognitionLoop();
+}
+
+
 window.addEventListener('beforeunload', () => {
     stopRecognitionLoop();
     clearBoundingBoxes();
