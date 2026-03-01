@@ -34,6 +34,12 @@ setupRecognitionServer(app);
 // Setup reasoning API (POST /api/reasoning)
 setupReasoningServer(app);
 
+// Setup notification API (POST /api/notify)
+setupNotificationServer(app);
+
+// Setup database API (POST /api/db)
+setupDbServer(app);
+
 // Start the server
 app.listen(PORT, () => {
   console.log(`v4 server running at http://localhost:${PORT}`);
