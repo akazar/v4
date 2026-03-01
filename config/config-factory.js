@@ -18,7 +18,7 @@ const CONFIG = {
         maxResults: 10,
         threshold: 0.5,
         iouThreshold: 0.45,
-        model: 'MEDIAPIPE',  // 'MEDIAPIPE' || 'YOLO'
+        model: 'YOLO',  // 'MEDIAPIPE' || 'YOLO'
     },
     boundingBoxStyles: {
         strokeStyle: '#00FFAA',
@@ -35,30 +35,30 @@ const CONFIG = {
     localRecognitionActionFunctions: [
         {
             func: (recognitionResults) => {
-                console.log(`[Recognition Action] Detected ${recognitionResults.length} object(s)`);
+                console.log(`[Factory - Recognition Action] Detected ${recognitionResults.length} object(s)` + ' (5000ms delay)');
             },
-            interval: 5000   
-        }     
+            interval: 5000 // min ms between runs of this function (null = no throttle) 
+        },
+        {
+            func: (recognitionResults) => {
+                console.log(`[Factory - Recognition Action] Detected ${recognitionResults.length} object(s)` + ' (3000ms delay)');
+            },
+            interval: 3000 // min ms between runs of this function (null = no throttle)  
+        }        
     ],
     localRegularActionFunctions: [
         {
             func: (recognitionResults) => {
-                console.log('[Local Regular Action] Description:', recognitionResults);
+                console.log('[Factory - Local Regular Action] Results (12000ms delay):', recognitionResults);
             },
-            interval: 12000
-        }
-    ],
-    manualRecognitionActionFunctions: [
-        (recognitionResults) => {
-            if (recognitionResults && recognitionResults.length > 0) {
-                console.log(`[Manual Recognition Action] Detected ${recognitionResults.length} object(s)`);
-            }
+            interval: 12000, //number of milliseconds between each recognition
         },
-        (recognitionResults) => {
-            if (recognitionResults && recognitionResults.length > 0) {
-                console.log('[Manual Recognition Action] Detected:', recognitionResults);
-            }
-        }          
+        {
+            func: (recognitionResults) => {
+                console.log('[Factory - Local Regular Action] Results (16000ms delay):', recognitionResults);
+            },
+            interval: 16000, //number of milliseconds between each recognition
+        }
     ],
 
     /////////////////////// SERVER CONFIG ///////////////////////
@@ -83,12 +83,20 @@ const CONFIG = {
         model: 'openai', // or 'google'
         prompt: 'Describe this image in detail. What objects, people, or scene do you see?'
     },   
+    serverRecognitionActionFunctions: [
+        {
+            func: (recognitionResults) => {
+                console.log('[Server Recognition Action] Results:', recognitionResults);
+            },
+            interval: 5000
+        }
+    ],
     serverReasoningActionFunctions: [
         {
             func: (recognitionResults, description) => {
-                console.log('[Server Recognition Action] Description:', recognitionResults, description);
+                console.log('[Server Reasoning Action] Description:', recognitionResults, description);
             },
-            counter: null //number of recognitions to perform
+            interval: 5000
         }
     ],
     serverRegularActionFunctions: [
@@ -96,7 +104,7 @@ const CONFIG = {
             func: (recognitionResults,description) => {
                 console.log('[Server Regular Action] Description:', recognitionResults, description);
             },
-            interval: 10000, //number of milliseconds between each recognition
+            interval: 10000
         }
     ],
 };

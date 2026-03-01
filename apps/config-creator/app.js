@@ -180,12 +180,12 @@
  * Single configuration object for the v4 app
  */
 const CONFIG = {
-    recognition: ${recognitionStr},
+    localRecognition: ${recognitionStr},
     model: ${modelStr},
     api: ${apiStr},
     downloadResultImage: ${downloadResultImage},
     boundingBoxStyles: ${boundingBoxStylesStr},
-    recognitionActionFunctions: ${recognitionActionFunctionsStr},
+    localRecognitionActionFunctions: ${recognitionActionFunctionsStr},
     regularActionFunctions: ${regularActionFunctionsStr},
     manualRecognitionActionFunctions: ${manualRecognitionActionFunctionsStr},
     serverReasoningActionFunctions: ${serverReasoningActionFunctionsStr},

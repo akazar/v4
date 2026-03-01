@@ -6,9 +6,9 @@
 import CONFIG from '../../config/config.js';
 import { toDataUrl } from '../../lib/edge/image-format.js';
 
-/** Base URL for POST /api/reasoning. Default '' = same origin (main server). Override via CONFIG.reasoningServerUrl. */
-const REASONING_SERVER_URL = CONFIG.reasoning?.reasoningServerUrl ?? '';
-const DEFAULT_PROMPT = CONFIG.reasoning?.prompt ?? 'Describe this image in detail.';
+/** Base URL for POST /api/reasoning. Default '' = same origin (main server). Override via CONFIG.serverReasoning.reasoningServerUrl. */
+const REASONING_SERVER_URL = CONFIG.serverReasoning?.reasoningServerUrl ?? '';
+const DEFAULT_PROMPT = CONFIG.serverReasoning?.prompt ?? 'Describe this image in detail.';
 
 const fileInput = document.getElementById('fileInput');
 const urlInput = document.getElementById('urlInput');
