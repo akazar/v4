@@ -21,6 +21,7 @@ export function setupFrontendHosting(app) {
   const appsPath = path.join(__dirname, '..', 'apps');
   const landingPath = path.join(__dirname, '..', 'apps', 'landing');
   const configCreatorPath = path.join(__dirname, '..', 'apps', 'config-creator');
+  const configManagerPath = path.join(__dirname, '..', 'apps', 'config-manager');
   const cameraStreamPath = path.join(__dirname, '..', 'apps', 'camera-stream');
   const imageUploadPath = path.join(__dirname, '..', 'apps', 'image-upload');
   const serverDetectionPath = path.join(__dirname, '..', 'apps', 'server-detection');
@@ -59,6 +60,15 @@ export function setupFrontendHosting(app) {
   });
   app.get('/config-creator/', (req, res) => {
     res.sendFile(path.join(configCreatorPath, 'index.html'));
+  });
+
+  // Configuration manager at /config-manager
+  app.use('/config-manager', express.static(configManagerPath));
+  app.get('/config-manager', (req, res) => {
+    res.sendFile(path.join(configManagerPath, 'index.html'));
+  });
+  app.get('/config-manager/', (req, res) => {
+    res.sendFile(path.join(configManagerPath, 'index.html'));
   });
 
   // Camera-stream client at /camera-stream

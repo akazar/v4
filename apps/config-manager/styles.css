@@ -1,0 +1,144 @@
+:root {
+    --bg: #0a0a0a;
+    --surface: #141414;
+    --surface-alt: #1a1a1a;
+    --border: #2a2a2a;
+    --text: #e8e8e8;
+    --text-muted: #888888;
+    --accent: #6b6b6b;
+    --accent-hover: #8a8a8a;
+    --danger: #c44;
+    --danger-hover: #e55;
+    --radius: 8px;
+    --font-sans: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: var(--font-sans);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+}
+
+.header {
+    margin-bottom: 1.5rem;
+}
+
+.header h1 {
+    margin: 0 0 0.5rem;
+    font-size: 1.75rem;
+    font-weight: 600;
+}
+
+.subtitle {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 0.95rem;
+}
+
+.subtitle code {
+    background: var(--surface);
+    padding: 0.15em 0.4em;
+    border-radius: 4px;
+    font-size: 0.9em;
+}
+
+.status {
+    margin-bottom: 1rem;
+    min-height: 1.5em;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.status.error {
+    color: var(--danger);
+}
+
+.list-container {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+}
+
+.config-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.config-list li {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.config-list li:last-child {
+    border-bottom: none;
+}
+
+.config-list .name {
+    flex: 1;
+    font-weight: 500;
+    word-break: break-all;
+}
+
+.config-list .actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-shrink: 0;
+}
+
+.btn {
+    padding: 0.4rem 0.75rem;
+    font-size: 0.875rem;
+    border-radius: 6px;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: var(--surface-alt);
+    color: var(--text);
+    font-family: inherit;
+    transition: background 0.2s, border-color 0.2s;
+}
+
+.btn:hover {
+    background: var(--accent);
+    border-color: var(--accent-hover);
+}
+
+.btn-danger {
+    border-color: rgba(200, 68, 68, 0.5);
+    color: #f0a0a0;
+}
+
+.btn-danger:hover {
+    background: var(--danger);
+    border-color: var(--danger-hover);
+    color: #fff;
+}
+
+.config-list.empty {
+    padding: 1.5rem;
+    text-align: center;
+    color: var(--text-muted);
+}
+
+.loading {
+    padding: 1.5rem;
+    text-align: center;
+    color: var(--text-muted);
+}

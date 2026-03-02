@@ -75,7 +75,7 @@
                             <li>Validate config changes before deploying to other modules</li>
                             <li>Demo or testing of the flexible configuration web version</li>
                         </ul>
-                        <p class="demo-note">Use the <a href="/config-creator">Config Generator</a> to build a custom <code>config.js</code>, then replace <code>config-factory.js</code> or point the demo to your config for a tailored experience.</p>
+                        <p class="demo-note">Use the <a href="/config-creator">Config Generator</a> to build a custom <code>config.js</code>, then replace <code>config-factory.js</code> or point the demo to your config for a tailored experience. Use the <a href="/config-manager">Config Manager</a> to list, view, and delete configs in <code>config/public</code>.</p>
                     </div>
                 </div>
 
@@ -250,6 +250,33 @@
                         </ul>
                     </div>
                 </div>
+
+                <div class="module-card">
+                    <div class="module-header">
+                        <h2>Config Manager</h2>
+                        <a href="/config-manager" class="cta-button">Open Config Manager</a>
+                    </div>
+                    <div class="module-content">
+                        <h3>List, View, and Delete Configurations</h3>
+                        <p>
+                            The Config Manager lists all configuration files in <code>config/public</code> and lets you open
+                            the production demo with a chosen config or delete configs you no longer need. Configurations
+                            are loaded from the server via the configurations API.
+                        </p>
+                        <h4>Capabilities:</h4>
+                        <ul>
+                            <li><strong>List:</strong> See all configuration file names in <code>config/public</code></li>
+                            <li><strong>View:</strong> Open the production demo (<code>/factory/web</code>) with a selected config by id</li>
+                            <li><strong>Delete:</strong> Remove a configuration file from <code>config/public</code> via the API</li>
+                        </ul>
+                        <h4>Use Cases:</h4>
+                        <ul>
+                            <li>Browse and open different configs in the demo without changing the URL by hand</li>
+                            <li>Clean up unused or test configs from <code>config/public</code></li>
+                            <li>Quick access to the factory demo with a specific configuration</li>
+                        </ul>
+                    </div>
+                </div>
             </section>
 
             <section class="technical">
@@ -261,7 +288,7 @@
                     </div>
                     <div class="tech-item">
                         <h3>Configuration</h3>
-                        <p>Centralized configuration system allows customization of detection classes, thresholds, intervals, and action functions. Use the <a href="/config-creator">Config Generator</a> to create or tweak <code>config.js</code> in the browser.</p>
+                        <p>Centralized configuration system allows customization of detection classes, thresholds, intervals, and action functions. Use the <a href="/config-creator">Config Generator</a> to create or tweak <code>config.js</code> in the browser and the <a href="/config-manager">Config Manager</a> to list, view, and delete configs in <code>config/public</code>.</p>
                     </div>
                     <div class="tech-item">
                         <h3>Architecture</h3>
