@@ -280,6 +280,38 @@ body {
     padding-top: 0.5rem;
 }
 
+.actions-footer-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.actions-footer-buttons .btn-download {
+    flex: 1;
+    min-width: 200px;
+}
+
+.btn-save {
+    padding: 0.85rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text);
+    background: var(--surface-alt);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s, border-color 0.15s;
+}
+
+.btn-save:hover {
+    background: var(--border);
+    border-color: var(--accent-hover);
+}
+
+.btn-save:active {
+    transform: scale(0.99);
+}
+
 .btn-download {
     width: 100%;
     padding: 0.85rem 1.5rem;

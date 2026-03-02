@@ -14,6 +14,22 @@
         </header>
 
         <form id="configForm" class="form">
+            <section class="card" data-section="meta">
+                <div class="card-head">
+                    <h2>Name &amp; description</h2>
+                </div>
+                <div class="row">
+                    <div class="field">
+                        <label for="configName">Name</label>
+                        <input type="text" id="configName" value="config" placeholder="config">
+                    </div>
+                    <div class="field">
+                        <label for="configDescription">Description</label>
+                        <input type="text" id="configDescription" value="Default configuration" placeholder="Default configuration">
+                    </div>
+                </div>
+            </section>
+
             <section class="card" data-section="ui">
                 <div class="card-head">
                     <h2>UI</h2>
@@ -271,8 +287,9 @@
                 </div>
             </section>
 
-            <div class="actions-footer">
+            <div class="actions-footer actions-footer-buttons">
                 <button type="submit" class="btn-download">Generate &amp; Download config.js</button>
+                <button type="button" class="btn-save" id="btnGenerateAndSave">Generate and Save</button>
             </div>
         </form>
     </div>

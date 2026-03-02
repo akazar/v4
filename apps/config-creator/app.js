@@ -28,7 +28,25 @@
         return el ? el.checked : true;
     }
 
-    function buildConfigJs() {
+    const num = (el, def) => (el ? (parseInt(el.value, 10) || def) : def);
+    const float = (el, def) => (el ? (parseFloat(el.value) || def) : def);
+    const parseClasses = (val) => {
+        const arr = (val || '').split(',').map(s => s.trim()).filter(Boolean);
+        return arr.length ? arr : ['person'];
+    };
+
+    function readActionRows(containerId, defaultInterval) {
+        const rows = document.querySelectorAll(`#${containerId} .action-row`);
+        return Array.from(rows).map(row => {
+            const body = row.querySelector('.action-body').value.trim();
+            const intervalInput = row.querySelector('.interval-ms');
+            const interval = intervalInput ? (parseInt(intervalInput.value, 10) || defaultInterval) : defaultInterval;
+            return { body, interval };
+        }).filter(a => a.body.length > 0);
+    }
+
+    /** Single source of truth: read all form fields into one data object. */
+    function readFormConfig() {
         const useUi = isSectionEnabled('useUi');
         const useLocalRecognition = isSectionEnabled('useLocalRecognition');
         const useBoundingBoxStyles = isSectionEnabled('useBoundingBoxStyles');
@@ -40,178 +58,143 @@
         const useServerReasoningActionFunctions = isSectionEnabled('useServerReasoningActionFunctions');
         const useServerRegularActionFunctions = isSectionEnabled('useServerRegularActionFunctions');
 
+        const configName = (document.getElementById('configName').value || 'config').trim() || 'config';
+        const configId = configName.replace(/[^a-zA-Z0-9_-]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '') || 'config';
+        const configDescription = (document.getElementById('configDescription').value || '').trim() || 'Default configuration';
         const ui = useUi && document.getElementById('ui').checked;
 
-        let localRecognitionStr = 'null';
+        let localRecognition = null;
         if (useLocalRecognition) {
-            const classesInput = document.getElementById('localClasses').value;
-            const classes = classesInput.split(',').map(s => s.trim()).filter(Boolean);
-            if (classes.length === 0) classes.push('person');
-            const maxResults = parseInt(document.getElementById('localMaxResults').value, 10) || 10;
-            const threshold = parseFloat(document.getElementById('localThreshold').value) || 0.5;
-            const iouThreshold = parseFloat(document.getElementById('localIouThreshold').value) || 0.45;
-            const model = (document.getElementById('localModel').value || 'YOLO').replace(/"/g, '\\"');
-            localRecognitionStr = `{
-        classes: ${formatClassesArray(classes)},
-        maxResults: ${maxResults},
-        threshold: ${threshold},
-        iouThreshold: ${iouThreshold},
-        model: '${model}'
-    }`;
+            localRecognition = {
+                classes: parseClasses(document.getElementById('localClasses').value),
+                maxResults: num(document.getElementById('localMaxResults'), 10),
+                threshold: float(document.getElementById('localThreshold'), 0.5),
+                iouThreshold: float(document.getElementById('localIouThreshold'), 0.45),
+                model: document.getElementById('localModel').value || 'YOLO',
+            };
         }
 
-        let boundingBoxStylesStr = 'null';
+        let boundingBoxStyles = null;
         if (useBoundingBoxStyles) {
-            const interval = parseInt(document.getElementById('boundingBoxInterval').value, 10) || 1000;
-            boundingBoxStylesStr = `{
-        strokeStyle: '${(document.getElementById('strokeStyle').value || '#00FFAA').replace(/'/g, "\\'")}',
-        lineWidth: ${parseInt(document.getElementById('lineWidth').value, 10) || 3},
-        shadowColor: '${(document.getElementById('shadowColor').value || 'rgba(0, 0, 0, 0.5)').replace(/'/g, "\\'")}',
-        shadowBlur: ${parseInt(document.getElementById('shadowBlur').value, 10) || 4},
-        font: '${(document.getElementById('font').value || '16px system-ui, -apple-system, sans-serif').replace(/'/g, "\\'")}',
-        labelBgColor: '${(document.getElementById('labelBgColor').value || 'rgba(0, 0, 0, 0.8)').replace(/'/g, "\\'")}',
-        labelTextColor: '${(document.getElementById('labelTextColor').value || '#00FFAA').replace(/'/g, "\\'")}',
-        labelPadding: ${parseInt(document.getElementById('labelPadding').value, 10) || 6},
-        borderRadius: ${parseInt(document.getElementById('borderRadius').value, 10) || 4},
-        interval: ${interval}
-    }`;
+            boundingBoxStyles = {
+                strokeStyle: document.getElementById('strokeStyle').value || '#00FFAA',
+                lineWidth: num(document.getElementById('lineWidth'), 3),
+                shadowColor: document.getElementById('shadowColor').value || 'rgba(0, 0, 0, 0.5)',
+                shadowBlur: num(document.getElementById('shadowBlur'), 4),
+                font: document.getElementById('font').value || '16px system-ui, -apple-system, sans-serif',
+                labelBgColor: document.getElementById('labelBgColor').value || 'rgba(0, 0, 0, 0.8)',
+                labelTextColor: document.getElementById('labelTextColor').value || '#00FFAA',
+                labelPadding: num(document.getElementById('labelPadding'), 6),
+                borderRadius: num(document.getElementById('borderRadius'), 4),
+                interval: num(document.getElementById('boundingBoxInterval'), 1000),
+            };
         }
 
-        let localRecognitionActionFunctionsStr = '[]';
-        if (useLocalRecognitionActionFunctions) {
-            const rows = document.querySelectorAll('#localRecognitionActions .action-row');
-            const actions = Array.from(rows).map(row => {
-                const body = row.querySelector('.action-body').value.trim();
-                const intervalInput = row.querySelector('.interval-ms');
-                const interval = intervalInput ? (parseInt(intervalInput.value, 10) || 5000) : 5000;
-                return { body, interval };
-            }).filter(a => a.body.length > 0);
-            if (actions.length > 0) {
-                localRecognitionActionFunctionsStr = '[\n' + actions.map((a, i) => {
-                    const indented = indentBlock(a.body, 12);
-                    return `        {
-            func: (recognitionResults) => {\n${indented}\n            },
-            interval: ${a.interval}
-        }${i < actions.length - 1 ? ',' : ''}`;
-                }).join('\n') + '\n    ]';
-            }
-        }
-
-        let localRegularActionFunctionsStr = '[]';
-        if (useLocalRegularActionFunctions) {
-            const regularActionRows = document.querySelectorAll('#localRegularActions .action-row');
-            const regularActions = Array.from(regularActionRows).map(row => {
-                const body = row.querySelector('.action-body').value.trim();
-                const intervalInput = row.querySelector('.interval-ms');
-                const interval = intervalInput ? (parseInt(intervalInput.value, 10) || 15000) : 15000;
-                return { body, interval };
-            }).filter(a => a.body.length > 0);
-            if (regularActions.length > 0) {
-                localRegularActionFunctionsStr = '[\n' + regularActions.map((a, i) => {
-                    const indented = indentBlock(a.body, 12);
-                    return `        {
-            func: (recognitionResults) => {\n${indented}\n            },
-            interval: ${a.interval}
-        }${i < regularActions.length - 1 ? ',' : ''}`;
-                }).join('\n') + '\n    ]';
-            }
-        }
-
-        let serverRecognitionStr = 'null';
+        let serverRecognition = null;
         if (useServerRecognition) {
-            const classesInput = document.getElementById('serverClasses').value;
-            const classes = classesInput.split(',').map(s => s.trim()).filter(Boolean);
-            if (classes.length === 0) classes.push('person');
-            const maxResults = parseInt(document.getElementById('serverMaxResults').value, 10) || 10;
-            const threshold = parseFloat(document.getElementById('serverThreshold').value) || 0.5;
-            const iouThreshold = parseFloat(document.getElementById('serverIouThreshold').value) || 0.45;
-            const model = (document.getElementById('serverModel').value || 'YOLO').replace(/"/g, '\\"');
-            serverRecognitionStr = `{
-        classes: ${formatClassesArray(classes)},
-        maxResults: ${maxResults},
-        threshold: ${threshold},
-        iouThreshold: ${iouThreshold},
-        model: '${model}'
-    }`;
+            serverRecognition = {
+                classes: parseClasses(document.getElementById('serverClasses').value),
+                maxResults: num(document.getElementById('serverMaxResults'), 10),
+                threshold: float(document.getElementById('serverThreshold'), 0.5),
+                iouThreshold: float(document.getElementById('serverIouThreshold'), 0.45),
+                model: document.getElementById('serverModel').value || 'YOLO',
+            };
         }
 
-        let serverReasoningStr = 'null';
+        let serverReasoning = null;
         if (useServerReasoning) {
-            const model = (document.getElementById('serverReasoningModel').value || 'openai').replace(/"/g, '\\"');
-            const prompt = document.getElementById('serverReasoningPrompt').value.trim() ||
-                'Describe this image in detail. What objects, people, or scene do you see?';
-            serverReasoningStr = `{
-        model: '${model}',
-        prompt: '${escapeForSingleQuotedJs(prompt)}'
+            serverReasoning = {
+                model: document.getElementById('serverReasoningModel').value || 'openai',
+                prompt: document.getElementById('serverReasoningPrompt').value.trim() ||
+                    'Describe this image in detail. What objects, people, or scene do you see?',
+            };
+        }
+
+        return {
+            configName,
+            configId,
+            configDescription,
+            ui,
+            localRecognition,
+            boundingBoxStyles,
+            serverRecognition,
+            serverReasoning,
+            localRecognitionActionFunctions: useLocalRecognitionActionFunctions ? readActionRows('localRecognitionActions', 5000) : [],
+            localRegularActionFunctions: useLocalRegularActionFunctions ? readActionRows('localRegularActions', 15000) : [],
+            serverRecognitionActionFunctions: useServerRecognitionActionFunctions ? readActionRows('serverRecognitionActions', 5000) : [],
+            serverReasoningActionFunctions: useServerReasoningActionFunctions ? readActionRows('serverReasoningActions', 5000) : [],
+            serverRegularActionFunctions: useServerRegularActionFunctions ? readActionRows('serverRegularActions', 10000) : [],
+        };
+    }
+
+    function formatRecognitionJs(obj) {
+        if (!obj) return 'null';
+        return `{
+        classes: ${formatClassesArray(obj.classes)},
+        maxResults: ${obj.maxResults},
+        threshold: ${obj.threshold},
+        iouThreshold: ${obj.iouThreshold},
+        model: '${String(obj.model).replace(/'/g, "\\'")}'
     }`;
-        }
+    }
 
-        let serverRecognitionActionFunctionsStr = '[]';
-        if (useServerRecognitionActionFunctions) {
-            const rows = document.querySelectorAll('#serverRecognitionActions .action-row');
-            const actions = Array.from(rows).map(row => {
-                const body = row.querySelector('.action-body').value.trim();
-                const intervalInput = row.querySelector('.interval-ms');
-                const interval = intervalInput ? (parseInt(intervalInput.value, 10) || 5000) : 5000;
-                return { body, interval };
-            }).filter(a => a.body.length > 0);
-            if (actions.length > 0) {
-                serverRecognitionActionFunctionsStr = '[\n' + actions.map((a, i) => {
-                    const indented = indentBlock(a.body, 12);
-                    return `        {
-            func: (recognitionResults) => {\n${indented}\n            },
+    function formatBoundingBoxStylesJs(obj) {
+        if (!obj) return 'null';
+        const q = (s) => (s || '').replace(/'/g, "\\'");
+        return `{
+        strokeStyle: '${q(obj.strokeStyle)}',
+        lineWidth: ${obj.lineWidth},
+        shadowColor: '${q(obj.shadowColor)}',
+        shadowBlur: ${obj.shadowBlur},
+        font: '${q(obj.font)}',
+        labelBgColor: '${q(obj.labelBgColor)}',
+        labelTextColor: '${q(obj.labelTextColor)}',
+        labelPadding: ${obj.labelPadding},
+        borderRadius: ${obj.borderRadius},
+        interval: ${obj.interval}
+    }`;
+    }
+
+    function formatReasoningJs(obj) {
+        if (!obj) return 'null';
+        return `{
+        model: '${String(obj.model).replace(/'/g, "\\'")}',
+        prompt: '${escapeForSingleQuotedJs(obj.prompt)}'
+    }`;
+    }
+
+    function formatActionFunctionsJs(actions, paramList) {
+        if (!actions.length) return '[]';
+        return '[\n' + actions.map((a, i) => {
+            const indented = indentBlock(a.body, 12);
+            return `        {
+            func: (${paramList}) => {\n${indented}\n            },
             interval: ${a.interval}
         }${i < actions.length - 1 ? ',' : ''}`;
-                }).join('\n') + '\n    ]';
-            }
-        }
+        }).join('\n') + '\n    ]';
+    }
 
-        let serverReasoningActionFunctionsStr = '[]';
-        if (useServerReasoningActionFunctions) {
-            const rows = document.querySelectorAll('#serverReasoningActions .action-row');
-            const actions = Array.from(rows).map(row => {
-                const body = row.querySelector('.action-body').value.trim();
-                const intervalInput = row.querySelector('.interval-ms');
-                const interval = intervalInput ? (parseInt(intervalInput.value, 10) || 5000) : 5000;
-                return { body, interval };
-            }).filter(a => a.body.length > 0);
-            if (actions.length > 0) {
-                serverReasoningActionFunctionsStr = '[\n' + actions.map((a, i) => {
-                    const indented = indentBlock(a.body, 12);
-                    return `        {
-            func: (recognitionResults, reasoningResults) => {\n${indented}\n            },
-            interval: ${a.interval}
-        }${i < actions.length - 1 ? ',' : ''}`;
-                }).join('\n') + '\n    ]';
-            }
-        }
+    function buildConfigJs() {
+        const d = readFormConfig();
+        const localRecognitionStr = formatRecognitionJs(d.localRecognition);
+        const boundingBoxStylesStr = formatBoundingBoxStylesJs(d.boundingBoxStyles);
+        const serverRecognitionStr = formatRecognitionJs(d.serverRecognition);
+        const serverReasoningStr = formatReasoningJs(d.serverReasoning);
+        const localRecognitionActionFunctionsStr = formatActionFunctionsJs(d.localRecognitionActionFunctions, 'recognitionResults');
+        const localRegularActionFunctionsStr = formatActionFunctionsJs(d.localRegularActionFunctions, 'recognitionResults');
+        const serverRecognitionActionFunctionsStr = formatActionFunctionsJs(d.serverRecognitionActionFunctions, 'recognitionResults');
+        const serverReasoningActionFunctionsStr = formatActionFunctionsJs(d.serverReasoningActionFunctions, 'recognitionResults, reasoningResults');
+        const serverRegularActionFunctionsStr = formatActionFunctionsJs(d.serverRegularActionFunctions, 'recognitionResults, reasoningResults');
 
-        let serverRegularActionFunctionsStr = '[]';
-        if (useServerRegularActionFunctions) {
-            const serverRegularRows = document.querySelectorAll('#serverRegularActions .action-row');
-            const serverRegularActions = Array.from(serverRegularRows).map(row => {
-                const body = row.querySelector('.action-body').value.trim();
-                const intervalInput = row.querySelector('.interval-ms');
-                const interval = intervalInput ? (parseInt(intervalInput.value, 10) || 10000) : 10000;
-                return { body, interval };
-            }).filter(a => a.body.length > 0);
-            if (serverRegularActions.length > 0) {
-                serverRegularActionFunctionsStr = '[\n' + serverRegularActions.map((a, i) => {
-                    const indented = indentBlock(a.body, 12);
-                    return `        {
-            func: (recognitionResults, reasoningResults) => {\n${indented}\n            },
-            interval: ${a.interval}
-        }${i < serverRegularActions.length - 1 ? ',' : ''}`;
-                }).join('\n') + '\n    ]';
-            }
-        }
-
-        const out = `/**
+        return `/**
  * Single configuration object for the v4 app
  */
 const CONFIG = {
     /////////////////////// LOCAL CONFIG ///////////////////////
-    ui: ${ui},
+    id: '${escapeForSingleQuotedJs(d.configId)}',
+    name: '${escapeForSingleQuotedJs(d.configName)}',
+    description: '${escapeForSingleQuotedJs(d.configDescription)}',
+    ui: ${d.ui},
     localRecognition: ${localRecognitionStr},
     boundingBoxStyles: ${boundingBoxStylesStr},
     localRecognitionActionFunctions: ${localRecognitionActionFunctionsStr},
@@ -228,7 +211,26 @@ const CONFIG = {
 export default CONFIG;
 export { CONFIG };
 `;
-        return out;
+    }
+
+    /** Returns a plain object for POST /api/configurations (action arrays are [] because JSON cannot serialize functions). */
+    function buildConfigObject() {
+        const d = readFormConfig();
+        return {
+            id: d.configId,
+            name: d.configName,
+            description: d.configDescription,
+            ui: d.ui,
+            localRecognition: d.localRecognition,
+            boundingBoxStyles: d.boundingBoxStyles,
+            localRecognitionActionFunctions: [],
+            localRegularActionFunctions: [],
+            serverRecognition: d.serverRecognition,
+            serverReasoning: d.serverReasoning,
+            serverRecognitionActionFunctions: [],
+            serverReasoningActionFunctions: [],
+            serverRegularActionFunctions: [],
+        };
     }
 
     const PRESET_NOTIFICATION_BODY = `fetch(\`/api/notify\`, {
@@ -367,7 +369,29 @@ fetch(\`/api/db\`, {
 
     form.addEventListener('submit', function (e) {
         e.preventDefault();
+        const d = readFormConfig();
         const js = buildConfigJs();
-        downloadFile(js, 'config.js');
+        downloadFile(js, d.configId + '.js');
+    });
+
+    document.getElementById('btnGenerateAndSave').addEventListener('click', async function () {
+        const config = buildConfigObject();
+        const fileName = config.id + '.js';
+        try {
+            const res = await fetch('/api/configurations', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name: config.id, config }),
+            });
+            const data = await res.json().catch(() => ({}));
+            if (!res.ok) {
+                alert(data.error || 'Save failed.');
+                return;
+            }
+            alert(`Saved as ${data.file || fileName}`);
+        } catch (err) {
+            console.error(err);
+            alert('Request failed. Is the server running?');
+        }
     });
 })();

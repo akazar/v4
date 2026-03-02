@@ -3,6 +3,8 @@
  */
 const CONFIG = {
     /////////////////////// LOCAL CONFIG ///////////////////////
+    name: 'config-factory',
+    description: 'Factory configuration',
     ui: true,
     localRecognition: {
         classes: [

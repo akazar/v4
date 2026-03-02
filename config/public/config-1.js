@@ -1,5 +1,7 @@
 const CONFIG = {
     /////////////////////// LOCAL CONFIG ///////////////////////
+    name: 'config-1',
+    description: 'This is a test configuration',
     ui: false,
     localRecognition: {
         classes: [
