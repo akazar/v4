@@ -11,6 +11,7 @@ import { setupRecognitionServer } from '../lib/cloud/recognition-server.js';
 import { setupReasoningServer } from '../lib/cloud/reasoning-server.js';
 import { setupNotificationServer } from '../lib/cloud/notification-server.js';
 import { setupDbServer } from '../lib/cloud/db-server.js';
+import { setupConfigurationServer } from '../lib/cloud/configuration-server.js';
 
 const PORT = process.env.PORT || 3001;
 
@@ -41,6 +42,9 @@ setupNotificationServer(app);
 
 // Setup database API (POST /api/db)
 setupDbServer(app);
+
+// Setup configuration API (GET /api/configurations)
+setupConfigurationServer(app)
 
 // Start the server
 app.listen(PORT, () => {

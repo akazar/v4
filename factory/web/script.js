@@ -1,4 +1,3 @@
-import CONFIG from '../../config/config-factory.js';
 import { getCameraStream, attachCameraStreamToVideo, waitForVideoAndPlay } from '../../lib/edge/capture.js';
 import { toDataUrl } from '../../lib/edge/image-format.js';
 import { recognize } from '../../lib/edge/recognition/mediapipe/recognize-mediapipe.js';
@@ -18,8 +17,8 @@ let recognitionResults = [];
  * Start the recognition loop for real-time object detection.
  * Uses the currently selected model (YOLO or MEDIAPIPE) from the model selector.
  */
-function startRecognitionLoop() {
-    const { boundingBoxStyles, localRecognitionActionFunctions, localRegularActionFunctions } = CONFIG;
+function startRecognitionLoop(config) {
+    const { boundingBoxStyles, localRecognitionActionFunctions, localRegularActionFunctions } = config;
     const modelSelect = document.getElementById('modelSelect');
 
     recognitionInterval = setInterval(async () => {
@@ -27,8 +26,8 @@ function startRecognitionLoop() {
             const model = modelSelect?.value ?? 'YOLO';
             const dataUrl = await toDataUrl(videoElement);
             recognitionResults = model === 'MEDIAPIPE'
-                ? await recognize(dataUrl, CONFIG)
-                : await recognizeWithYolo(dataUrl, CONFIG);
+                ? await recognize(dataUrl, config)
+                : await recognizeWithYolo(dataUrl, config);
             if (boundingBoxStyles) {
                 boundingBoxes(recognitionResults, videoElement, boundingBoxStyles);
             }
@@ -94,33 +93,63 @@ async function initCameraBackground() {
     }
 }
 
-
-window.addEventListener('DOMContentLoaded', () => {
-    initCameraBackground();
-    if (CONFIG.ui) {
-        injectTopButtons(document, CONFIG);
-    } else { 
-        startRecognitionLoop();
-    }
-});
-
-if (CONFIG.ui) {
-    document.addEventListener('ui:state', (event) => {
-        const { active } = event.detail;
-        if (active) {
-            startRecognitionLoop();
+function initApp(config) {
+    const onReady = () => {
+        initCameraBackground();
+        if (config.ui) {
+            injectTopButtons(document, config);
         } else {
-            stopRecognitionLoop();
-            clearBoundingBoxes();
+            startRecognitionLoop(config);
         }
+    };
+
+    if (document.readyState === 'loading') {
+        window.addEventListener('DOMContentLoaded', onReady);
+    } else {
+        onReady();
+    }
+
+    if (config.ui) {
+        document.addEventListener('ui:state', (event) => {
+            const { active } = event.detail;
+            if (active) {
+                startRecognitionLoop(config);
+            } else {
+                stopRecognitionLoop();
+                clearBoundingBoxes();
+            }
+        });
+    } else {
+        startRecognitionLoop(config);
+    }
+
+    window.addEventListener('beforeunload', () => {
+        stopRecognitionLoop();
+        clearBoundingBoxes();
+        stopCameraStream();
     });
-} else {
-    startRecognitionLoop();
 }
 
+function getConfigIdFromPath() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('id') || 'config';
+}
 
-window.addEventListener('beforeunload', () => {
-    stopRecognitionLoop();
-    clearBoundingBoxes();
-    stopCameraStream();
-});
+async function main() {
+    const configId = getConfigIdFromPath();
+    let config;
+    try {
+        const res = await fetch(`/api/configurations/${encodeURIComponent(configId)}`);
+        if (!res.ok) {
+            throw new Error(`Configuration "${configId}" failed: ${res.status}`);
+        }
+        config = await res.json();
+    } catch (err) {
+        console.error('Failed to load configuration:', err);
+        alert(`Unable to load configuration (${configId}). ${err.message}`);
+        return;
+    }
+    initApp(config);
+}
+
+main();

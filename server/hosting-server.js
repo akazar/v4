@@ -48,6 +48,9 @@ export function setupFrontendHosting(app) {
   app.get('/factory/', (req, res) => {
     res.sendFile(path.join(factoryWebPath, 'index.html'));
   });
+  app.get('/factory/:id', (req, res) => {
+    res.sendFile(path.join(factoryWebPath, 'index.html'));
+  });
 
   // Config generator at /config-creator
   app.use('/config-creator', express.static(configCreatorPath));
