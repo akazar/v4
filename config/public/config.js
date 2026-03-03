@@ -25,7 +25,7 @@ const CONFIG = {
         "labelTextColor": "#00FFAA",
         "labelPadding": 6,
         "borderRadius": 4,
-        "interval": 5000
+        "interval": 1000
     },
     "localRecognitionActionFunctions": [],
     "localRegularActionFunctions": [],

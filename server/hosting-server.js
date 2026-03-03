@@ -106,4 +106,13 @@ export function setupFrontendHosting(app) {
   app.get('/server-reasoning/', (req, res) => {
     res.sendFile(path.join(serverReasoningPath, 'index.html'));
   });
+
+   // Server-reasoning client at /server-reasoning
+   app.use('/debug', express.static(debugPath));
+   app.get('/debug', (req, res) => {
+    res.sendFile(path.join(debugPath, 'index.html'));
+  });
+  app.get('/debug/', (req, res) => {
+    res.sendFile(path.join(debugPath, 'index.html'));
+  });
 }
