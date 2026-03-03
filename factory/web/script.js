@@ -1,7 +1,5 @@
 import { getCameraStream, attachCameraStreamToVideo, waitForVideoAndPlay } from '../../lib/edge/capture.js';
 import { toDataUrl } from '../../lib/edge/image-format.js';
-import { recognize } from '../../lib/edge/recognition/mediapipe/recognize-mediapipe.js';
-import { recognizeWithYolo } from '../../lib/edge/recognition/yolo/recognize-yolo.js';
 import { boundingBoxes, clearBoundingBoxes } from '../../lib/edge/bounding-boxes.js';
 import { action, localRecognitionActions } from '../../lib/edge/actions.js';
 import { injectTopButtons } from '../../lib/edge/ui.js';
@@ -18,17 +16,23 @@ let recognitionResults = [];
  * Start the recognition loop for real-time object detection.
  * Uses the currently selected model (YOLO or MEDIAPIPE) from the model selector.
  */
-function startRecognitionLoop(config) {
+async function startRecognitionLoop(config) {
     const { boundingBoxStyles, localRecognition, localRecognitionActionFunctions, localRegularActionFunctions } = config;
-    const modelSelect = document.getElementById('modelSelect');
+    let recognizer = null;
+    const model = config.localRecognition?.model ?? 'YOLO';
+
+    if (model === 'MEDIAPIPE') {
+        const { recognize } = await import('../../lib/edge/recognition/mediapipe/recognize-mediapipe.js');
+        recognizer = recognize;
+    } else {
+        const { recognizeWithYolo } = await import('../../lib/edge/recognition/yolo/recognize-yolo.js');
+        recognizer = recognizeWithYolo;
+    }
 
     recognitionInterval = setInterval(async () => {
         if (videoElement && videoElement.readyState >= 2) {
-            const model = modelSelect?.value ?? 'YOLO';
             const dataUrl = await toDataUrl(videoElement);
-            recognitionResults = model === 'MEDIAPIPE'
-                ? await recognize(dataUrl, config)
-                : await recognizeWithYolo(dataUrl, config);
+            recognitionResults = await recognizer(dataUrl, config);
             if (localRecognitionActionFunctions.length > 0) {
                 localRecognitionActions(recognitionResults, localRecognitionActionFunctions);
             }
@@ -108,8 +112,6 @@ function initApp(config) {
         initCameraBackground();
         if (config.ui) {
             injectTopButtons(document, config);
-        } else {
-            startRecognitionLoop(config);
         }
     };
 
