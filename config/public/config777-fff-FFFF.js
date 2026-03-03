@@ -11,7 +11,8 @@ const CONFIG = {
         "maxResults": 10,
         "threshold": 0.5,
         "iouThreshold": 0.45,
-        "model": "YOLO"
+        "model": "YOLO",
+        "interval": 1000
     },
     "boundingBoxStyles": {
         "strokeStyle": "#00FFAA",

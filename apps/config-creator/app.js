@@ -71,6 +71,7 @@
                 threshold: float(document.getElementById('localThreshold'), 0.5),
                 iouThreshold: float(document.getElementById('localIouThreshold'), 0.45),
                 model: document.getElementById('localModel').value || 'YOLO',
+                interval: num(document.getElementById('localInterval'), 1000),
             };
         }
 
@@ -134,7 +135,8 @@
         maxResults: ${obj.maxResults},
         threshold: ${obj.threshold},
         iouThreshold: ${obj.iouThreshold},
-        model: '${String(obj.model).replace(/'/g, "\\'")}'
+        model: '${String(obj.model).replace(/'/g, "\\'")}',
+        interval: ${obj.interval}
     }`;
     }
 

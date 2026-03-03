@@ -36,7 +36,8 @@ const CONFIG = {
         threshold: 0.5,
         iouThreshold: 0.45,
         intervalMs: 500,
-        model: 'YOLO', // 'MEDIAPIPE' || 'YOLO'
+        model: 'YOLO', // 'MEDIAPIPE' || 'YOLO',
+        interval: 1000
     },
     model: 'YOLO', // 'MEDIAPIPE' || 'YOLO'
     reasoning: {

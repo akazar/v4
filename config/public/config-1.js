@@ -19,6 +19,7 @@ const CONFIG = {
         threshold: 0.5,
         iouThreshold: 0.45,
         model: 'YOLO',  // 'MEDIAPIPE' || 'YOLO'
+        interval: 1000
     },
     boundingBoxStyles: {
         strokeStyle: '#00FFAA',

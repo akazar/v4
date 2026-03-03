@@ -10,6 +10,7 @@ let cameraStream = null;
 let videoElement = null;
 
 let recognitionInterval = null;
+let boundingBoxInterval = null;
 let regularActionIntervals = [];
 let recognitionResults = [];
 
@@ -18,7 +19,7 @@ let recognitionResults = [];
  * Uses the currently selected model (YOLO or MEDIAPIPE) from the model selector.
  */
 function startRecognitionLoop(config) {
-    const { boundingBoxStyles, localRecognitionActionFunctions, localRegularActionFunctions } = config;
+    const { boundingBoxStyles, localRecognition, localRecognitionActionFunctions, localRegularActionFunctions } = config;
     const modelSelect = document.getElementById('modelSelect');
 
     recognitionInterval = setInterval(async () => {
@@ -28,14 +29,19 @@ function startRecognitionLoop(config) {
             recognitionResults = model === 'MEDIAPIPE'
                 ? await recognize(dataUrl, config)
                 : await recognizeWithYolo(dataUrl, config);
-            if (boundingBoxStyles) {
-                boundingBoxes(recognitionResults, videoElement, boundingBoxStyles);
-            }
             if (localRecognitionActionFunctions.length > 0) {
                 localRecognitionActions(recognitionResults, localRecognitionActionFunctions);
             }
         }
-    }, boundingBoxStyles.interval);
+    }, localRecognition.interval);
+
+    if (boundingBoxStyles) {
+        boundingBoxInterval = setInterval(() => {
+            if (videoElement && videoElement.readyState >= 2) {
+                boundingBoxes(recognitionResults, videoElement, boundingBoxStyles);
+            }
+        }, boundingBoxStyles.interval);
+    }
 
     if (localRegularActionFunctions.length > 0) {
         localRegularActionFunctions.forEach(funcObj => {
@@ -54,6 +60,10 @@ function stopRecognitionLoop() {
     if (recognitionInterval) {
         clearInterval(recognitionInterval);
         recognitionInterval = null;
+    }
+    if (boundingBoxInterval) {
+        clearInterval(boundingBoxInterval);
+        boundingBoxInterval = null;
     }
     regularActionIntervals.forEach(id => clearInterval(id));
     regularActionIntervals = [];
