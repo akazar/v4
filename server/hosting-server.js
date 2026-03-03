@@ -27,6 +27,7 @@ export function setupFrontendHosting(app) {
   const serverDetectionPath = path.join(__dirname, '..', 'apps', 'server-detection');
   const serverReasoningPath = path.join(__dirname, '..', 'apps', 'server-reasoning');
   const factoryWebPath = path.join(__dirname, '..', 'factory', 'web');
+  const debugPath = path.join(__dirname, '..', 'apps', 'debug');
 
   // Landing page at root (index + styles from apps/landing)
   app.get('/', (req, res) => {
@@ -107,11 +108,11 @@ export function setupFrontendHosting(app) {
     res.sendFile(path.join(serverReasoningPath, 'index.html'));
   });
 
-   // Server-reasoning client at /server-reasoning
+   // Debug client at /debug
    app.use('/debug', express.static(debugPath));
    app.get('/debug', (req, res) => {
     res.sendFile(path.join(debugPath, 'index.html'));
-  });
+  });   
   app.get('/debug/', (req, res) => {
     res.sendFile(path.join(debugPath, 'index.html'));
   });

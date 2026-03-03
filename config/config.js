@@ -3,6 +3,9 @@
  */
 const CONFIG = {
     /////////////////////// LOCAL CONFIG ///////////////////////
+    id: 'config-default',
+    name: 'config',
+    description: 'Default configuration',
     ui: true,
     localRecognition: {
         classes: [
