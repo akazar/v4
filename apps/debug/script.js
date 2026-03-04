@@ -1,5 +1,5 @@
 import { getCameraStream, attachCameraStreamToVideo, waitForVideoAndPlay } from '../../lib/edge/capture.js';
-import { toDataUrl } from '../../lib/edge/image-format.js';
+import { videoToReusableCanvas } from '../../lib/edge/source-to-canvas.js';
 import { boundingBoxes } from '../../lib/edge/bounding-boxes.js';
 import { action, localRecognitionActions } from '../../lib/edge/actions.js';
 import { injectTopButtons } from '../../lib/edge/ui.js';
@@ -11,6 +11,8 @@ let recognitionInterval = null;
 let boundingBoxInterval = null;
 let regularActionIntervals = [];
 let recognitionResults = [];
+let recognitionRunning = false;
+let recognitionCanvas = null;
 
 /**
  * Start the recognition loop for real-time object detection.
@@ -30,12 +32,21 @@ async function startRecognitionLoop(config) {
     }
 
     recognitionInterval = setInterval(async () => {
-        if (videoElement && videoElement.readyState >= 2) {
-            const dataUrl = await toDataUrl(videoElement);
-            recognitionResults = await recognizer(dataUrl, config);
+        if (recognitionRunning || !videoElement || videoElement.readyState < 2) return;
+        recognitionRunning = true;
+        try {
+            recognitionCanvas = videoToReusableCanvas(
+                videoElement,
+                { maxWidth: 640, maxHeight: 640 },
+                recognitionCanvas
+            );
+            recognitionResults = await recognizer(recognitionCanvas, config);
+            console.log(recognitionResults);
             // if (localRecognitionActionFunctions.length > 0) {
             //     localRecognitionActions(recognitionResults, localRecognitionActionFunctions);
             // }
+        } finally {
+            recognitionRunning = false;
         }
     }, localRecognition.interval);
 

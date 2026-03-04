@@ -7,13 +7,14 @@ const CONFIG = {
         "classes": [
             "person",
             "dog",
-            "car"
+            "car",
+            "chair"
         ],
         "maxResults": 10,
         "threshold": 0.5,
         "iouThreshold": 0.45,
         "model": "YOLO",
-        "interval": 1000
+        "interval": 2000
     },
     "boundingBoxStyles": {
         "strokeStyle": "#00FFAA",
