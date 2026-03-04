@@ -1,5 +1,5 @@
 import { getCameraStream, attachCameraStreamToVideo, waitForVideoAndPlay } from '../../lib/edge/capture.js';
-import { videoToReusableCanvas } from '../../lib/edge/source-to-canvas.js';
+import { videoToReusableCanvas, scaleDetectionsToVideo } from '../../lib/edge/source-to-canvas.js';
 import { boundingBoxes } from '../../lib/edge/bounding-boxes.js';
 import { action, localRecognitionActions } from '../../lib/edge/actions.js';
 import { injectTopButtons } from '../../lib/edge/ui.js';
@@ -41,7 +41,15 @@ async function startRecognitionLoop(config) {
                 { maxWidth: captureSize, maxHeight: captureSize },
                 recognitionCanvas
             );
-            recognitionResults = await recognizer(recognitionCanvas, config);
+
+            const rawResults = await recognizer(recognitionCanvas, config);
+
+            recognitionResults = scaleDetectionsToVideo(
+                rawResults,
+                recognitionCanvas,
+                videoElement
+            );
+
             console.log(recognitionResults);
             // if (localRecognitionActionFunctions.length > 0) {
             //     localRecognitionActions(recognitionResults, localRecognitionActionFunctions);

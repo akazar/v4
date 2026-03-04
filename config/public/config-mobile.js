@@ -1,19 +1,22 @@
 const CONFIG = {
-    "id": "Test-file",
-    "name": "Test file",
-    "description": "Default configuration",
+    "id": "config-mobile",
+    "name": "Config Mobile with MEDIAPIPE model",
+    "description": "Default mobile configuration woth MEDIAPIPE model",
     "ui": true,
     "localRecognition": {
         "classes": [
             "person",
             "dog",
-            "car"
+            "car",
+            "chair"
         ],
         "maxResults": 10,
         "threshold": 0.5,
         "iouThreshold": 0.45,
-        "model": "YOLO",
-        "interval": 1000
+        "model": "MEDIAPIPE",
+        "inputSize": 320,
+        "maxCaptureSize": 320,
+        "interval": 2000
     },
     "boundingBoxStyles": {
         "strokeStyle": "#00FFAA",

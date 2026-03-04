@@ -1,18 +1,22 @@
 const CONFIG = {
-    "name": "config777 fff FFFF",
-    "description": "Default configuration777",
+    "id": "config-yolo",
+    "name": "Config YOLO model",
+    "description": "Default configuration with YOLO model",
     "ui": true,
     "localRecognition": {
         "classes": [
             "person",
             "dog",
-            "car"
+            "car",
+            "chair"
         ],
         "maxResults": 10,
         "threshold": 0.5,
         "iouThreshold": 0.45,
         "model": "YOLO",
-        "interval": 1000
+        "inputSize": 320,
+        "maxCaptureSize": 320,
+        "interval": 2000
     },
     "boundingBoxStyles": {
         "strokeStyle": "#00FFAA",
