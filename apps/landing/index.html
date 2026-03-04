@@ -81,6 +81,62 @@
 
                 <div class="module-card">
                     <div class="module-header">
+                        <h2>Config Manager</h2>
+                        <a href="/config-manager" class="cta-button">Open Config Manager</a>
+                    </div>
+                    <div class="module-content">
+                        <h3>List, View, and Delete Configurations</h3>
+                        <p>
+                            The Config Manager lists all configuration files in <code>config/public</code> and lets you open
+                            the production demo with a chosen config or delete configs you no longer need. Configurations
+                            are loaded from the server via the configurations API.
+                        </p>
+                        <h4>Capabilities:</h4>
+                        <ul>
+                            <li><strong>List:</strong> See all configuration file names in <code>config/public</code></li>
+                            <li><strong>View:</strong> Open the production demo (<code>/factory/web</code>) with a selected config by id</li>
+                            <li><strong>Delete:</strong> Remove a configuration file from <code>config/public</code> via the API</li>
+                        </ul>
+                        <h4>Use Cases:</h4>
+                        <ul>
+                            <li>Browse and open different configs in the demo without changing the URL by hand</li>
+                            <li>Clean up unused or test configs from <code>config/public</code></li>
+                            <li>Quick access to the factory demo with a specific configuration</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="module-card">
+                    <div class="module-header">
+                        <h2>Config Generator</h2>
+                        <a href="/config-creator" class="cta-button">Open Config Generator</a>
+                    </div>
+                    <div class="module-content">
+                        <h3>Create and Customize config.js</h3>
+                        <p>
+                            The Config Generator is a web-based tool that lets you build <code>config.js</code> for Vision v4 
+                            without editing files by hand. Set recognition classes, detection thresholds, model options, 
+                            API settings, and more through a simple form, then copy or download the generated configuration.
+                        </p>
+                        <h4>Capabilities:</h4>
+                        <ul>
+                            <li><strong>Recognition:</strong> Configure detection classes (e.g. person, dog, car), score threshold, and recognition interval</li>
+                            <li><strong>Model:</strong> Set model asset path, delegate (GPU/CPU), and score threshold</li>
+                            <li><strong>API:</strong> Configure base URL and describe prompt for OpenAI-style image description</li>
+                            <li><strong>Options:</strong> Tune other runtime and display options</li>
+                            <li><strong>Export:</strong> Copy the generated config or download it as <code>config.js</code></li>
+                        </ul>
+                        <h4>Use Cases:</h4>
+                        <ul>
+                            <li>Quick setup of a new Vision v4 deployment</li>
+                            <li>Experimenting with different detection classes and thresholds</li>
+                            <li>Generating configs for different environments (dev, staging, production)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="module-card">
+                    <div class="module-header">
                         <h2>Camera Stream</h2>
                         <a href="/camera-stream" class="cta-button">Launch Camera Stream</a>
                     </div>
@@ -218,62 +274,6 @@
                         <ul>
                             <li>Main v4 server running (reasoning API is part of the same server)</li>
                             <li><code>OPENAI_API_KEY</code> and/or <code>GEMINI_API_KEY</code> set in <code>.env</code></li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="module-card">
-                    <div class="module-header">
-                        <h2>Config Generator</h2>
-                        <a href="/config-creator" class="cta-button">Open Config Generator</a>
-                    </div>
-                    <div class="module-content">
-                        <h3>Create and Customize config.js</h3>
-                        <p>
-                            The Config Generator is a web-based tool that lets you build <code>config.js</code> for Vision v4 
-                            without editing files by hand. Set recognition classes, detection thresholds, model options, 
-                            API settings, and more through a simple form, then copy or download the generated configuration.
-                        </p>
-                        <h4>Capabilities:</h4>
-                        <ul>
-                            <li><strong>Recognition:</strong> Configure detection classes (e.g. person, dog, car), score threshold, and recognition interval</li>
-                            <li><strong>Model:</strong> Set model asset path, delegate (GPU/CPU), and score threshold</li>
-                            <li><strong>API:</strong> Configure base URL and describe prompt for OpenAI-style image description</li>
-                            <li><strong>Options:</strong> Tune other runtime and display options</li>
-                            <li><strong>Export:</strong> Copy the generated config or download it as <code>config.js</code></li>
-                        </ul>
-                        <h4>Use Cases:</h4>
-                        <ul>
-                            <li>Quick setup of a new Vision v4 deployment</li>
-                            <li>Experimenting with different detection classes and thresholds</li>
-                            <li>Generating configs for different environments (dev, staging, production)</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="module-card">
-                    <div class="module-header">
-                        <h2>Config Manager</h2>
-                        <a href="/config-manager" class="cta-button">Open Config Manager</a>
-                    </div>
-                    <div class="module-content">
-                        <h3>List, View, and Delete Configurations</h3>
-                        <p>
-                            The Config Manager lists all configuration files in <code>config/public</code> and lets you open
-                            the production demo with a chosen config or delete configs you no longer need. Configurations
-                            are loaded from the server via the configurations API.
-                        </p>
-                        <h4>Capabilities:</h4>
-                        <ul>
-                            <li><strong>List:</strong> See all configuration file names in <code>config/public</code></li>
-                            <li><strong>View:</strong> Open the production demo (<code>/factory/web</code>) with a selected config by id</li>
-                            <li><strong>Delete:</strong> Remove a configuration file from <code>config/public</code> via the API</li>
-                        </ul>
-                        <h4>Use Cases:</h4>
-                        <ul>
-                            <li>Browse and open different configs in the demo without changing the URL by hand</li>
-                            <li>Clean up unused or test configs from <code>config/public</code></li>
-                            <li>Quick access to the factory demo with a specific configuration</li>
                         </ul>
                     </div>
                 </div>
