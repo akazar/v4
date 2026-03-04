@@ -23,6 +23,8 @@ const CONFIG = {
         threshold: 0.5,
         iouThreshold: 0.45,
         model: 'YOLO',  // 'MEDIAPIPE' || 'YOLO',
+        inputSize: 320,
+        maxCaptureSize: 320,
         interval: 1000
     },
     boundingBoxStyles: {

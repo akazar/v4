@@ -14,6 +14,8 @@ const CONFIG = {
         "threshold": 0.5,
         "iouThreshold": 0.45,
         "model": "YOLO",
+        "inputSize": 320,
+        "maxCaptureSize": 320,
         "interval": 2000
     },
     "boundingBoxStyles": {

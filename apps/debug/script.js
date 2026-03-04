@@ -35,9 +35,10 @@ async function startRecognitionLoop(config) {
         if (recognitionRunning || !videoElement || videoElement.readyState < 2) return;
         recognitionRunning = true;
         try {
+            const captureSize = localRecognition?.maxCaptureSize ?? 640;
             recognitionCanvas = videoToReusableCanvas(
                 videoElement,
-                { maxWidth: 640, maxHeight: 640 },
+                { maxWidth: captureSize, maxHeight: captureSize },
                 recognitionCanvas
             );
             recognitionResults = await recognizer(recognitionCanvas, config);
