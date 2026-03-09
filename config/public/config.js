@@ -30,8 +30,52 @@ const CONFIG = {
         "borderRadius": 4,
         "interval": 1000
     },
-    "localRecognitionActionFunctions": [],
-    "localRegularActionFunctions": [],
+    "localRecognitionActionFunctions": [
+        {
+          "action": {
+            "type": "DB",
+            "value": ["dbPersonalId"]
+          },
+          "timeout": 2000
+        },
+        {
+          "action": {
+            "type": "API",
+            "value": ["https://223.com/"]
+          },
+          "timeout": 5000
+        },
+        {
+          "action": {
+            "type": "NOTIFY",
+            "value": ["telegramIdPersonal"]
+          },
+          "timeout": 11000
+        }
+    ],
+    "localRegularActionFunctions": [
+        {
+            "action": {
+              "type": "DB",
+              "value": ["dbNULPId"]
+            },
+            "timeout": 10000
+          },
+          {
+            "action": {
+              "type": "API",
+              "value": ["https://lpnu.ua/"]
+            },
+            "timeout": 15000
+          },
+          {
+            "action": {
+              "type": "NOTIFY",
+              "value": ["telegramNULPId"]
+            },
+            "timeout": 21000
+          }
+    ],
     "serverRecognition": {
         "classes": [
             "person",

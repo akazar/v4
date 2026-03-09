@@ -1,7 +1,7 @@
 import { getCameraStream, attachCameraStreamToVideo, waitForVideoAndPlay } from '../../lib/edge/capture.js';
 import { videoToReusableCanvas, scaleDetectionsToVideo } from '../../lib/edge/source-to-canvas.js';
 import { boundingBoxes, clearBoundingBoxes } from '../../lib/edge/bounding-boxes.js';
-import { action, localRecognitionActions } from '../../lib/edge/actions.js';
+import { action, localRecognitionActions, localRecognitionActionsFromConfig } from '../../lib/edge/actions.js';
 import { injectTopButtons } from '../../lib/edge/ui.js';
 
 let cameraStream = null;
@@ -51,7 +51,7 @@ async function startRecognitionLoop(config) {
             );
 
             if (localRecognitionActionFunctions.length > 0) {
-                localRecognitionActions(recognitionResults, localRecognitionActionFunctions);
+                localRecognitionActionsFromConfig(recognitionResults, localRecognitionActionFunctions);
             }
         } finally {
             recognitionRunning = false;
@@ -66,14 +66,14 @@ async function startRecognitionLoop(config) {
         }, boundingBoxStyles.interval);
     }
 
-    if (localRegularActionFunctions.length > 0) {
-        localRegularActionFunctions.forEach(funcObj => {
-            const id = setInterval(async () => {
-                action(recognitionResults, [funcObj.func]);
-            }, funcObj.interval);
-            regularActionIntervals.push(id);
-        });
-    }
+    // if (localRegularActionFunctions.length > 0) {
+    //     localRegularActionFunctions.forEach(funcObj => {
+    //         const id = setInterval(async () => {
+    //             action(recognitionResults, [funcObj.func]);
+    //         }, funcObj.interval);
+    //         regularActionIntervals.push(id);
+    //     });
+    // }
 }
 
 /**
