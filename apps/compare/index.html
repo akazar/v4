@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Model Comparison – Recognition & Reasoning</title>
+  <link rel="stylesheet" href="./style.css" />
+  <!-- ONNX Runtime Web for YOLO -->
+</head>
+<body>
+  <div class="app">
+    <header class="app-header">
+      <h1>Compare Object Recognition & Reasoning Models</h1>
+      <p>Upload an image once and compare local vs server recognition and different reasoning models side by side.</p>
+    </header>
+
+    <!-- Top block: upload -->
+    <section class="block block-upload">
+      <label class="upload-label">
+        <span>1. Upload image from your device</span>
+        <input type="file" id="image-input" accept=".jpg,.jpeg,.png,image/jpeg,image/png" />
+      </label>
+      <div id="upload-status" class="status-text"></div>
+    </section>
+
+    <!-- Second block: show uploaded image -->
+    <section class="block block-original">
+      <h2>2. Uploaded image</h2>
+      <div class="image-wrapper">
+        <img id="original-image" alt="Uploaded" />
+      </div>
+    </section>
+
+    <!-- Third block: local recognition (browser-side) -->
+    <section class="block block-recognition">
+      <h2>3. Local recognition</h2>
+      <div class="two-column">
+        <div class="panel">
+          <div class="panel-header">
+            <span>Local recognition A</span>
+            <select class="model-select" data-scope="local" data-panel="left">
+              <option value="MEDIAPIPE" selected>Mediapipe</option>
+              <option value="YOLO">YOLO</option>
+            </select>
+          </div>
+          <div class="canvas-container">
+            <canvas id="local-left-canvas"></canvas>
+          </div>
+          <div class="panel-footer">
+            <span class="model-summary" id="local-left-summary"></span>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header">
+            <span>Local recognition B</span>
+            <select class="model-select" data-scope="local" data-panel="right">
+              <option value="MEDIAPIPE">Mediapipe</option>
+              <option value="YOLO" selected>YOLO</option>
+            </select>
+          </div>
+          <div class="canvas-container">
+            <canvas id="local-right-canvas"></canvas>
+          </div>
+          <div class="panel-footer">
+            <span class="model-summary" id="local-right-summary"></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Fourth block: server-side recognition -->
+    <section class="block block-recognition">
+      <h2>4. Server recognition</h2>
+      <div class="two-column">
+        <div class="panel">
+          <div class="panel-header">
+            <span>Server recognition A</span>
+            <select class="model-select" data-scope="server" data-panel="left">
+              <option value="MEDIAPIPE" selected>Mediapipe</option>
+              <option value="YOLO">YOLO</option>
+            </select>
+          </div>
+          <div class="canvas-container">
+            <canvas id="server-left-canvas"></canvas>
+          </div>
+          <div class="panel-footer">
+            <span class="model-summary" id="server-left-summary"></span>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header">
+            <span>Server recognition B</span>
+            <select class="model-select" data-scope="server" data-panel="right">
+              <option value="MEDIAPIPE">Mediapipe</option>
+              <option value="YOLO" selected>YOLO</option>
+            </select>
+          </div>
+          <div class="canvas-container">
+            <canvas id="server-right-canvas"></canvas>
+          </div>
+          <div class="panel-footer">
+            <span class="model-summary" id="server-right-summary"></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Fifth block: reasoning models -->
+    <section class="block block-reasoning">
+      <h2>5. Reasoning model</h2>
+      <div class="two-column">
+        <div class="panel">
+          <div class="panel-header">
+            <span>Reasoning A</span>
+            <select class="reasoning-select" data-panel="left">
+              <option value="chatgpt" selected>ChatGPT</option>
+              <option value="gemini">Gemini</option>
+            </select>
+          </div>
+          <textarea id="reasoning-left" class="reasoning-output" readonly placeholder="Reasoning result from ChatGPT will appear here."></textarea>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header">
+            <span>Reasoning B</span>
+            <select class="reasoning-select" data-panel="right">
+              <option value="chatgpt">ChatGPT</option>
+              <option value="gemini" selected>Gemini</option>
+            </select>
+          </div>
+          <textarea id="reasoning-right" class="reasoning-output" readonly placeholder="Reasoning result from Gemini will appear here."></textarea>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/ort.min.js"></script>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
+

@@ -1,7 +1,7 @@
 /**
  * hosting-server.js — Front-end hosting for the v4 app.
  * Registers Express routes and static middleware for: root landing page, /factory (production demo),
- * /config-creator, /camera-stream, /image-upload, /server-detection, and /server-reasoning. Serves the v4 root for shared lib/ and config/.
+ * /config-creator, /camera-stream, /image-upload, /server-detection, /server-reasoning, /compare, and /debug. Serves the v4 root for shared lib/ and config/.
  */
 
 import express from 'express';
@@ -26,6 +26,7 @@ export function setupFrontendHosting(app) {
   const imageUploadPath = path.join(__dirname, '..', 'apps', 'image-upload');
   const serverDetectionPath = path.join(__dirname, '..', 'apps', 'server-detection');
   const serverReasoningPath = path.join(__dirname, '..', 'apps', 'server-reasoning');
+  const comparePath = path.join(__dirname, '..', 'apps', 'compare');
   const factoryWebPath = path.join(__dirname, '..', 'factory', 'web');
   const debugPath = path.join(__dirname, '..', 'apps', 'debug');
 
@@ -106,6 +107,15 @@ export function setupFrontendHosting(app) {
   });
   app.get('/server-reasoning/', (req, res) => {
     res.sendFile(path.join(serverReasoningPath, 'index.html'));
+  });
+
+  // Compare app (recognition & reasoning comparison) at /compare
+  app.use('/compare', express.static(comparePath));
+  app.get('/compare', (req, res) => {
+    res.sendFile(path.join(comparePath, 'index.html'));
+  });
+  app.get('/compare/', (req, res) => {
+    res.sendFile(path.join(comparePath, 'index.html'));
   });
 
    // Debug client at /debug
