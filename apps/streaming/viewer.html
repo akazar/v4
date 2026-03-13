@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Viewer</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>Viewer page</h1>
+    <div class="info">
+      <div><strong>Requested streams:</strong> <span id="streamsText"></span></div>
+      <div class="status">This page can show several streamer pages at once.</div>
+    </div>
+
+    <div id="videoGrid" class="video-grid"></div>
+
+    <div id="captureZone" class="capture-zone">
+      <h2>Capture &amp; Recognition</h2>
+      <div class="capture-bar">
+        <span id="captureSource" class="capture-source-label">No capture yet</span>
+        <select id="captureModelSelect" class="capture-model-select">
+          <option value="MEDIAPIPE">Mediapipe</option>
+          <option value="YOLO" selected>YOLO</option>
+        </select>
+      </div>
+      <div class="capture-result">
+        <canvas id="captureCanvas" class="capture-canvas"></canvas>
+        <div id="captureSummary" class="capture-summary"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/ort.min.js"></script>
+  <script type="module" src="viewer.js"></script>
+</body>
+</html>

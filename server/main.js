@@ -4,6 +4,7 @@
  * then starts the HTTP server on PORT (default 3001).
  */
 
+import http from 'http';
 import express from 'express';
 import { setupFrontendHosting } from './hosting-server.js';
 import { setupApiServer } from '../lib/cloud/api-server.js';
@@ -12,6 +13,7 @@ import { setupReasoningServer } from '../lib/cloud/reasoning-server.js';
 import { setupNotificationServer } from '../lib/cloud/notification-server.js';
 import { setupDbServer } from '../lib/cloud/db-server.js';
 import { setupConfigurationServer } from '../lib/cloud/configuration-server.js';
+import { setupStreamingServer } from '../lib/cloud/streaming-server.js';
 
 const PORT = process.env.PORT || 3001;
 
@@ -24,6 +26,7 @@ if (process.env.OPENAI_API_KEY) {
 }
 
 const app = express();
+const server = http.createServer(app);
 
 // Setup front-end hosting routes
 setupFrontendHosting(app);
@@ -46,8 +49,11 @@ setupDbServer(app);
 // Setup configuration API (GET /api/configurations)
 setupConfigurationServer(app)
 
+// Setup streaming signaling (Socket.IO on the HTTP server)
+setupStreamingServer(server);
+
 // Start the server
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`v4 server running at http://localhost:${PORT}`);
   console.log(`Health: http://localhost:${PORT}/health`);
 });

@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Home - Multi Stream WebRTC</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>Multi-stream WebRTC Home</h1>
+
+    <div class="info">
+      <div class="status">
+        Open streamer pages and then open one viewer page for selected streams.
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>Create / open streamer</h2>
+      <div class="row">
+        <input id="streamIdInput" type="text" placeholder="Enter stream ID, e.g. cam1" />
+      </div>
+      <div class="row" style="margin-top: 0.5rem;">
+        <input id="sourceUrlInput" type="url" placeholder="Video URL (leave empty for camera)" />
+      </div>
+      <div class="row" style="margin-top: 0.75rem;">
+        <button id="openStreamerBtn">Open streamer page</button>
+      </div>
+      <div class="status" id="createStatus"></div>
+    </div>
+
+    <div class="panel">
+      <h2>Available streams</h2>
+      <div class="row">
+        <button id="refreshBtn">Refresh streams</button>
+        <button id="openViewerBtn">Open viewer for selected streams</button>
+      </div>
+
+      <div id="streamsContainer" class="streams-list"></div>
+      <div class="status" id="viewerStatus"></div>
+    </div>
+  </div>
+
+  <div id="qrModal" class="qr-modal hidden">
+    <div class="qr-modal-backdrop"></div>
+    <div class="qr-modal-box">
+      <button id="qrModalClose" class="qr-modal-close" aria-label="Close">&#x2715;</button>
+      <p id="qrModalLabel" class="qr-modal-label"></p>
+      <div id="qrModalCanvas"></div>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="home.js"></script>
+</body>
+</html>

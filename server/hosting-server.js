@@ -29,6 +29,7 @@ export function setupFrontendHosting(app) {
   const comparePath = path.join(__dirname, '..', 'apps', 'compare');
   const factoryWebPath = path.join(__dirname, '..', 'factory', 'web');
   const debugPath = path.join(__dirname, '..', 'apps', 'debug');
+  const streamingPath = path.join(__dirname, '..', 'apps', 'streaming');
 
   // Landing page at root (index + styles from apps/landing)
   app.get('/', (req, res) => {
@@ -125,5 +126,14 @@ export function setupFrontendHosting(app) {
   });   
   app.get('/debug/', (req, res) => {
     res.sendFile(path.join(debugPath, 'index.html'));
+  });
+
+  // Streaming app at /streaming
+  app.use('/streaming', express.static(streamingPath));
+  app.get('/streaming', (req, res) => {
+    res.sendFile(path.join(streamingPath, 'index.html'));
+  });
+  app.get('/streaming/', (req, res) => {
+    res.sendFile(path.join(streamingPath, 'index.html'));
   });
 }

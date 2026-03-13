@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Streamer</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>Streamer page</h1>
+    <div class="info">
+      <div><strong>Stream ID:</strong> <span id="streamIdText"></span></div>
+      <div id="sourceInfo"></div>
+      <div class="status" id="status">Initializing...</div>
+    </div>
+
+    <video id="localVideo" autoplay playsinline muted></video>
+
+    <div class="row" style="margin-top: 1rem;">
+      <button id="startBtn">Start camera</button>
+      <button id="stopBtn" disabled>Stop camera</button>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="streamer.js"></script>
+</body>
+</html>

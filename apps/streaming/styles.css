@@ -1,0 +1,366 @@
+:root {
+  --bg: #0a0a0a;
+  --surface: #141414;
+  --surface-alt: #1a1a1a;
+  --border: #2a2a2a;
+  --border-light: #3a3a3a;
+  --text: #e8e8e8;
+  --text-muted: #888888;
+  --accent: #6b6b6b;
+  --accent-hover: #8a8a8a;
+  --radius: 8px;
+  --font-sans: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  font-family: var(--font-sans);
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+}
+
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+h1 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin-bottom: 1.25rem;
+}
+
+h2 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.info,
+.panel {
+  padding: 1.25rem 1.5rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 1rem;
+}
+
+.info strong {
+  color: var(--text);
+}
+
+.video-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1rem;
+}
+
+.video-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+}
+
+.video-card h3 {
+  margin-top: 0;
+  color: var(--text);
+}
+
+video {
+  width: 100%;
+  background: #000;
+  border-radius: 6px;
+}
+
+.status {
+  margin-top: 0.5rem;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  min-height: 1.4em;
+}
+
+button {
+  padding: 0.6rem 1.1rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  font-family: inherit;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface-alt);
+  color: var(--text);
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+button:hover {
+  background: var(--accent);
+  border-color: var(--accent-hover);
+}
+
+button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+input[type="text"],
+input[type="url"] {
+  padding: 0.6rem 0.75rem;
+  font-size: 0.9rem;
+  font-family: inherit;
+  min-width: 240px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--text);
+}
+
+input[type="url"] {
+  width: 100%;
+}
+
+input[type="text"]:focus,
+input[type="url"]:focus {
+  outline: none;
+  border-color: var(--border-light);
+  box-shadow: 0 0 0 2px rgba(120, 120, 120, 0.2);
+}
+
+input[type="text"]::placeholder,
+input[type="url"]::placeholder {
+  color: var(--text-muted);
+}
+
+select {
+  padding: 0.6rem 2.25rem 0.6rem 0.75rem;
+  font-size: 0.9rem;
+  font-family: inherit;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface-alt);
+  color: var(--text);
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23888888' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.6rem center;
+  background-size: 1rem;
+}
+
+select:hover {
+  border-color: var(--border-light);
+}
+
+select:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.row {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.streams-list {
+  margin-top: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.stream-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.65rem 0.85rem;
+}
+
+/* Capture button inside stream cards */
+
+.capture-btn {
+  margin-top: 0.65rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  font-family: inherit;
+  background: var(--accent);
+  color: #fff;
+  border: 1px solid var(--accent-hover);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.capture-btn:hover {
+  background: var(--accent-hover);
+  border-color: var(--text-muted);
+}
+
+/* Shared capture zone */
+
+.capture-zone {
+  margin-top: 1.25rem;
+  padding: 1.25rem 1.5rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.capture-zone h2 {
+  margin-top: 0;
+}
+
+.capture-bar {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.capture-source-label {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.capture-model-select {
+  padding: 0.5rem 2.25rem 0.5rem 0.75rem;
+  font-size: 0.85rem;
+  font-family: inherit;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface-alt);
+  color: var(--text);
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23888888' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.6rem center;
+  background-size: 1rem;
+}
+
+.capture-model-select:hover {
+  border-color: var(--border-light);
+}
+
+.capture-model-select:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.capture-result {
+  margin-top: 0.65rem;
+}
+
+.capture-canvas {
+  width: 100%;
+  border-radius: 6px;
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+}
+
+.capture-summary {
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  min-height: 1.2em;
+}
+
+/* QR button */
+
+.qr-btn {
+  padding: 0.4rem 0.65rem;
+  font-size: 0.8rem;
+  font-family: inherit;
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.qr-btn:hover {
+  background: var(--accent);
+  border-color: var(--accent-hover);
+  color: var(--text);
+}
+
+/* QR modal */
+
+.qr-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.qr-modal.hidden {
+  display: none;
+}
+
+.qr-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+}
+
+.qr-modal-box {
+  position: relative;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.75rem 2rem 1.5rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.85rem;
+  z-index: 1;
+  min-width: 260px;
+}
+
+.qr-modal-label {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.qr-modal-close {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.75rem;
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  cursor: pointer;
+  color: var(--text-muted);
+  padding: 0.25rem 0.5rem;
+  line-height: 1;
+}
+
+.qr-modal-close:hover {
+  color: var(--text);
+}
