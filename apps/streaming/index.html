@@ -17,10 +17,11 @@
 
     <div class="panel">
       <h2>Create / open streamer</h2>
-      <div class="row">
-        <input id="streamIdInput" type="text" placeholder="Enter stream ID, e.g. cam1" />
+      <div class="row" style="margin-bottom: 0.5rem;">
+        <label for="sourceNameInput">Stream Name</label>
+        <input id="sourceNameInput" type="text" placeholder="Enter stream name" />
       </div>
-      <div class="row" style="margin-top: 0.5rem;">
+      <div class="row">
         <input id="sourceUrlInput" type="url" placeholder="Video URL (leave empty for camera)" />
       </div>
       <div class="row" style="margin-top: 0.75rem;">
@@ -32,7 +33,8 @@
     <div class="panel">
       <h2>Available streams</h2>
       <div class="row">
-        <button id="refreshBtn">Refresh streams</button>
+        <button id="selectAllBtn">Select all</button>
+        <button id="refreshBtn">Clear selections</button>
         <button id="openViewerBtn">Open viewer for selected streams</button>
       </div>
 

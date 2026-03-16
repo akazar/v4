@@ -305,6 +305,24 @@ select:focus {
   color: var(--text);
 }
 
+.remove-btn {
+  padding: 0.4rem 0.65rem;
+  font-size: 0.8rem;
+  font-family: inherit;
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.remove-btn:hover {
+  background: rgba(200, 80, 80, 0.2);
+  border-color: rgba(200, 80, 80, 0.5);
+  color: #c85050;
+}
+
 /* QR modal */
 
 .qr-modal {

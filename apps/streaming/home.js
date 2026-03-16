@@ -1,20 +1,28 @@
 const socket = io();
 
-const streamIdInput = document.getElementById("streamIdInput");
+const sourceNameInput = document.getElementById("sourceNameInput");
 const sourceUrlInput = document.getElementById("sourceUrlInput");
 const openStreamerBtn = document.getElementById("openStreamerBtn");
 const refreshBtn = document.getElementById("refreshBtn");
+const selectAllBtn = document.getElementById("selectAllBtn");
 const openViewerBtn = document.getElementById("openViewerBtn");
 const streamsContainer = document.getElementById("streamsContainer");
 const createStatus = document.getElementById("createStatus");
 const viewerStatus = document.getElementById("viewerStatus");
 
-function normalizeStreamId(value) {
+function normalizeStreamName(value) {
   return String(value || "")
     .trim()
     .toLowerCase()
     .replace(/\s+/g, "-")
-    .replace(/[^a-z0-9_-]/g, "");
+    .replace(/[^a-z0-9_-]/g, "")
+    .slice(0, 40);
+}
+
+function generateStreamId() {
+  const segment = () =>
+    Math.random().toString(36).slice(2, 10).replace(/[^a-z0-9]/g, "");
+  return `stream-${segment()}${segment()}`.slice(0, 20);
 }
 
 function setCreateStatus(text) {
@@ -66,10 +74,22 @@ function renderStreams(streams) {
       showQrModal(url, streamId);
     });
 
+    const removeBtn = document.createElement("button");
+    removeBtn.type = "button";
+    removeBtn.textContent = "Remove";
+    removeBtn.title = "Remove stream from list";
+    removeBtn.className = "remove-btn";
+    removeBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      removeStream(streamId);
+    });
+
     item.appendChild(checkbox);
     item.appendChild(text);
     item.appendChild(openLinkBtn);
     item.appendChild(qrBtn);
+    item.appendChild(removeBtn);
 
     streamsContainer.appendChild(item);
   }
@@ -87,29 +107,44 @@ function requestStreams() {
   socket.emit("get-available-streams");
 }
 
+function getMergedStreams() {
+  const combined = [
+    ...new Set([...serverStreams, ...preGeneratedStreams, ...stickyStreamIds]),
+  ].filter((id) => !hiddenStreamIds.has(id));
+  return combined.sort((a, b) => a.localeCompare(b));
+}
+
+function removeStream(streamId) {
+  preGeneratedStreams.delete(streamId);
+  stickyStreamIds.delete(streamId);
+  hiddenStreamIds.add(streamId);
+  renderStreams(getMergedStreams());
+}
+
 openStreamerBtn.addEventListener("click", () => {
-  const streamId = normalizeStreamId(streamIdInput.value);
+  const customName = normalizeStreamName(sourceNameInput.value);
+  const streamId = customName || generateStreamId();
+  preGeneratedStreams.add(streamId);
+  renderStreams(getMergedStreams());
 
-  if (!streamId) {
-    setCreateStatus("Please enter a valid stream ID.");
-    return;
-  }
-
-  let url = `streamer.html?streamId=${encodeURIComponent(streamId)}`;
   const sourceUrl = (sourceUrlInput.value || "").trim();
-  if (sourceUrl) {
-    url += `&source=${encodeURIComponent(sourceUrl)}`;
-  }
-  window.open(url, "_blank");
-
-  setCreateStatus(`Opened streamer page for "${streamId}"${sourceUrl ? " (URL source)" : ""}.`);
-  streamIdInput.value = "";
+  setCreateStatus(
+    `Stream "${streamId}" added to list. Use "Open streamer" or QR to start.${sourceUrl ? " (URL source will apply when you open.)" : ""}`
+  );
+  sourceNameInput.value = "";
   sourceUrlInput.value = "";
 });
 
 refreshBtn.addEventListener("click", () => {
   requestStreams();
-  setViewerStatus("Stream list refreshed.");
+  setViewerStatus("Selections cleared.");
+});
+
+selectAllBtn.addEventListener("click", () => {
+  document.querySelectorAll(".stream-checkbox").forEach((cb) => {
+    cb.checked = true;
+  });
+  setViewerStatus("All streams selected.");
 });
 
 openViewerBtn.addEventListener("click", () => {
@@ -125,13 +160,19 @@ openViewerBtn.addEventListener("click", () => {
   setViewerStatus(`Opened viewer for: ${selectedStreams.join(", ")}`);
 });
 
-streamIdInput.addEventListener("keydown", (event) => {
-  if (event.key === "Enter") {
-    openStreamerBtn.click();
-  }
+sourceNameInput.addEventListener("keydown", (event) => {
+  if (event.key === "Enter") openStreamerBtn.click();
+});
+sourceUrlInput.addEventListener("keydown", (event) => {
+  if (event.key === "Enter") openStreamerBtn.click();
 });
 
 let qrInstance = null;
+let serverStreams = [];
+const preGeneratedStreams = new Set();
+/** Streams we've seen from the server; keep in list until Remove is clicked (do not remove when streamer tab closes). */
+const stickyStreamIds = new Set();
+const hiddenStreamIds = new Set();
 
 function showQrModal(url, streamId) {
   const modal = document.getElementById("qrModal");
@@ -165,7 +206,9 @@ document.getElementById("qrModalClose").addEventListener("click", hideQrModal);
 document.querySelector(".qr-modal-backdrop").addEventListener("click", hideQrModal);
 
 socket.on("available-streams", ({ streams }) => {
-  renderStreams(Array.isArray(streams) ? streams : []);
+  serverStreams = Array.isArray(streams) ? streams : [];
+  serverStreams.forEach((id) => stickyStreamIds.add(id));
+  renderStreams(getMergedStreams());
 });
 
 requestStreams();
