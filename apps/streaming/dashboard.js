@@ -92,6 +92,13 @@ function createVideoCard(streamId) {
   status.className = "status";
   status.textContent = "Waiting for streamer...";
 
+  const recognitionCheckbox = document.createElement("input");
+  recognitionCheckbox.type = "checkbox";
+  recognitionCheckbox.className = "video-card-recognition-checkbox";
+  recognitionCheckbox.id = `recognition-${streamId}`;
+  recognitionCheckbox.title = "Enable object recognition for this stream";
+  recognitionCheckbox.checked = false;
+
   const configTrigger = document.createElement("button");
   configTrigger.type = "button";
   configTrigger.className = "video-card-config-trigger";
@@ -122,9 +129,14 @@ function createVideoCard(streamId) {
   videoWrapper.appendChild(video);
   videoWrapper.appendChild(overlay);
 
+  const cardToolbar = document.createElement("div");
+  cardToolbar.className = "video-card-toolbar";
+  cardToolbar.appendChild(recognitionCheckbox);
+  cardToolbar.appendChild(configTrigger);
+
   wrapper.appendChild(title);
   wrapper.appendChild(videoWrapper);
-  wrapper.appendChild(configTrigger);
+  wrapper.appendChild(cardToolbar);
   wrapper.appendChild(configDropdown);
   wrapper.appendChild(status);
   videoGrid.appendChild(wrapper);
@@ -155,14 +167,14 @@ function createVideoCard(streamId) {
     }
   })();
 
-  return { wrapper, video, status, overlay, configTrigger, configDropdown };
+  return { wrapper, video, status, overlay, recognitionCheckbox, configTrigger, configDropdown };
 }
 
 function ensureStreamCard(streamId) {
   let state = streamState.get(streamId);
   if (state) return state;
 
-  const { wrapper, video, status, overlay, configTrigger, configDropdown } = createVideoCard(streamId);
+  const { wrapper, video, status, overlay, recognitionCheckbox, configTrigger, configDropdown } = createVideoCard(streamId);
 
   state = {
     pc: null,
@@ -172,11 +184,50 @@ function ensureStreamCard(streamId) {
     statusEl: status,
     overlayEl: overlay,
     recognitionIntervalId: null,
+    recognitionCheckboxEl: recognitionCheckbox,
     configTriggerEl: configTrigger,
     configDropdownEl: configDropdown,
     configPath: DEFAULT_CONFIG_PATH,
     currentConfig: null,
   };
+
+  function startRecognitionForStream() {
+    if (!state.videoEl.srcObject) return;
+    (async () => {
+      try {
+        const cfg = state.currentConfig || await loadConfig(state.configPath || DEFAULT_CONFIG_PATH);
+        state.currentConfig = cfg;
+        if (state.recognitionIntervalId) {
+          clearInterval(state.recognitionIntervalId);
+          state.recognitionIntervalId = null;
+        }
+        const intervalMs = cfg.localRecognition?.interval ?? 1000;
+        void recognizeOnVideoOverlay(state.videoEl, cfg, state.overlayEl);
+        state.recognitionIntervalId = setInterval(() => {
+          recognizeOnVideoOverlay(state.videoEl, cfg, state.overlayEl);
+        }, intervalMs);
+      } catch (err) {
+        console.error("Failed to start recognition for stream", streamId, err);
+      }
+    })();
+  }
+
+  function stopRecognitionForStream() {
+    if (state.recognitionIntervalId) {
+      clearInterval(state.recognitionIntervalId);
+      state.recognitionIntervalId = null;
+    }
+    const ctx = state.overlayEl.getContext("2d");
+    if (ctx) ctx.clearRect(0, 0, state.overlayEl.width, state.overlayEl.height);
+  }
+
+  recognitionCheckbox.addEventListener("change", () => {
+    if (recognitionCheckbox.checked) {
+      startRecognitionForStream();
+    } else {
+      stopRecognitionForStream();
+    }
+  });
 
   configDropdown.addEventListener("click", async (e) => {
     const item = e.target.closest(".video-card-config-item");
@@ -194,11 +245,9 @@ function ensureStreamCard(streamId) {
         state.recognitionIntervalId = null;
       }
 
-      const intervalMs = cfg.localRecognition?.interval ?? 1000;
-      if (state.videoEl.srcObject) {
-        // Apply recognition immediately with new settings (classes, bounding box styles)
+      if (recognitionCheckbox.checked && state.videoEl.srcObject) {
+        const intervalMs = cfg.localRecognition?.interval ?? 1000;
         void recognizeOnVideoOverlay(state.videoEl, cfg, state.overlayEl);
-        // Then run at configured interval
         state.recognitionIntervalId = setInterval(() => {
           recognizeOnVideoOverlay(state.videoEl, cfg, state.overlayEl);
         }, intervalMs);
@@ -245,26 +294,23 @@ function createPeerConnection(streamId, streamerSocketId) {
     if (remoteStream) {
       state.videoEl.srcObject = remoteStream;
       setStreamStatus(streamId, "Live");
-
-      const startRecognition = async () => {
-        try {
-          const cfg = state.currentConfig || await loadConfig(state.configPath || DEFAULT_CONFIG_PATH);
-          state.currentConfig = cfg;
-
-          if (state.recognitionIntervalId) {
-            clearInterval(state.recognitionIntervalId);
+      if (state.recognitionCheckboxEl.checked) {
+        const startRecognition = async () => {
+          try {
+            const cfg = state.currentConfig || await loadConfig(state.configPath || DEFAULT_CONFIG_PATH);
+            state.currentConfig = cfg;
+            if (state.recognitionIntervalId) clearInterval(state.recognitionIntervalId);
+            const intervalMs = cfg.localRecognition?.interval ?? 1000;
+            void recognizeOnVideoOverlay(state.videoEl, cfg, state.overlayEl);
+            state.recognitionIntervalId = setInterval(() => {
+              recognizeOnVideoOverlay(state.videoEl, cfg, state.overlayEl);
+            }, intervalMs);
+          } catch (err) {
+            console.error("Failed to start recognition for stream", streamId, err);
           }
-
-          const intervalMs = cfg.localRecognition?.interval ?? 1000;
-          state.recognitionIntervalId = setInterval(() => {
-            recognizeOnVideoOverlay(state.videoEl, cfg, state.overlayEl);
-          }, intervalMs);
-        } catch (err) {
-          console.error("Failed to start recognition for stream", streamId, err);
-        }
-      };
-
-      void startRecognition();
+        };
+        void startRecognition();
+      }
     }
   };
 
