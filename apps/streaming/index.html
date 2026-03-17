@@ -9,14 +9,8 @@
   <div class="container">
     <h1>Multi-stream WebRTC Home</h1>
 
-    <div class="info">
-      <div class="status">
-        Open streamer pages and then open one viewer page for selected streams.
-      </div>
-    </div>
-
     <div class="panel">
-      <h2>Create / open streamer</h2>
+      <h2>Create a new streamer</h2>
       <div class="row" style="margin-bottom: 0.5rem;">
         <label for="sourceNameInput">Stream Name</label>
         <input id="sourceNameInput" type="text" placeholder="Enter stream name" />
@@ -25,7 +19,7 @@
         <input id="sourceUrlInput" type="url" placeholder="Video URL (leave empty for camera)" />
       </div>
       <div class="row" style="margin-top: 0.75rem;">
-        <button id="openStreamerBtn">Open streamer page</button>
+        <button id="openStreamerBtn">Create streamer</button>
       </div>
       <div class="status" id="createStatus"></div>
     </div>
@@ -36,6 +30,7 @@
         <button id="selectAllBtn">Select all</button>
         <button id="refreshBtn">Clear selections</button>
         <button id="openViewerBtn">Open viewer for selected streams</button>
+        <button id="openViewerDashboardBtn">Open viewer dashboard</button>
       </div>
 
       <div id="streamsContainer" class="streams-list"></div>

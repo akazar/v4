@@ -6,6 +6,7 @@ const openStreamerBtn = document.getElementById("openStreamerBtn");
 const refreshBtn = document.getElementById("refreshBtn");
 const selectAllBtn = document.getElementById("selectAllBtn");
 const openViewerBtn = document.getElementById("openViewerBtn");
+const openViewerDashboardBtn = document.getElementById("openViewerDashboardBtn");
 const streamsContainer = document.getElementById("streamsContainer");
 const createStatus = document.getElementById("createStatus");
 const viewerStatus = document.getElementById("viewerStatus");
@@ -158,6 +159,19 @@ openViewerBtn.addEventListener("click", () => {
   const url = `viewer.html?streams=${encodeURIComponent(selectedStreams.join(","))}`;
   window.open(url, "_blank");
   setViewerStatus(`Opened viewer for: ${selectedStreams.join(", ")}`);
+});
+
+openViewerDashboardBtn.addEventListener("click", () => {
+  const selectedStreams = getSelectedStreams();
+
+  if (!selectedStreams.length) {
+    setViewerStatus("Select at least one stream.");
+    return;
+  }
+
+  const url = `dashboard.html?streams=${encodeURIComponent(selectedStreams.join(","))}`;
+  window.open(url, "_blank");
+  setViewerStatus(`Opened viewer dashboard for: ${selectedStreams.join(", ")}`);
 });
 
 sourceNameInput.addEventListener("keydown", (event) => {

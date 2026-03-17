@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Multi Stream WebRTC Dashboard</title>
+  <link rel="stylesheet" href="dashboard.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>Multi Stream WebRTC Dashboard</h1>
+    <div class="info">
+      <div><strong>Requested streams:</strong> <span id="streamsText"></span></div>
+      <div class="status">This page can show several streamer pages at once.</div>
+    </div>
+
+    <div id="videoGrid" class="video-grid"></div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/ort.min.js"></script>
+  <script type="module" src="dashboard.js"></script>
+</body>
+</html>

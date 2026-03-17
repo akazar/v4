@@ -27,7 +27,6 @@ html, body {
 }
 
 .container {
-  max-width: 960px;
   margin: 0 auto;
   padding: 2rem 1.5rem;
 }
@@ -66,14 +65,79 @@ h3 {
 .video-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 1rem;
+  gap: 3px;
 }
 
 .video-card {
+  position: relative;
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 1rem 1.25rem;
+  padding: 5px;
+}
+
+.video-card-config-trigger {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 6px;
+  background: var(--surface-alt);
+  color: var(--text-muted);
+  cursor: pointer;
+  z-index: 2;
+  transition: background 0.2s, color 0.2s;
+}
+
+.video-card-config-trigger:hover {
+  background: var(--accent);
+  color: var(--text);
+}
+
+.video-card-config-dropdown {
+  position: absolute;
+  top: 36px;
+  right: 4px;
+  min-width: 140px;
+  max-height: 240px;
+  overflow-y: auto;
+  padding: 4px 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  z-index: 3;
+}
+
+.video-card-config-loading {
+  display: block;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.video-card-config-item {
+  display: block;
+  width: 100%;
+  padding: 0.45rem 0.75rem;
+  font-size: 0.85rem;
+  font-family: inherit;
+  text-align: left;
+  border: none;
+  border-radius: 0;
+  background: none;
+  color: var(--text);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.video-card-config-item:hover {
+  background: var(--surface-alt);
 }
 
 .video-wrapper {
@@ -98,7 +162,6 @@ h3 {
 video {
   width: 100%;
   background: #000;
-  border-radius: 6px;
 }
 
 .status {

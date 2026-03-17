@@ -103,3 +103,56 @@ export async function captureAndRecognize(videoEl, model, resultCanvas, summaryE
     resolveCurrent();
   }
 }
+
+/**
+ * Run recognition for a given video element and draw bounding boxes
+ * directly on a transparent canvas overlay that sits on top of the video.
+ * Uses the provided config (localRecognition + boundingBoxStyles).
+ */
+export async function recognizeOnVideoOverlay(videoEl, config, overlayCanvas) {
+  if (!videoEl || !overlayCanvas) return;
+  if (videoEl.readyState < 2 || !videoEl.videoWidth || !videoEl.videoHeight) {
+    return;
+  }
+
+  const previous = recognitionPromise;
+  let resolveCurrent;
+  recognitionPromise = new Promise((r) => { resolveCurrent = r; });
+  await previous;
+
+  try {
+    const dataUrl = captureFrame(videoEl);
+    const img = await loadImage(dataUrl);
+
+    // Match overlay canvas size to the displayed video size
+    const displayWidth = videoEl.clientWidth || img.naturalWidth || 640;
+    const ratio = img.naturalWidth / img.naturalHeight || 1;
+    overlayCanvas.width = displayWidth;
+    overlayCanvas.height = Math.round(displayWidth / ratio);
+
+    const model = config?.localRecognition?.model || 'YOLO';
+
+    // Run model using supplied config so classes / thresholds are respected
+    let detections;
+    if (model === 'YOLO') {
+      detections = await recognizeWithYolo(dataUrl, config || CONFIG);
+    } else {
+      detections = await recognizeMediapipe(dataUrl, config || CONFIG);
+    }
+
+    const ctx = overlayCanvas.getContext('2d');
+    ctx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+
+    if (!detections || detections.length === 0) {
+      return;
+    }
+
+    const boxes = projectDetectionsToCanvas(detections, img, overlayCanvas);
+    const styles = (config && config.boundingBoxStyles) || CONFIG.boundingBoxStyles;
+    drawBoundingBoxes(ctx, boxes, styles);
+  } catch (err) {
+    console.error('Overlay recognition error:', err);
+  } finally {
+    if (resolveCurrent) resolveCurrent();
+  }
+}
