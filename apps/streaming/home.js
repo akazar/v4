@@ -57,11 +57,23 @@ function renderStreams(streams) {
     const text = document.createElement("span");
     text.textContent = streamId;
 
+    const modeLabel = document.createElement("span");
+    modeLabel.className = "stream-item-mode";
+    const st = streamTypes.get(streamId) || "p2p";
+    modeLabel.textContent =
+      st === "sfu" ? " · WebRTC server streaming" : " · Peer-to-peer WebRTC";
+
     const openLinkBtn = document.createElement("button");
     openLinkBtn.type = "button";
     openLinkBtn.textContent = "Open streamer";
     openLinkBtn.addEventListener("click", () => {
-      window.open(`streamer.html?streamId=${encodeURIComponent(streamId)}`, "_blank");
+      const mode = streamTypes.get(streamId) || "p2p";
+      const modeQ =
+        mode === "sfu" ? `&streamMode=${encodeURIComponent("sfu")}` : "";
+      window.open(
+        `streamer.html?streamId=${encodeURIComponent(streamId)}${modeQ}`,
+        "_blank"
+      );
     });
 
     const qrBtn = document.createElement("button");
@@ -71,7 +83,13 @@ function renderStreams(streams) {
     qrBtn.className = "qr-btn";
     qrBtn.addEventListener("click", (e) => {
       e.preventDefault();
-      const url = new URL(`streamer.html?streamId=${encodeURIComponent(streamId)}`, location.href).href;
+      const mode = streamTypes.get(streamId) || "p2p";
+      const modeQ =
+        mode === "sfu" ? `&streamMode=${encodeURIComponent("sfu")}` : "";
+      const url = new URL(
+        `streamer.html?streamId=${encodeURIComponent(streamId)}${modeQ}`,
+        location.href
+      ).href;
       showQrModal(url, streamId);
     });
 
@@ -88,6 +106,7 @@ function renderStreams(streams) {
 
     item.appendChild(checkbox);
     item.appendChild(text);
+    item.appendChild(modeLabel);
     item.appendChild(openLinkBtn);
     item.appendChild(qrBtn);
     item.appendChild(removeBtn);
@@ -115,9 +134,15 @@ function getMergedStreams() {
   return combined.sort((a, b) => a.localeCompare(b));
 }
 
+function getSelectedCreationStreamMode() {
+  const el = document.querySelector('input[name="streamModeChoice"]:checked');
+  return el?.value === "sfu" ? "sfu" : "p2p";
+}
+
 function removeStream(streamId) {
   preGeneratedStreams.delete(streamId);
   stickyStreamIds.delete(streamId);
+  streamTypes.delete(streamId);
   hiddenStreamIds.add(streamId);
   renderStreams(getMergedStreams());
 }
@@ -125,12 +150,17 @@ function removeStream(streamId) {
 openStreamerBtn.addEventListener("click", () => {
   const customName = normalizeStreamName(sourceNameInput.value);
   const streamId = customName || generateStreamId();
+  streamTypes.set(streamId, getSelectedCreationStreamMode());
   preGeneratedStreams.add(streamId);
   renderStreams(getMergedStreams());
 
   const sourceUrl = (sourceUrlInput.value || "").trim();
+  const modeLabel =
+    streamTypes.get(streamId) === "sfu"
+      ? " WebRTC server streaming."
+      : " Peer-to-peer WebRTC.";
   setCreateStatus(
-    `Stream "${streamId}" added to list. Use "Open streamer" or QR to start.${sourceUrl ? " (URL source will apply when you open.)" : ""}`
+    `Stream "${streamId}" added (${modeLabel.trim()}) Use "Open streamer" or QR to start.${sourceUrl ? " (URL source will apply when you open.)" : ""}`
   );
   sourceNameInput.value = "";
   sourceUrlInput.value = "";
@@ -169,7 +199,10 @@ openViewerDashboardBtn.addEventListener("click", () => {
     return;
   }
 
-  const url = `dashboard.html?streams=${encodeURIComponent(selectedStreams.join(","))}`;
+  const modes = selectedStreams
+    .map((id) => (streamTypes.get(id) === "sfu" ? "sfu" : "p2p"))
+    .join(",");
+  const url = `dashboard.html?streams=${encodeURIComponent(selectedStreams.join(","))}&modes=${encodeURIComponent(modes)}`;
   window.open(url, "_blank");
   setViewerStatus(`Opened viewer dashboard for: ${selectedStreams.join(", ")}`);
 });
@@ -184,6 +217,8 @@ sourceUrlInput.addEventListener("keydown", (event) => {
 let qrInstance = null;
 let serverStreams = [];
 const preGeneratedStreams = new Set();
+/** streamId -> 'p2p' | 'sfu' for streams created on this page */
+const streamTypes = new Map();
 /** Streams we've seen from the server; keep in list until Remove is clicked (do not remove when streamer tab closes). */
 const stickyStreamIds = new Set();
 const hiddenStreamIds = new Set();

@@ -18,6 +18,17 @@
       <div class="row">
         <input id="sourceUrlInput" type="url" placeholder="Video URL (leave empty for camera)" />
       </div>
+      <div class="row stream-mode-row" style="margin-top: 0.5rem;">
+        <span class="stream-mode-label">Streaming type:</span>
+        <label class="stream-mode-option">
+          <input type="radio" name="streamModeChoice" value="p2p" checked />
+          Peer-to-peer WebRTC
+        </label>
+        <label class="stream-mode-option">
+          <input type="radio" name="streamModeChoice" value="sfu" />
+          WebRTC server streaming
+        </label>
+      </div>
       <div class="row" style="margin-top: 0.75rem;">
         <button id="openStreamerBtn">Create streamer</button>
       </div>

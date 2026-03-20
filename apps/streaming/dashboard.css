@@ -75,6 +75,12 @@ h3 {
   padding: 5px;
 }
 
+.video-card-stream-mode {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-bottom: 0.35rem;
+}
+
 .video-card-toolbar {
   position: absolute;
   top: 4px;

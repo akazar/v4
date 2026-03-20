@@ -14,6 +14,8 @@
   },
   "dependencies": {
     "@google/genai": "^1.0.0",
+    "@mapbox/node-pre-gyp": "^1.0.11",
+    "@roamhq/wrtc": "^0.10.0",
     "dotenv": "^16.4.5",
     "express": "^4.21.0",
     "node-fetch": "^3.3.2",

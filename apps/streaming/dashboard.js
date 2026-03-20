@@ -8,6 +8,20 @@ const streamIds = (params.get("streams") || "")
   .map((s) => s.trim())
   .filter(Boolean);
 
+const modesList = (params.get("modes") || "")
+  .split(",")
+  .map((s) => s.trim().toLowerCase());
+
+/** @type {Map<string, 'p2p' | 'sfu'>} */
+const streamModes = new Map();
+streamIds.forEach((id, i) => {
+  const m = modesList[i] || "p2p";
+  streamModes.set(
+    id,
+    m === "sfu" || m === "server" || m === "webrtc-server" ? "sfu" : "p2p"
+  );
+});
+
 const streamsText = document.getElementById("streamsText");
 const videoGrid = document.getElementById("videoGrid");
 
@@ -77,6 +91,14 @@ function createVideoCard(streamId) {
   const title = document.createElement("h3");
   title.textContent = `Stream: ${streamId}`;
 
+  const modeBadge = document.createElement("div");
+  modeBadge.className = "video-card-stream-mode";
+  const mode = streamModes.get(streamId) || "p2p";
+  modeBadge.textContent =
+    mode === "sfu"
+      ? "WebRTC server streaming"
+      : "Peer-to-peer WebRTC";
+
   const videoWrapper = document.createElement("div");
   videoWrapper.className = "video-wrapper";
 
@@ -135,6 +157,7 @@ function createVideoCard(streamId) {
   cardToolbar.appendChild(configTrigger);
 
   wrapper.appendChild(title);
+  wrapper.appendChild(modeBadge);
   wrapper.appendChild(videoWrapper);
   wrapper.appendChild(cardToolbar);
   wrapper.appendChild(configDropdown);
@@ -178,6 +201,7 @@ function ensureStreamCard(streamId) {
 
   state = {
     pc: null,
+    sfuPc: null,
     streamerSocketId: null,
     wrapperEl: wrapper,
     videoEl: video,
@@ -266,6 +290,29 @@ function setStreamStatus(streamId, text) {
   state.statusEl.textContent = text;
 }
 
+function onDashboardRemoteStream(streamId, state, remoteStream) {
+  state.videoEl.srcObject = remoteStream;
+  const isSfu = streamModes.get(streamId) === "sfu";
+  setStreamStatus(streamId, isSfu ? "Live (server relay)" : "Live");
+  if (state.recognitionCheckboxEl.checked) {
+    const startRecognition = async () => {
+      try {
+        const cfg = state.currentConfig || await loadConfig(state.configPath || DEFAULT_CONFIG_PATH);
+        state.currentConfig = cfg;
+        if (state.recognitionIntervalId) clearInterval(state.recognitionIntervalId);
+        const intervalMs = cfg.localRecognition?.interval ?? 1000;
+        void recognizeOnVideoOverlay(state.videoEl, cfg, state.overlayEl);
+        state.recognitionIntervalId = setInterval(() => {
+          recognizeOnVideoOverlay(state.videoEl, cfg, state.overlayEl);
+        }, intervalMs);
+      } catch (err) {
+        console.error("Failed to start recognition for stream", streamId, err);
+      }
+    };
+    void startRecognition();
+  }
+}
+
 function createPeerConnection(streamId, streamerSocketId) {
   const state = ensureStreamCard(streamId);
 
@@ -292,25 +339,7 @@ function createPeerConnection(streamId, streamerSocketId) {
   pc.ontrack = (event) => {
     const [remoteStream] = event.streams;
     if (remoteStream) {
-      state.videoEl.srcObject = remoteStream;
-      setStreamStatus(streamId, "Live");
-      if (state.recognitionCheckboxEl.checked) {
-        const startRecognition = async () => {
-          try {
-            const cfg = state.currentConfig || await loadConfig(state.configPath || DEFAULT_CONFIG_PATH);
-            state.currentConfig = cfg;
-            if (state.recognitionIntervalId) clearInterval(state.recognitionIntervalId);
-            const intervalMs = cfg.localRecognition?.interval ?? 1000;
-            void recognizeOnVideoOverlay(state.videoEl, cfg, state.overlayEl);
-            state.recognitionIntervalId = setInterval(() => {
-              recognizeOnVideoOverlay(state.videoEl, cfg, state.overlayEl);
-            }, intervalMs);
-          } catch (err) {
-            console.error("Failed to start recognition for stream", streamId, err);
-          }
-        };
-        void startRecognition();
-      }
+      onDashboardRemoteStream(streamId, state, remoteStream);
     }
   };
 
@@ -344,11 +373,16 @@ for (const streamId of streamIds) {
 }
 
 socket.emit("register-viewer", { streamIds });
+const sfuStreamIds = streamIds.filter((id) => streamModes.get(id) === "sfu");
+if (sfuStreamIds.length) {
+  socket.emit("sfu-register-viewer", { streamIds: sfuStreamIds });
+}
 
 socket.on("streamer-available", ({ streamId }) => {
   if (!streamIds.includes(streamId)) return;
 
   setStreamStatus(streamId, "Streamer is available. Requesting connection...");
+  if (streamModes.get(streamId) === "sfu") return;
   socket.emit("viewer-request-offer", { streamId });
 });
 
@@ -359,6 +393,10 @@ socket.on("streamer-unavailable", ({ streamId }) => {
   if (state.pc) {
     state.pc.close();
     state.pc = null;
+  }
+  if (state.sfuPc) {
+    state.sfuPc.close();
+    state.sfuPc = null;
   }
 
   state.videoEl.srcObject = null;
@@ -372,6 +410,7 @@ socket.on("streamer-unavailable", ({ streamId }) => {
 
 socket.on("offer", async ({ streamId, streamerSocketId, offer }) => {
   if (!streamIds.includes(streamId)) return;
+  if (streamModes.get(streamId) === "sfu") return;
 
   try {
     const pc = createPeerConnection(streamId, streamerSocketId);
@@ -407,4 +446,86 @@ socket.on("ice-candidate", async ({ streamId, fromSocketId, candidate }) => {
   } catch (error) {
     console.error(`Error adding ICE candidate for ${streamId}:`, error);
   }
+});
+
+socket.on("sfu-viewer-offer", async ({ streamId, offer }) => {
+  if (!streamIds.includes(streamId)) return;
+  if (streamModes.get(streamId) !== "sfu" || !offer) return;
+
+  const state = ensureStreamCard(streamId);
+  if (state.sfuPc) {
+    try {
+      state.sfuPc.close();
+    } catch {
+      /* ignore */
+    }
+    state.sfuPc = null;
+  }
+
+  const pc = new RTCPeerConnection({
+    iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
+  });
+
+  pc.onicecandidate = (event) => {
+    if (event.candidate) {
+      socket.emit("sfu-ice-from-viewer", {
+        streamId,
+        candidate: event.candidate,
+      });
+    }
+  };
+
+  pc.ontrack = (event) => {
+    const [remoteStream] = event.streams;
+    if (remoteStream) {
+      onDashboardRemoteStream(streamId, state, remoteStream);
+    }
+  };
+
+  pc.onconnectionstatechange = () => {
+    console.log(`[viewer SFU] ${streamId}:`, pc.connectionState);
+    if (pc.connectionState === "connected") {
+      setStreamStatus(streamId, "Connected (relay)");
+    }
+    if (["failed", "disconnected", "closed"].includes(pc.connectionState)) {
+      state.videoEl.srcObject = null;
+      if (state.recognitionIntervalId) {
+        clearInterval(state.recognitionIntervalId);
+        state.recognitionIntervalId = null;
+      }
+      if (pc.connectionState !== "closed") {
+        setStreamStatus(streamId, "Relay connection lost");
+      }
+    }
+  };
+
+  state.sfuPc = pc;
+
+  try {
+    await pc.setRemoteDescription(offer);
+    const answer = await pc.createAnswer();
+    await pc.setLocalDescription(answer);
+    socket.emit("sfu-viewer-answer", {
+      streamId,
+      answer: pc.localDescription,
+    });
+    setStreamStatus(streamId, "Answer sent to relay. Waiting for media…");
+  } catch (error) {
+    console.error(`Error handling SFU offer for ${streamId}:`, error);
+    setStreamStatus(streamId, "SFU negotiation error");
+  }
+});
+
+socket.on("sfu-ice-to-viewer", async ({ streamId, candidate }) => {
+  const state = streamState.get(streamId);
+  if (!state?.sfuPc || !candidate) return;
+  try {
+    await state.sfuPc.addIceCandidate(candidate);
+  } catch (error) {
+    console.error(`Error adding SFU ICE for ${streamId}:`, error);
+  }
+});
+
+socket.on("sfu-error", ({ message }) => {
+  console.warn("SFU:", message);
 });
