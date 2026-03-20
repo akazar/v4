@@ -5,6 +5,19 @@ import { recognize as recognizeMediapipe } from '/lib/edge/recognition/mediapipe
 
 let recognitionPromise = Promise.resolve();
 
+/**
+ * Dashboard: if the selected public config defines `localRecognition`, run detection in the
+ * browser with those settings and do not apply SFU socket recognition payloads.
+ */
+export function configHasLocalRecognition(config) {
+  return (
+    config &&
+    typeof config === 'object' &&
+    config.localRecognition != null &&
+    typeof config.localRecognition === 'object'
+  );
+}
+
 export function captureFrame(videoEl) {
   const canvas = document.createElement('canvas');
   canvas.width = videoEl.videoWidth;
@@ -14,7 +27,7 @@ export function captureFrame(videoEl) {
   return canvas.toDataURL('image/jpeg', 0.95);
 }
 
-function projectDetectionsToCanvas(detections, img, canvas) {
+export function projectDetectionsToCanvas(detections, img, canvas) {
   if (!detections || !canvas || !img) return [];
   const iw = img.naturalWidth || img.width;
   const ih = img.naturalHeight || img.height;
@@ -155,4 +168,48 @@ export async function recognizeOnVideoOverlay(videoEl, config, overlayCanvas) {
   } finally {
     if (resolveCurrent) resolveCurrent();
   }
+}
+
+/**
+ * Draw detection results (video pixel space) on a transparent overlay aligned with the video element.
+ * @param {HTMLVideoElement} videoEl
+ * @param {Array<{ class: string, confidence: number, coordinates: { x: number, y: number }, size: { width: number, height: number } }>} detections
+ * @param {HTMLCanvasElement} overlayCanvas
+ * @param {object} config
+ * @param {{ width: number, height: number } | null} [sourceVideoSize] - When set (e.g. server frame size), used instead of videoEl.videoWidth/Height for mapping
+ */
+export function drawDetectionsOnOverlay(
+  videoEl,
+  detections,
+  overlayCanvas,
+  config,
+  sourceVideoSize = null
+) {
+  if (!videoEl || !overlayCanvas) return;
+
+  const vw = sourceVideoSize?.width ?? videoEl.videoWidth;
+  const vh = sourceVideoSize?.height ?? videoEl.videoHeight;
+  if (!vw || !vh) return;
+
+  const displayWidth = videoEl.clientWidth || vw;
+  const ratio = vw / vh;
+  overlayCanvas.width = displayWidth;
+  overlayCanvas.height = Math.round(displayWidth / ratio);
+
+  const ctx = overlayCanvas.getContext('2d');
+  ctx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+
+  if (!detections || detections.length === 0) {
+    return;
+  }
+
+  const imgLike = {
+    naturalWidth: vw,
+    naturalHeight: vh,
+    width: vw,
+    height: vh,
+  };
+  const boxes = projectDetectionsToCanvas(detections, imgLike, overlayCanvas);
+  const styles = (config && config.boundingBoxStyles) || CONFIG.boundingBoxStyles;
+  drawBoundingBoxes(ctx, boxes, styles);
 }

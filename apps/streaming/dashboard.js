@@ -1,5 +1,11 @@
-import { recognizeOnVideoOverlay } from './process.js';
+/* Multi-stream WebRTC viewer dashboard: P2P or SFU playback, optional local or server-driven recognition. */
+import {
+  recognizeOnVideoOverlay,
+  drawDetectionsOnOverlay,
+  configHasLocalRecognition,
+} from './process.js';
 
+// Socket.IO client for signaling, SFU negotiation, and server recognition events.
 const socket = io();
 
 const params = new URLSearchParams(window.location.search);
@@ -14,6 +20,7 @@ const modesList = (params.get("modes") || "")
 
 /** @type {Map<string, 'p2p' | 'sfu'>} */
 const streamModes = new Map();
+// Parse modes query in stream order so each id maps to p2p or sfu (server relay).
 streamIds.forEach((id, i) => {
   const m = modesList[i] || "p2p";
   streamModes.set(
@@ -27,7 +34,25 @@ const videoGrid = document.getElementById("videoGrid");
 
 streamsText.textContent = streamIds.length ? streamIds.join(", ") : "(none)";
 
+// Per-stream UI and WebRTC state keyed by streamId from the URL.
 const streamState = new Map();
+
+// Returns whether the loaded config defines a server-side recognition block.
+function configHasServerRecognition(cfg) {
+  return (
+    cfg &&
+    typeof cfg === 'object' &&
+    cfg.serverRecognition != null &&
+    typeof cfg.serverRecognition === 'object'
+  );
+}
+
+// True when this stream uses SFU and the config relies on server recognition (no localRecognition object).
+function shouldUseServerRecognitionForStream(streamId, cfg) {
+  if (configHasLocalRecognition(cfg)) return false;
+  if (!configHasServerRecognition(cfg)) return false;
+  return streamModes.get(streamId) === 'sfu';
+}
 
 // Default config and dynamic config list handling.
 const DEFAULT_CONFIG_PATH = '/config/public/config-default.js';
@@ -35,6 +60,7 @@ const DEFAULT_CONFIG_PATH = '/config/public/config-default.js';
 const configCache = new Map();
 let discoveredConfigPaths = null;
 
+// Dynamically imports a public config module once and caches the exported CONFIG object.
 async function loadConfig(path) {
   if (configCache.has(path)) {
     return configCache.get(path);
@@ -45,12 +71,14 @@ async function loadConfig(path) {
   return cfg;
 }
 
+// Turns a config file path into a short label for the dropdown (e.g. config-default.js → default).
 function labelForConfigPath(path) {
   const parts = path.split('/');
   const file = parts[parts.length - 1] || path;
   return file.replace('config-', '').replace('.js', '') || file;
 }
 
+// Loads the list of selectable config URLs from config-index.json, or falls back to the default only.
 async function getConfigPaths() {
   if (discoveredConfigPaths) {
     return discoveredConfigPaths;
@@ -83,6 +111,7 @@ async function getConfigPaths() {
   return discoveredConfigPaths;
 }
 
+// Builds the DOM for one stream card: video, overlay canvas, recognition toggle, and config menu shell.
 function createVideoCard(streamId) {
   const wrapper = document.createElement("div");
   wrapper.className = "video-card";
@@ -164,6 +193,7 @@ function createVideoCard(streamId) {
   wrapper.appendChild(status);
   videoGrid.appendChild(wrapper);
 
+  // Populate config choices asynchronously once the index (or fallback list) is loaded.
   void (async () => {
     try {
       const paths = await getConfigPaths();
@@ -193,6 +223,7 @@ function createVideoCard(streamId) {
   return { wrapper, video, status, overlay, recognitionCheckbox, configTrigger, configDropdown };
 }
 
+// Returns existing card state or creates a new card, wiring recognition and config handlers.
 function ensureStreamCard(streamId) {
   let state = streamState.get(streamId);
   if (state) return state;
@@ -200,6 +231,7 @@ function ensureStreamCard(streamId) {
   const { wrapper, video, status, overlay, recognitionCheckbox, configTrigger, configDropdown } = createVideoCard(streamId);
 
   state = {
+    streamId,
     pc: null,
     sfuPc: null,
     streamerSocketId: null,
@@ -213,38 +245,89 @@ function ensureStreamCard(streamId) {
     configDropdownEl: configDropdown,
     configPath: DEFAULT_CONFIG_PATH,
     currentConfig: null,
+    serverRecognitionActive: false,
+    lastServerVideoSize: null,
   };
 
-  function startRecognitionForStream() {
-    if (!state.videoEl.srcObject) return;
-    (async () => {
-      try {
-        const cfg = state.currentConfig || await loadConfig(state.configPath || DEFAULT_CONFIG_PATH);
-        state.currentConfig = cfg;
-        if (state.recognitionIntervalId) {
-          clearInterval(state.recognitionIntervalId);
-          state.recognitionIntervalId = null;
-        }
-        const intervalMs = cfg.localRecognition?.interval ?? 1000;
-        void recognizeOnVideoOverlay(state.videoEl, cfg, state.overlayEl);
-        state.recognitionIntervalId = setInterval(() => {
-          recognizeOnVideoOverlay(state.videoEl, cfg, state.overlayEl);
-        }, intervalMs);
-      } catch (err) {
-        console.error("Failed to start recognition for stream", streamId, err);
-      }
-    })();
-  }
-
-  function stopRecognitionForStream() {
+  // Clears the repeating timer that runs in-browser recognition on the video overlay.
+  function stopLocalRecognitionInterval() {
     if (state.recognitionIntervalId) {
       clearInterval(state.recognitionIntervalId);
       state.recognitionIntervalId = null;
     }
+  }
+
+  // Erases drawn bounding boxes from the stream’s overlay canvas.
+  function clearOverlay() {
     const ctx = state.overlayEl.getContext("2d");
     if (ctx) ctx.clearRect(0, 0, state.overlayEl.width, state.overlayEl.height);
   }
 
+  // Tells the server to drop this viewer from SFU recognition and clears local subscription flags.
+  function stopServerRecognitionSubscription() {
+    if (state.serverRecognitionActive) {
+      // Server: leave the sfu-srvrec room and decrement recognition refcount for this stream.
+      socket.emit("sfu-server-recognition-unsubscribe", {
+        streamId: state.streamId,
+      });
+      state.serverRecognitionActive = false;
+    }
+    state.lastServerVideoSize = null;
+  }
+
+  // If allowed for this stream and config, stops local loops and asks the server to stream detection results.
+  function trySubscribeServerRecognition(cfg) {
+    const sid = state.streamId;
+    if (!shouldUseServerRecognitionForStream(sid, cfg)) return false;
+    stopLocalRecognitionInterval();
+    // Server: join recognition room, load configPath, start I420→recognize loop at serverRecognition.interval.
+    socket.emit("sfu-server-recognition-subscribe", {
+      streamId: sid,
+      configPath: state.configPath || DEFAULT_CONFIG_PATH,
+    });
+    state.serverRecognitionActive = true;
+    return true;
+  }
+
+  // Restarts recognition for the current checkbox, config, and media (either SFU subscribe or local interval).
+  async function syncRecognitionWithStream() {
+    if (!state.recognitionCheckboxEl.checked || !state.videoEl.srcObject) return;
+    try {
+      const cfg =
+        state.currentConfig ||
+        (await loadConfig(state.configPath || DEFAULT_CONFIG_PATH));
+      state.currentConfig = cfg;
+      stopLocalRecognitionInterval();
+      stopServerRecognitionSubscription();
+      clearOverlay();
+
+      if (trySubscribeServerRecognition(cfg)) {
+        return;
+      }
+
+      const intervalMs = cfg.localRecognition?.interval ?? 1000;
+      void recognizeOnVideoOverlay(state.videoEl, cfg, state.overlayEl);
+      state.recognitionIntervalId = setInterval(() => {
+        recognizeOnVideoOverlay(state.videoEl, cfg, state.overlayEl);
+      }, intervalMs);
+    } catch (err) {
+      console.error("Failed to start recognition for stream", streamId, err);
+    }
+  }
+
+  // Entry point when the user enables the recognition checkbox on this card.
+  function startRecognitionForStream() {
+    void syncRecognitionWithStream();
+  }
+
+  // Stops local timers, unsubscribes from server recognition, and clears the overlay.
+  function stopRecognitionForStream() {
+    stopLocalRecognitionInterval();
+    stopServerRecognitionSubscription();
+    clearOverlay();
+  }
+
+  // Toggle recognition on or off for this card (starts or stops local/SFU recognition).
   recognitionCheckbox.addEventListener("change", () => {
     if (recognitionCheckbox.checked) {
       startRecognitionForStream();
@@ -253,6 +336,7 @@ function ensureStreamCard(streamId) {
     }
   });
 
+  // Pick a config file path from the dropdown and reload recognition if it is running.
   configDropdown.addEventListener("click", async (e) => {
     const item = e.target.closest(".video-card-config-item");
     if (!item || !item.dataset.configPath) return;
@@ -270,49 +354,37 @@ function ensureStreamCard(streamId) {
       }
 
       if (recognitionCheckbox.checked && state.videoEl.srcObject) {
-        const intervalMs = cfg.localRecognition?.interval ?? 1000;
-        void recognizeOnVideoOverlay(state.videoEl, cfg, state.overlayEl);
-        state.recognitionIntervalId = setInterval(() => {
-          recognizeOnVideoOverlay(state.videoEl, cfg, state.overlayEl);
-        }, intervalMs);
+        void syncRecognitionWithStream();
       }
     } catch (err) {
       console.error("Failed to load config", state.configPath, err);
     }
   });
 
+  state.syncRecognitionWithStream = syncRecognitionWithStream;
+  state.stopRecognitionForStream = stopRecognitionForStream;
+
   streamState.set(streamId, state);
   return state;
 }
 
+// Updates the status line under a stream card, creating the card if it does not exist yet.
 function setStreamStatus(streamId, text) {
   const state = ensureStreamCard(streamId);
   state.statusEl.textContent = text;
 }
 
+// Attaches the remote MediaStream to the video element and refreshes recognition if it is enabled.
 function onDashboardRemoteStream(streamId, state, remoteStream) {
   state.videoEl.srcObject = remoteStream;
   const isSfu = streamModes.get(streamId) === "sfu";
   setStreamStatus(streamId, isSfu ? "Live (server relay)" : "Live");
   if (state.recognitionCheckboxEl.checked) {
-    const startRecognition = async () => {
-      try {
-        const cfg = state.currentConfig || await loadConfig(state.configPath || DEFAULT_CONFIG_PATH);
-        state.currentConfig = cfg;
-        if (state.recognitionIntervalId) clearInterval(state.recognitionIntervalId);
-        const intervalMs = cfg.localRecognition?.interval ?? 1000;
-        void recognizeOnVideoOverlay(state.videoEl, cfg, state.overlayEl);
-        state.recognitionIntervalId = setInterval(() => {
-          recognizeOnVideoOverlay(state.videoEl, cfg, state.overlayEl);
-        }, intervalMs);
-      } catch (err) {
-        console.error("Failed to start recognition for stream", streamId, err);
-      }
-    };
-    void startRecognition();
+    void state.syncRecognitionWithStream();
   }
 }
 
+// Creates or replaces the P2P RTCPeerConnection for one stream and wires ICE, tracks, and lifecycle.
 function createPeerConnection(streamId, streamerSocketId) {
   const state = ensureStreamCard(streamId);
 
@@ -328,6 +400,7 @@ function createPeerConnection(streamId, streamerSocketId) {
 
   pc.onicecandidate = (event) => {
     if (event.candidate) {
+      // Server: forward this viewer’s ICE candidate to the streamer’s socket for this streamId.
       socket.emit("ice-candidate", {
         streamId,
         targetSocketId: streamerSocketId,
@@ -352,10 +425,7 @@ function createPeerConnection(streamId, streamerSocketId) {
 
     if (["failed", "disconnected", "closed"].includes(pc.connectionState)) {
       state.videoEl.srcObject = null;
-      if (state.recognitionIntervalId) {
-        clearInterval(state.recognitionIntervalId);
-        state.recognitionIntervalId = null;
-      }
+      state.stopRecognitionForStream?.();
       if (pc.connectionState !== "closed") {
         setStreamStatus(streamId, "Connection lost");
       }
@@ -372,20 +442,61 @@ for (const streamId of streamIds) {
   ensureStreamCard(streamId);
 }
 
+// Server → viewer: periodic detection results for SFU server recognition; draws boxes when this card is subscribed.
+socket.on("sfu-server-recognition", (payload) => {
+  const { streamId: sid, detections, videoWidth, videoHeight } = payload || {};
+  if (!sid) return;
+  const state = streamState.get(sid);
+  if (!state?.recognitionCheckboxEl?.checked) return;
+  const cfg = state.currentConfig;
+  if (!shouldUseServerRecognitionForStream(sid, cfg)) return;
+  if (!state.serverRecognitionActive) return;
+  const size =
+    videoWidth && videoHeight
+      ? { width: videoWidth, height: videoHeight }
+      : null;
+  drawDetectionsOnOverlay(
+    state.videoEl,
+    detections || [],
+    state.overlayEl,
+    cfg,
+    size
+  );
+});
+
+// Server → viewer: subscribe/setup failed, or publisher not ready; may retry sync after a short delay.
+socket.on("sfu-server-recognition-error", ({ streamId: sid, message }) => {
+  const state = streamState.get(sid);
+  if (!state?.recognitionCheckboxEl?.checked) return;
+  console.warn("Server recognition:", sid, message);
+  const msg = message != null ? String(message) : "";
+  if (msg.includes("not active") && state.videoEl.srcObject) {
+    setTimeout(() => {
+      if (!state.recognitionCheckboxEl.checked) return;
+      void state.syncRecognitionWithStream?.();
+    }, 1000);
+  }
+});
+
+// Server: register this tab as a viewer for the requested stream ids (P2P signaling book-keeping).
 socket.emit("register-viewer", { streamIds });
 const sfuStreamIds = streamIds.filter((id) => streamModes.get(id) === "sfu");
 if (sfuStreamIds.length) {
+  // Server: subscribe SFU streams so the relay can attach viewer PeerConnections when media is published.
   socket.emit("sfu-register-viewer", { streamIds: sfuStreamIds });
 }
 
+// Server → viewer: a streamer is online; P2P viewers ask for an offer, SFU viewers wait for sfu-viewer-offer.
 socket.on("streamer-available", ({ streamId }) => {
   if (!streamIds.includes(streamId)) return;
 
   setStreamStatus(streamId, "Streamer is available. Requesting connection...");
   if (streamModes.get(streamId) === "sfu") return;
+  // Server: ask the streamer to create and send a WebRTC offer to this viewer.
   socket.emit("viewer-request-offer", { streamId });
 });
 
+// Server → viewer: streamer left; tear down PCs, clear video, and stop any recognition for that stream.
 socket.on("streamer-unavailable", ({ streamId }) => {
   const state = streamState.get(streamId);
   if (!state) return;
@@ -401,13 +512,11 @@ socket.on("streamer-unavailable", ({ streamId }) => {
 
   state.videoEl.srcObject = null;
   state.streamerSocketId = null;
-  if (state.recognitionIntervalId) {
-    clearInterval(state.recognitionIntervalId);
-    state.recognitionIntervalId = null;
-  }
+  state.stopRecognitionForStream?.();
   setStreamStatus(streamId, "Streamer offline");
 });
 
+// Server → viewer: SDP offer from the streamer for P2P; answer is sent back on the same signaling path.
 socket.on("offer", async ({ streamId, streamerSocketId, offer }) => {
   if (!streamIds.includes(streamId)) return;
   if (streamModes.get(streamId) === "sfu") return;
@@ -420,6 +529,7 @@ socket.on("offer", async ({ streamId, streamerSocketId, offer }) => {
     const answer = await pc.createAnswer();
     await pc.setLocalDescription(answer);
 
+    // Server: deliver this viewer’s SDP answer to the streamer that sent the offer.
     socket.emit("answer", {
       streamId,
       streamerSocketId,
@@ -433,6 +543,7 @@ socket.on("offer", async ({ streamId, streamerSocketId, offer }) => {
   }
 });
 
+// Server → viewer: ICE candidate from the streamer for the P2P PeerConnection.
 socket.on("ice-candidate", async ({ streamId, fromSocketId, candidate }) => {
   const state = streamState.get(streamId);
   if (!state || !state.pc || !candidate) return;
@@ -448,6 +559,7 @@ socket.on("ice-candidate", async ({ streamId, fromSocketId, candidate }) => {
   }
 });
 
+// Server → viewer: SDP offer from the SFU relay so this tab can receive the forwarded publisher media.
 socket.on("sfu-viewer-offer", async ({ streamId, offer }) => {
   if (!streamIds.includes(streamId)) return;
   if (streamModes.get(streamId) !== "sfu" || !offer) return;
@@ -468,6 +580,7 @@ socket.on("sfu-viewer-offer", async ({ streamId, offer }) => {
 
   pc.onicecandidate = (event) => {
     if (event.candidate) {
+      // Server: send viewer ICE candidate to the SFU for this relayed stream.
       socket.emit("sfu-ice-from-viewer", {
         streamId,
         candidate: event.candidate,
@@ -489,10 +602,7 @@ socket.on("sfu-viewer-offer", async ({ streamId, offer }) => {
     }
     if (["failed", "disconnected", "closed"].includes(pc.connectionState)) {
       state.videoEl.srcObject = null;
-      if (state.recognitionIntervalId) {
-        clearInterval(state.recognitionIntervalId);
-        state.recognitionIntervalId = null;
-      }
+      state.stopRecognitionForStream?.();
       if (pc.connectionState !== "closed") {
         setStreamStatus(streamId, "Relay connection lost");
       }
@@ -505,6 +615,7 @@ socket.on("sfu-viewer-offer", async ({ streamId, offer }) => {
     await pc.setRemoteDescription(offer);
     const answer = await pc.createAnswer();
     await pc.setLocalDescription(answer);
+    // Server: complete SFU negotiation by returning the viewer’s SDP answer to the relay.
     socket.emit("sfu-viewer-answer", {
       streamId,
       answer: pc.localDescription,
@@ -516,6 +627,7 @@ socket.on("sfu-viewer-offer", async ({ streamId, offer }) => {
   }
 });
 
+// Server → viewer: ICE candidate from the SFU for the viewer’s relay PeerConnection.
 socket.on("sfu-ice-to-viewer", async ({ streamId, candidate }) => {
   const state = streamState.get(streamId);
   if (!state?.sfuPc || !candidate) return;
@@ -526,6 +638,7 @@ socket.on("sfu-ice-to-viewer", async ({ streamId, candidate }) => {
   }
 });
 
+// Server → viewer: SFU path unavailable or failed (e.g. missing native wrtc on the server).
 socket.on("sfu-error", ({ message }) => {
   console.warn("SFU:", message);
 });

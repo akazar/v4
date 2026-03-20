@@ -1,5 +1,7 @@
 [
   "config-default.js",
+  "config-dashboard.js",
+  "config-dashboard-clear.js",
   "config.js",
   "config-yolo.js",
   "config-media-func.js",
