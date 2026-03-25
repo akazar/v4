@@ -4,9 +4,11 @@ import {
   drawDetectionsOnOverlay,
   configHasLocalRecognition,
 } from './process.js';
+import { attachWebRtcIceFromServer, getIceServers } from './webrtc-ice-client.js';
 
 // Socket.IO client for signaling, SFU negotiation, and server recognition events.
 const socket = io();
+attachWebRtcIceFromServer(socket);
 
 const params = new URLSearchParams(window.location.search);
 const streamIds = (params.get("streams") || "")
@@ -393,9 +395,7 @@ function createPeerConnection(streamId, streamerSocketId) {
   }
 
   const pc = new RTCPeerConnection({
-    iceServers: [
-      { urls: "stun:stun.l.google.com:19302" }
-    ]
+    iceServers: getIceServers(),
   });
 
   pc.onicecandidate = (event) => {
@@ -575,7 +575,7 @@ socket.on("sfu-viewer-offer", async ({ streamId, offer }) => {
   }
 
   const pc = new RTCPeerConnection({
-    iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
+    iceServers: getIceServers(),
   });
 
   pc.onicecandidate = (event) => {
