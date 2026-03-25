@@ -1,8 +1,6 @@
 import { captureAndRecognize } from './process.js';
-import { attachWebRtcIceFromServer, getIceServers } from './webrtc-ice-client.js';
 
 const socket = io();
-attachWebRtcIceFromServer(socket);
 
 const params = new URLSearchParams(window.location.search);
 const streamIds = (params.get("streams") || "")
@@ -97,7 +95,9 @@ function createPeerConnection(streamId, streamerSocketId) {
   }
 
   const pc = new RTCPeerConnection({
-    iceServers: getIceServers(),
+    iceServers: [
+      { urls: "stun:stun.l.google.com:19302" }
+    ]
   });
 
   pc.onicecandidate = (event) => {

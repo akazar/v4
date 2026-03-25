@@ -1,7 +1,4 @@
-import { attachWebRtcIceFromServer, getIceServers } from './webrtc-ice-client.js';
-
 const socket = io();
-attachWebRtcIceFromServer(socket);
 
 const params = new URLSearchParams(window.location.search);
 const streamId = params.get("streamId") || "cam1";
@@ -43,7 +40,9 @@ function setStatus(text) {
 
 function createPeerConnection(viewerSocketId) {
   const pc = new RTCPeerConnection({
-    iceServers: getIceServers(),
+    iceServers: [
+      { urls: "stun:stun.l.google.com:19302" }
+    ]
   });
 
   pc.onicecandidate = (event) => {
@@ -96,7 +95,7 @@ async function publishSfuOffer() {
   if (!localStream || !isSfu) return;
   closeSfuPublisher();
   sfuPublisherPc = new RTCPeerConnection({
-    iceServers: getIceServers(),
+    iceServers: [{ urls: "stun:stun.l.google.com:19302" }]
   });
   sfuPublisherPc.onicecandidate = (event) => {
     if (event.candidate) {
