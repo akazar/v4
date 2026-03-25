@@ -1,19 +1,19 @@
 /**
  * main.js — Entry point for the v4 server.
- * Creates the Express app, wires front-end hosting (hosting-server.js) and API logic (api-server.js),
+ * Creates the Express app, wires front-end hosting (hosting-server.js) and API logic (action-servers/api-server.js),
  * then starts the HTTP server on PORT (default 3001).
  */
 
 import http from 'http';
 import express from 'express';
 import { setupFrontendHosting } from './hosting-server.js';
-import { setupApiServer } from '../lib/cloud/api-server.js';
+import { setupApiServer } from '../lib/cloud/action-servers/api-server.js';
 import { setupRecognitionServer } from '../lib/cloud/recognition-server.js';
 import { setupReasoningServer } from '../lib/cloud/reasoning-server.js';
-import { setupNotificationServer } from '../lib/cloud/notification-server.js';
-import { setupDbServer } from '../lib/cloud/db-server.js';
+import { setupNotificationServer } from '../lib/cloud/action-servers/notification-server.js';
+import { setupDbServer } from '../lib/cloud/action-servers/db-server.js';
 import { setupConfigurationServer } from '../lib/cloud/configuration-server.js';
-import { setupStreamingServer } from '../lib/cloud/streaming-server.js';
+import { setupStreamingServer } from '../lib/cloud/streaming-server/streaming-server.js';
 
 const PORT = process.env.PORT || 3001;
 

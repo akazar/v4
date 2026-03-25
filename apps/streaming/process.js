@@ -109,6 +109,7 @@ export async function captureAndRecognize(videoEl, model, resultCanvas, summaryE
       detections = await recognizeMediapipe(dataUrl, CONFIG);
     }
     renderDetections(resultCanvas, detections, summaryEl, img);
+    //TODO: add recognition results to the actions scheduler with stream id and config path
   } catch (err) {
     console.error('Recognition error:', err);
     if (summaryEl) summaryEl.textContent = `Recognition failed: ${err.message || err}`;

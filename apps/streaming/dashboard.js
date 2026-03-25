@@ -4,6 +4,8 @@ import {
   drawDetectionsOnOverlay,
   configHasLocalRecognition,
 } from './process.js';
+import { registerP2pWebRtcEvents } from './dashboard-events/p2p-webrtc.js';
+import { registerServerWebRtcEvents } from './dashboard-events/server-webrtc.js';
 
 // Socket.IO client for signaling, SFU negotiation, and server recognition events.
 const socket = io();
@@ -384,117 +386,38 @@ function onDashboardRemoteStream(streamId, state, remoteStream) {
   }
 }
 
-// Creates or replaces the P2P RTCPeerConnection for one stream and wires ICE, tracks, and lifecycle.
-function createPeerConnection(streamId, streamerSocketId) {
-  const state = ensureStreamCard(streamId);
-
-  if (state.pc) {
-    state.pc.close();
-  }
-
-  const pc = new RTCPeerConnection({
-    iceServers: [
-      { urls: "stun:stun.l.google.com:19302" }
-    ]
-  });
-
-  pc.onicecandidate = (event) => {
-    if (event.candidate) {
-      // Server: forward this viewer’s ICE candidate to the streamer’s socket for this streamId.
-      socket.emit("ice-candidate", {
-        streamId,
-        targetSocketId: streamerSocketId,
-        candidate: event.candidate,
-      });
-    }
-  };
-
-  pc.ontrack = (event) => {
-    const [remoteStream] = event.streams;
-    if (remoteStream) {
-      onDashboardRemoteStream(streamId, state, remoteStream);
-    }
-  };
-
-  pc.onconnectionstatechange = () => {
-    console.log(`[viewer] ${streamId}:`, pc.connectionState);
-
-    if (pc.connectionState === "connected") {
-      setStreamStatus(streamId, "Connected");
-    }
-
-    if (["failed", "disconnected", "closed"].includes(pc.connectionState)) {
-      state.videoEl.srcObject = null;
-      state.stopRecognitionForStream?.();
-      if (pc.connectionState !== "closed") {
-        setStreamStatus(streamId, "Connection lost");
-      }
-    }
-  };
-
-  state.pc = pc;
-  state.streamerSocketId = streamerSocketId;
-
-  return pc;
-}
-
 for (const streamId of streamIds) {
   ensureStreamCard(streamId);
 }
 
-// Server → viewer: periodic detection results for SFU server recognition; draws boxes when this card is subscribed.
-socket.on("sfu-server-recognition", (payload) => {
-  const { streamId: sid, detections, videoWidth, videoHeight } = payload || {};
-  if (!sid) return;
-  const state = streamState.get(sid);
-  if (!state?.recognitionCheckboxEl?.checked) return;
-  const cfg = state.currentConfig;
-  if (!shouldUseServerRecognitionForStream(sid, cfg)) return;
-  if (!state.serverRecognitionActive) return;
-  const size =
-    videoWidth && videoHeight
-      ? { width: videoWidth, height: videoHeight }
-      : null;
-  drawDetectionsOnOverlay(
-    state.videoEl,
-    detections || [],
-    state.overlayEl,
-    cfg,
-    size
-  );
+registerP2pWebRtcEvents({
+  socket,
+  streamIds,
+  streamModes,
+  streamState,
+  ensureStreamCard,
+  setStreamStatus,
+  onDashboardRemoteStream,
 });
 
-// Server → viewer: subscribe/setup failed, or publisher not ready; may retry sync after a short delay.
-socket.on("sfu-server-recognition-error", ({ streamId: sid, message }) => {
-  const state = streamState.get(sid);
-  if (!state?.recognitionCheckboxEl?.checked) return;
-  console.warn("Server recognition:", sid, message);
-  const msg = message != null ? String(message) : "";
-  if (msg.includes("not active") && state.videoEl.srcObject) {
-    setTimeout(() => {
-      if (!state.recognitionCheckboxEl.checked) return;
-      void state.syncRecognitionWithStream?.();
-    }, 1000);
-  }
+registerServerWebRtcEvents({
+  socket,
+  streamIds,
+  streamModes,
+  streamState,
+  shouldUseServerRecognitionForStream,
+  drawDetectionsOnOverlay,
+  ensureStreamCard,
+  setStreamStatus,
+  onDashboardRemoteStream,
 });
 
 // Server: register this tab as a viewer for the requested stream ids (P2P signaling book-keeping).
 socket.emit("register-viewer", { streamIds });
 const sfuStreamIds = streamIds.filter((id) => streamModes.get(id) === "sfu");
 if (sfuStreamIds.length) {
-  // Server: subscribe SFU streams so the relay can attach viewer PeerConnections when media is published.
   socket.emit("sfu-register-viewer", { streamIds: sfuStreamIds });
 }
-
-// Server → viewer: a streamer is online; P2P viewers ask for an offer, SFU viewers wait for sfu-viewer-offer.
-socket.on("streamer-available", ({ streamId }) => {
-  if (!streamIds.includes(streamId)) return;
-
-  setStreamStatus(streamId, "Streamer is available. Requesting connection...");
-  if (streamModes.get(streamId) === "sfu") return;
-  // Server: ask the streamer to create and send a WebRTC offer to this viewer.
-  socket.emit("viewer-request-offer", { streamId });
-});
 
 // Server → viewer: streamer left; tear down PCs, clear video, and stop any recognition for that stream.
 socket.on("streamer-unavailable", ({ streamId }) => {
@@ -514,131 +437,4 @@ socket.on("streamer-unavailable", ({ streamId }) => {
   state.streamerSocketId = null;
   state.stopRecognitionForStream?.();
   setStreamStatus(streamId, "Streamer offline");
-});
-
-// Server → viewer: SDP offer from the streamer for P2P; answer is sent back on the same signaling path.
-socket.on("offer", async ({ streamId, streamerSocketId, offer }) => {
-  if (!streamIds.includes(streamId)) return;
-  if (streamModes.get(streamId) === "sfu") return;
-
-  try {
-    const pc = createPeerConnection(streamId, streamerSocketId);
-
-    await pc.setRemoteDescription(offer);
-
-    const answer = await pc.createAnswer();
-    await pc.setLocalDescription(answer);
-
-    // Server: deliver this viewer’s SDP answer to the streamer that sent the offer.
-    socket.emit("answer", {
-      streamId,
-      streamerSocketId,
-      answer,
-    });
-
-    setStreamStatus(streamId, "Answer sent. Waiting for media...");
-  } catch (error) {
-    console.error(`Error handling offer for ${streamId}:`, error);
-    setStreamStatus(streamId, "Error during negotiation");
-  }
-});
-
-// Server → viewer: ICE candidate from the streamer for the P2P PeerConnection.
-socket.on("ice-candidate", async ({ streamId, fromSocketId, candidate }) => {
-  const state = streamState.get(streamId);
-  if (!state || !state.pc || !candidate) return;
-
-  if (state.streamerSocketId && state.streamerSocketId !== fromSocketId) {
-    return;
-  }
-
-  try {
-    await state.pc.addIceCandidate(candidate);
-  } catch (error) {
-    console.error(`Error adding ICE candidate for ${streamId}:`, error);
-  }
-});
-
-// Server → viewer: SDP offer from the SFU relay so this tab can receive the forwarded publisher media.
-socket.on("sfu-viewer-offer", async ({ streamId, offer }) => {
-  if (!streamIds.includes(streamId)) return;
-  if (streamModes.get(streamId) !== "sfu" || !offer) return;
-
-  const state = ensureStreamCard(streamId);
-  if (state.sfuPc) {
-    try {
-      state.sfuPc.close();
-    } catch {
-      /* ignore */
-    }
-    state.sfuPc = null;
-  }
-
-  const pc = new RTCPeerConnection({
-    iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
-  });
-
-  pc.onicecandidate = (event) => {
-    if (event.candidate) {
-      // Server: send viewer ICE candidate to the SFU for this relayed stream.
-      socket.emit("sfu-ice-from-viewer", {
-        streamId,
-        candidate: event.candidate,
-      });
-    }
-  };
-
-  pc.ontrack = (event) => {
-    const [remoteStream] = event.streams;
-    if (remoteStream) {
-      onDashboardRemoteStream(streamId, state, remoteStream);
-    }
-  };
-
-  pc.onconnectionstatechange = () => {
-    console.log(`[viewer SFU] ${streamId}:`, pc.connectionState);
-    if (pc.connectionState === "connected") {
-      setStreamStatus(streamId, "Connected (relay)");
-    }
-    if (["failed", "disconnected", "closed"].includes(pc.connectionState)) {
-      state.videoEl.srcObject = null;
-      state.stopRecognitionForStream?.();
-      if (pc.connectionState !== "closed") {
-        setStreamStatus(streamId, "Relay connection lost");
-      }
-    }
-  };
-
-  state.sfuPc = pc;
-
-  try {
-    await pc.setRemoteDescription(offer);
-    const answer = await pc.createAnswer();
-    await pc.setLocalDescription(answer);
-    // Server: complete SFU negotiation by returning the viewer’s SDP answer to the relay.
-    socket.emit("sfu-viewer-answer", {
-      streamId,
-      answer: pc.localDescription,
-    });
-    setStreamStatus(streamId, "Answer sent to relay. Waiting for media…");
-  } catch (error) {
-    console.error(`Error handling SFU offer for ${streamId}:`, error);
-    setStreamStatus(streamId, "SFU negotiation error");
-  }
-});
-
-// Server → viewer: ICE candidate from the SFU for the viewer’s relay PeerConnection.
-socket.on("sfu-ice-to-viewer", async ({ streamId, candidate }) => {
-  const state = streamState.get(streamId);
-  if (!state?.sfuPc || !candidate) return;
-  try {
-    await state.sfuPc.addIceCandidate(candidate);
-  } catch (error) {
-    console.error(`Error adding SFU ICE for ${streamId}:`, error);
-  }
-});
-
-// Server → viewer: SFU path unavailable or failed (e.g. missing native wrtc on the server).
-socket.on("sfu-error", ({ message }) => {
-  console.warn("SFU:", message);
 });
