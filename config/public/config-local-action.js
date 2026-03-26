@@ -45,6 +45,7 @@ const CONFIG = {
         { action: { type: 'DB', value: ['your-db-id'] }, timeout: 2000 },
         { action: { type: 'API', value: ['https://your-api.com/webhook'] }, timeout: 5000 },
         { action: { type: 'NOTIFY', value: ['your-telegram-chat-id'] }, timeout: 11000 },
+        { action: { type: 'local-001', value: ['001 value data'] }, timeout: 3000 },
     ],
 
     // ——— Periodic actions (e.g. heartbeat) ———

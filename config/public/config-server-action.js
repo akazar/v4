@@ -56,6 +56,7 @@ const CONFIG = {
         { action: { type: 'DB', value: ['your-db-id'] }, timeout: 2000 },
         { action: { type: 'API', value: ['https://your-api.com/webhook'] }, timeout: 25000 },
         { action: { type: 'NOTIFY', value: ['your-telegram-chat-id'] }, timeout: 30000 },
+        { action: { type: 'server-007', value: ['007 value data'] }, timeout: 6000 },
     ],
     serverRecognitionActionFunctions: [
         {
