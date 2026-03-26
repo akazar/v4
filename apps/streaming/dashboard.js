@@ -186,14 +186,27 @@ function createVideoCard(streamId) {
   videoWrapper.appendChild(video);
   videoWrapper.appendChild(overlay);
 
+  function syncVideoWrapperAspect() {
+    const w = video.videoWidth;
+    const h = video.videoHeight;
+    if (w > 0 && h > 0) {
+      videoWrapper.style.aspectRatio = `${w} / ${h}`;
+    } else {
+      videoWrapper.style.aspectRatio = "";
+    }
+  }
+  video.addEventListener("loadedmetadata", syncVideoWrapperAspect);
+  video.addEventListener("emptied", syncVideoWrapperAspect);
+
   const cardToolbar = document.createElement("div");
   cardToolbar.className = "video-card-toolbar";
   cardToolbar.appendChild(recognitionCheckbox);
   cardToolbar.appendChild(configTrigger);
 
+  // Video layer first so it can fill the card as a background; other UI stacks above via CSS z-index.
+  wrapper.appendChild(videoWrapper);
   wrapper.appendChild(title);
   wrapper.appendChild(modeBadge);
-  wrapper.appendChild(videoWrapper);
   wrapper.appendChild(cardToolbar);
   wrapper.appendChild(configDropdown);
   wrapper.appendChild(status);

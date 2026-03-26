@@ -70,15 +70,25 @@ h3 {
 
 .video-card {
   position: relative;
-  background: var(--surface);
+  background: #000;
   border: 1px solid var(--border);
-  padding: 5px;
+  padding: 0;
+  overflow: hidden;
 }
 
 .video-card-stream-mode {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(5px + 1.35rem);
+  z-index: 1;
+  pointer-events: none;
   font-size: 0.8rem;
   color: var(--text-muted);
-  margin-bottom: 0.35rem;
+  margin: 0;
+  padding-left: 5px;
+  padding-right: 5px;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
 }
 
 .video-card-toolbar {
@@ -162,10 +172,17 @@ h3 {
 
 .video-wrapper {
   position: relative;
+  z-index: 0;
+  width: 100%;
+  background: #000;
+  aspect-ratio: 16 / 9;
 }
 
 .video-wrapper video {
   display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 .video-overlay {
@@ -175,13 +192,16 @@ h3 {
 }
 
 .video-card h3 {
-  margin-top: 0;
+  position: absolute;
+  top: 5px;
+  left: 0;
+  right: 0;
+  z-index: 1;
+  pointer-events: none;
+  margin: 0;
+  padding: 0 5px;
   color: var(--text);
-}
-
-video {
-  width: 100%;
-  background: #000;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
 }
 
 .status {
@@ -189,6 +209,18 @@ video {
   color: var(--text-muted);
   font-size: 0.9rem;
   min-height: 1.4em;
+}
+
+.video-card > .status {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 5px;
+  z-index: 1;
+  pointer-events: none;
+  margin: 0;
+  padding: 0 5px;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
 }
 
 button {
