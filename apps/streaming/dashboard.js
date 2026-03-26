@@ -3,7 +3,9 @@ import {
   recognizeOnVideoOverlay,
   drawDetectionsOnOverlay,
   configHasLocalRecognition,
+  configHasServerRecognition
 } from './process.js';
+import { createScheduledActionsManager } from '/lib/scheduled-actions-manager.js';
 import { registerP2pWebRtcEvents } from './dashboard-events/p2p-webrtc.js';
 import { registerServerWebRtcEvents } from './dashboard-events/server-webrtc.js';
 
@@ -39,16 +41,6 @@ streamsText.textContent = streamIds.length ? streamIds.join(", ") : "(none)";
 // Per-stream UI and WebRTC state keyed by streamId from the URL.
 const streamState = new Map();
 
-// Returns whether the loaded config defines a server-side recognition block.
-function configHasServerRecognition(cfg) {
-  return (
-    cfg &&
-    typeof cfg === 'object' &&
-    cfg.serverRecognition != null &&
-    typeof cfg.serverRecognition === 'object'
-  );
-}
-
 // True when this stream uses SFU and the config relies on server recognition (no localRecognition object).
 function shouldUseServerRecognitionForStream(streamId, cfg) {
   if (configHasLocalRecognition(cfg)) return false;
@@ -61,6 +53,14 @@ const DEFAULT_CONFIG_PATH = '/config/public/config-default.js';
 
 const configCache = new Map();
 let discoveredConfigPaths = null;
+const localScheduledActionsManager = createScheduledActionsManager({
+  actionsProperty: 'localRecognitionActions',
+  fallbackActionProperties: ['localRecognitionActionFunctions'],
+  loadConfig: async (configName) => {
+    const cfgPath = `/config/public/${configName}.js`;
+    return loadConfig(cfgPath);
+  },
+});
 
 // Dynamically imports a public config module once and caches the exported CONFIG object.
 async function loadConfig(path) {
@@ -312,10 +312,21 @@ function ensureStreamCard(streamId) {
         return;
       }
 
+      if (!configHasLocalRecognition(cfg)) {
+        console.log('config has no local recognition', cfg);
+        return;
+      }
+
       const intervalMs = cfg.localRecognition?.interval ?? 1000;
-      void recognizeOnVideoOverlay(state.videoEl, cfg, state.overlayEl);
+      const configName = configNameFromPath(state.configPath || DEFAULT_CONFIG_PATH);
+      await localScheduledActionsManager.register(state.streamId, configName);
+      const runLocalRecognitionTick = async () => {
+        const detections = await recognizeOnVideoOverlay(state.videoEl, cfg, state.overlayEl);
+        await localScheduledActionsManager.process(state.streamId, detections || []);
+      };
+      void runLocalRecognitionTick();
       state.recognitionIntervalId = setInterval(() => {
-        recognizeOnVideoOverlay(state.videoEl, cfg, state.overlayEl);
+        void runLocalRecognitionTick();
       }, intervalMs);
     } catch (err) {
       console.error("Failed to start recognition for stream", streamId, err);
@@ -331,6 +342,7 @@ function ensureStreamCard(streamId) {
   function stopRecognitionForStream() {
     stopLocalRecognitionInterval();
     stopServerRecognitionSubscription();
+    localScheduledActionsManager.unregister(state.streamId);
     clearOverlay();
   }
 

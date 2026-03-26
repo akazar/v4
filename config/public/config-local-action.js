@@ -3,12 +3,30 @@
  * Replace placeholder values (your-db-id, your-api-url, your-telegram-id) with real ones to use.
  */
 const CONFIG = {
-    id: 'config-server-action',
-    name: 'Server Action',
-    description: 'Server Action',
+    id: 'config-local-action',
+    name: 'Local Action',
+    description: 'Local Action',
     ui: true,
 
     // ——— How detection boxes are drawn on video ———
+    localRecognition: {
+        classes: [
+            'person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus', 'train', 'truck', 'boat', 'traffic light',
+            'fire hydrant', 'stop sign', 'parking meter', 'bench', 'bird', 'cat', 'dog', 'horse', 'sheep', 'cow',
+            'elephant', 'bear', 'zebra', 'giraffe', 'backpack', 'umbrella', 'handbag', 'tie', 'suitcase', 'frisbee',
+            'skis', 'snowboard', 'sports ball', 'kite', 'baseball bat', 'baseball glove', 'skateboard', 'surfboard',
+            'tennis racket', 'bottle', 'wine glass', 'cup', 'fork', 'knife', 'spoon', 'bowl', 'banana', 'apple',
+            'sandwich', 'orange', 'broccoli', 'carrot', 'hot dog', 'pizza', 'donut', 'cake', 'chair', 'couch',
+            'potted plant', 'bed', 'dining table', 'toilet', 'tv', 'laptop', 'mouse', 'remote', 'keyboard',
+            'cell phone', 'microwave', 'oven', 'toaster', 'sink', 'refrigerator', 'book', 'clock', 'vase',
+            'scissors', 'teddy bear', 'hair drier', 'toothbrush'
+        ],
+        maxResults: 10,
+        threshold: 0.5,
+        iouThreshold: 0.45,
+        model: 'YOLO',  // 'MEDIAPIPE' || 'YOLO'
+        interval: 1000
+    },
     boundingBoxStyles: {
         strokeStyle: '#00FFAA',
         lineWidth: 3,
@@ -30,11 +48,11 @@ const CONFIG = {
     ],
 
     // ——— Periodic actions (e.g. heartbeat) ———
-    // localRegularActionFunctions: [
-    //     { action: { type: 'DB', value: ['your-db-id'] }, timeout: 10000 },
-    //     { action: { type: 'API', value: ['https://your-api.com/ping'] }, timeout: 15000 },
-    //     { action: { type: 'NOTIFY', value: ['your-telegram-chat-id'] }, timeout: 21000 },
-    // ],
+    localRegularActionFunctions: [
+        { action: { type: 'DB', value: ['your-db-id'] }, timeout: 10000 },
+        { action: { type: 'API', value: ['https://your-api.com/ping'] }, timeout: 15000 },
+        { action: { type: 'NOTIFY', value: ['your-telegram-chat-id'] }, timeout: 21000 },
+    ],
 
     // ——— Server-side object detection (when using server pipeline) ———
     serverRecognition: {
@@ -52,11 +70,6 @@ const CONFIG = {
     },
 
     // ——— Server actions (run on server when using server recognition/reasoning pipeline) ———
-    serverRecognitionActions: [
-        { action: { type: 'DB', value: ['your-db-id'] }, timeout: 2000 },
-        { action: { type: 'API', value: ['https://your-api.com/webhook'] }, timeout: 25000 },
-        { action: { type: 'NOTIFY', value: ['your-telegram-chat-id'] }, timeout: 30000 },
-    ],
     serverRecognitionActionFunctions: [
         {
             func: (recognitionResults) => {

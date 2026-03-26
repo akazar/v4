@@ -18,6 +18,16 @@ export function configHasLocalRecognition(config) {
   );
 }
 
+// Returns whether the loaded config defines a server-side recognition block.
+export function configHasServerRecognition(cfg) {
+  return (
+    cfg &&
+    typeof cfg === 'object' &&
+    cfg.serverRecognition != null &&
+    typeof cfg.serverRecognition === 'object'
+  );
+}
+
 export function captureFrame(videoEl) {
   const canvas = document.createElement('canvas');
   canvas.width = videoEl.videoWidth;
@@ -124,9 +134,9 @@ export async function captureAndRecognize(videoEl, model, resultCanvas, summaryE
  * Uses the provided config (localRecognition + boundingBoxStyles).
  */
 export async function recognizeOnVideoOverlay(videoEl, config, overlayCanvas) {
-  if (!videoEl || !overlayCanvas) return;
+  if (!videoEl || !overlayCanvas) return [];
   if (videoEl.readyState < 2 || !videoEl.videoWidth || !videoEl.videoHeight) {
-    return;
+    return [];
   }
 
   const previous = recognitionPromise;
@@ -158,14 +168,16 @@ export async function recognizeOnVideoOverlay(videoEl, config, overlayCanvas) {
     ctx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
 
     if (!detections || detections.length === 0) {
-      return;
+      return [];
     }
 
     const boxes = projectDetectionsToCanvas(detections, img, overlayCanvas);
     const styles = (config && config.boundingBoxStyles) || CONFIG.boundingBoxStyles;
     drawBoundingBoxes(ctx, boxes, styles);
+    return detections;
   } catch (err) {
     console.error('Overlay recognition error:', err);
+    return [];
   } finally {
     if (resolveCurrent) resolveCurrent();
   }
