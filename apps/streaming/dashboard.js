@@ -86,23 +86,21 @@ function configNameFromPath(path) {
   return file.replace(/\.(js|json)$/i, '');
 }
 
-// Loads the list of selectable config URLs from config-index.json, or falls back to the default only.
+// Loads selectable config URLs by querying server-side directory listing for config/public.
 async function getConfigPaths() {
   if (discoveredConfigPaths) {
     return discoveredConfigPaths;
   }
 
-  // Try to get dynamic list from optional index file first.
+  // Ask the server for actual files present in config/public.
   try {
-    const res = await fetch('/config/public/config-index.json', { cache: 'no-store' });
+    const res = await fetch('/api/configurations', { cache: 'no-store' });
     if (res.ok) {
       const data = await res.json();
       if (Array.isArray(data) && data.length > 0) {
-        discoveredConfigPaths = data.map((name) =>
-          name.startsWith('/config/public/')
-            ? name
-            : `/config/public/${name}`
-        );
+        discoveredConfigPaths = data
+          .filter((name) => typeof name === 'string' && name.endsWith('.js'))
+          .map((name) => `/config/public/${name}`);
         // Ensure default is present.
         if (!discoveredConfigPaths.includes(DEFAULT_CONFIG_PATH)) {
           discoveredConfigPaths.unshift(DEFAULT_CONFIG_PATH);
@@ -111,7 +109,7 @@ async function getConfigPaths() {
       }
     }
   } catch (err) {
-    console.warn('Failed to load config index (/config/public/config-index.json).', err);
+    console.warn('Failed to list configs from /api/configurations.', err);
   }
 
   // When no index is available, use only the default config.
