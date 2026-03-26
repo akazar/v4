@@ -80,6 +80,12 @@ function labelForConfigPath(path) {
   return file.replace('config-', '').replace('.js', '') || file;
 }
 
+function configNameFromPath(path) {
+  const parts = String(path || '').split('/');
+  const file = parts[parts.length - 1] || '';
+  return file.replace(/\.(js|json)$/i, '');
+}
+
 // Loads the list of selectable config URLs from config-index.json, or falls back to the default only.
 async function getConfigPaths() {
   if (discoveredConfigPaths) {
@@ -286,6 +292,7 @@ function ensureStreamCard(streamId) {
     socket.emit("sfu-server-recognition-subscribe", {
       streamId: sid,
       configPath: state.configPath || DEFAULT_CONFIG_PATH,
+      configName: configNameFromPath(state.configPath || DEFAULT_CONFIG_PATH),
     });
     state.serverRecognitionActive = true;
     return true;

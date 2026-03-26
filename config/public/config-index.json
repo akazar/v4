@@ -8,5 +8,6 @@
   "config-mobile.js",
   "config-red.js",
   "config-blue.js",
-  "config-example.js"
+  "config-example.js",
+  "config-server-action.js"
 ]
