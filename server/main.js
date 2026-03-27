@@ -14,6 +14,7 @@ import { setupNotificationServer } from '../lib/cloud/action-servers/notificatio
 import { setupDbServer } from '../lib/cloud/action-servers/db-server.js';
 import { setupConfigurationServer } from '../lib/cloud/configuration-server.js';
 import { setupStreamingServer } from '../lib/cloud/streaming-server/streaming-server.js';
+import { setupAnnotateExportServer } from '../lib/cloud/annotate-export-server.js';
 
 const PORT = process.env.PORT || 3001;
 
@@ -47,7 +48,10 @@ setupNotificationServer(app);
 setupDbServer(app);
 
 // Setup configuration API (GET /api/configurations)
-setupConfigurationServer(app)
+setupConfigurationServer(app);
+
+// Save COCO exports from VIA annotator to apps/annotate/annotation-list
+setupAnnotateExportServer(app);
 
 // Setup streaming signaling (Socket.IO on the HTTP server)
 setupStreamingServer(server);

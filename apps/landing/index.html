@@ -253,6 +253,34 @@
 
                 <div class="module-card">
                     <div class="module-header">
+                        <h2>VIA Image Annotator</h2>
+                        <a href="/annotate" class="cta-button">Launch Annotator</a>
+                    </div>
+                    <div class="module-content">
+                        <h3>Manual annotation for image, audio, and video</h3>
+                        <p>
+                            The bundled app is <a href="http://www.robots.ox.ac.uk/~vgg/software/via/" rel="noopener noreferrer">VGG Image Annotator (VIA)</a>
+                            in its image-annotator variant: the same self-contained HTML/JS/CSS tool described in the app’s About page—manual labels for image, audio, and video, runnable in the browser without a separate install. Here it is served at <code>/annotate</code> on this host.
+                        </p>
+                        <h4>Capabilities:</h4>
+                        <ul>
+                            <li><strong>Load media:</strong> Use <strong>local files</strong> or <strong>add files</strong> with <code>file://</code> (local) or <code>http://</code> (remote) URIs, or use <strong>bulk</strong> to paste one URI per line, choose Image / Video / Audio / auto-detect, and optionally import URIs from a text file</li>
+                            <li><strong>Spatial regions:</strong> Click and drag to draw regions (for example rectangular bounding boxes) on images and on video frames while the video is paused</li>
+                            <li><strong>Temporal segments:</strong> Mark time ranges on audio and video (for example from one timestamp to another)</li>
+                            <li><strong>Attributes:</strong> Open the <strong>attribute editor</strong> to define or update attributes (e.g. name, colour) on user-defined regions</li>
+                            <li><strong>Import / export:</strong> From the toolbar import/export dialog—export <strong>VIA3 (CSV)</strong>, <strong>only temporal segments (CSV)</strong>, or <strong>COCO</strong>; import a <strong>VIA shared project</strong> id or a <strong>VIA2</strong> project JSON file</li>
+                            <li><strong>Shortcuts:</strong> <strong>Space</strong> plays or pauses audio/video; <strong>n</strong> / <strong>p</strong> move to next/previous image; full list (zoom, magnifier, region visibility, etc.) is under the in-app keyboard shortcuts help</li>
+                        </ul>
+                        <h4>Use Cases:</h4>
+                        <ul>
+                            <li>Ground-truth boxes, segments, and attributes for datasets or model evaluation</li>
+                            <li>Labeling media before or alongside checks in <a href="/image-upload">Image Upload</a> or <a href="/compare">Compare</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="module-card">
+                    <div class="module-header">
                         <h2>Compare</h2>
                         <a href="/compare" class="cta-button">Launch Compare</a>
                     </div>

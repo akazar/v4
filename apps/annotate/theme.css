@@ -1,0 +1,570 @@
+/**
+ * VIA annotator — Vision v4 dark theme
+ * Aligns with apps/streaming, apps/config-creator, apps/landing, apps/server-reasoning
+ */
+:root {
+  --bg: #0a0a0a;
+  --surface: #141414;
+  --surface-alt: #1a1a1a;
+  --surface-elevated: #222222;
+  --border: #2a2a2a;
+  --border-light: #3a3a3a;
+  --text: #e8e8e8;
+  --text-muted: #888888;
+  --accent: #6b6b6b;
+  --accent-hover: #8a8a8a;
+  --link: #a8c0dc;
+  --link-hover: #c5d8f0;
+  --radius: 8px;
+  --font-sans: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+}
+
+html,
+body {
+  font-family: var(--font-sans);
+  background: var(--bg);
+  background-image: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+  background-attachment: fixed;
+  color: var(--text);
+  margin: 0;
+  overflow-x: hidden;
+}
+
+/* Annotation file list (300px) + VIA */
+.annotate-app-layout {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  min-height: 100vh;
+  width: 100%;
+  max-width: 100vw;
+}
+
+.annotate-files-panel {
+  flex: 0 0 300px;
+  width: 300px;
+  min-width: 300px;
+  max-width: 300px;
+  box-sizing: border-box;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  padding: 0.75rem 0.85rem;
+  gap: 0.35rem;
+  overflow: hidden;
+}
+
+.annotate-files-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.annotate-files-panel-title {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.annotate-files-panel-refresh {
+  padding: 0.35rem 0.55rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-family: inherit;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface-alt);
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.annotate-files-panel-refresh:hover {
+  background: var(--accent);
+  color: var(--text);
+  border-color: var(--border-light);
+}
+
+.annotate-files-panel-status {
+  margin: 0;
+  font-size: 0.78rem;
+  color: #e57373;
+  flex-shrink: 0;
+}
+
+.annotate-files-panel-empty,
+.annotate-files-panel-error {
+  margin: 0.25rem 0 0;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+.annotate-files-panel-error {
+  color: #e57373;
+}
+
+.annotate-files-panel-list {
+  list-style: none;
+  margin: 0.35rem 0 0;
+  padding: 0;
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+}
+
+.annotate-files-panel-item {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.25rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.annotate-files-panel-item:last-child {
+  border-bottom: none;
+}
+
+.annotate-files-panel-name {
+  flex: 1;
+  min-width: 0;
+  font-size: 0.78rem;
+  word-break: break-all;
+  color: var(--text-muted);
+  line-height: 1.35;
+}
+
+.annotate-files-panel-delete {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s;
+}
+
+.annotate-files-panel-delete:hover:not(:disabled) {
+  color: #e57373;
+  background: rgba(229, 115, 115, 0.12);
+}
+
+.annotate-files-panel-delete:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.annotate-files-panel-trash-icon {
+  width: 1.15rem;
+  height: 1.15rem;
+  display: block;
+}
+
+.annotate-app-layout > .via_container {
+  flex: 1;
+  min-width: 0;
+  width: auto !important;
+  max-width: none !important;
+  height: 100vh !important;
+}
+
+/* Main layout */
+.via_container {
+  background: transparent;
+  color: var(--text);
+}
+
+/* Top toolbar */
+#via_control_panel_container {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+}
+
+#via_control_panel_container * {
+  color: inherit;
+}
+
+#via_control_panel_container .logo,
+#via_control_panel_container .logo a {
+  color: var(--text) !important;
+}
+
+#via_control_panel_container #region_info_panel {
+  color: var(--text-muted);
+}
+
+#via_control_panel_container #via_project_name_input,
+#view_manager_container .pname {
+  color: var(--text) !important;
+  background: var(--bg) !important;
+  border: none !important;
+  border-bottom: 1px solid var(--border) !important;
+  border-radius: 4px;
+  padding: 0.15em 0.35em !important;
+}
+
+#via_control_panel_container #via_project_name_input:hover,
+#view_manager_container .pname:hover {
+  background: var(--surface-alt) !important;
+  border-bottom-color: var(--border-light) !important;
+}
+
+#via_control_panel_container #via_project_name_input:focus,
+#view_manager_container .pname:focus {
+  background: var(--surface-alt) !important;
+  border-bottom-color: var(--accent-hover) !important;
+}
+
+#via_control_panel_container select,
+#via_control_panel_container input[type="text"]:not(#via_project_name_input),
+#view_manager_container select,
+#view_manager_container input[type="text"] {
+  background: var(--bg) !important;
+  color: var(--text) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 6px;
+  padding: 0.25em 0.5em !important;
+}
+
+#via_control_panel_container select:focus,
+#via_control_panel_container input:focus {
+  outline: none;
+  border-color: var(--border-light) !important;
+  box-shadow: 0 0 0 2px rgba(120, 120, 120, 0.2);
+}
+
+/* Image / video viewport */
+#view_container {
+  background: var(--bg);
+}
+
+#view_container > .view_metadata_container {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+}
+
+#view_container > .view_content_container > .file_container > .metadata_container {
+  background: var(--surface);
+  color: var(--text);
+}
+
+#view_container > .view_content_container > .file_container > .metadata_container table,
+#view_container > .view_content_container > .file_container > .metadata_container td,
+#view_container > .view_content_container > .file_container > .metadata_container th {
+  border-color: var(--border) !important;
+}
+
+#view_container > .view_content_container > .file_container > .metadata_container input,
+#view_container > .view_content_container > .file_container > .metadata_container select {
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+
+#view_container > .view_content_container > .file_container > .error_page table,
+#view_container > .view_content_container > .file_container > .error_page td {
+  border-color: var(--border) !important;
+}
+
+#view_container > .view_content_container > .file_container > .error_page input,
+#view_container > .view_content_container > .file_container > .error_page select,
+#view_container > .view_content_container > .file_container > .error_page textarea {
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+
+.img_pair_annotator_container {
+  color: var(--text);
+}
+
+/* Temporal segmenter */
+.temporal_segmenter_container > .tmetadata_container .gidcol input[type="text"] {
+  background: transparent !important;
+  color: var(--text) !important;
+  border-bottom-color: var(--border) !important;
+}
+
+.temporal_segmenter_container > .tmetadata_container .gidcol input[type="text"]:focus {
+  background: var(--surface-alt) !important;
+}
+
+.temporal_segmenter_container > .toolbar_container button,
+.temporal_segmenter_container > .toolbar_container select,
+.temporal_segmenter_container > .toolbar_container input[type="text"] {
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+.temporal_segmenter_container > .toolbar_container button:hover {
+  background: var(--surface-alt);
+  border-color: var(--border-light);
+}
+
+/* Bottom attribute editor */
+#editor_container {
+  background: var(--surface) !important;
+  border-top: 1px solid var(--border) !important;
+  color: var(--text);
+}
+
+#editor_container > .editor_content_selector {
+  color: var(--text-muted);
+  background: var(--surface-alt);
+  border-bottom: 1px solid var(--border);
+}
+
+#editor_container > .content_container table,
+#editor_container > .content_container th,
+#editor_container > .content_container td {
+  border-color: var(--border) !important;
+}
+
+#editor_container > .content_container input[type="text"],
+#editor_container > .content_container select,
+#editor_container > .content_container textarea {
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.25em 0.5em;
+}
+
+/* Toolbar icon buttons */
+/* Toolbar icons: Material paths use fill; shape tools use stroke/fill = currentColor */
+.svg_button {
+  color: var(--text-muted);
+  fill: currentColor;
+  stroke: none;
+}
+
+.svg_button:hover {
+  color: var(--text);
+  fill: currentColor;
+  opacity: 1;
+}
+
+.svg_button_selected {
+  color: var(--text);
+  fill: currentColor;
+  background-color: var(--surface-alt) !important;
+  border-radius: 4px;
+}
+
+.disabled_button,
+.disabled_button:hover,
+.disabled_button:active {
+  color: var(--border-light) !important;
+  fill: currentColor !important;
+  cursor: auto !important;
+}
+
+.text_button {
+  color: var(--link) !important;
+  background-color: transparent !important;
+}
+
+.text_button:hover {
+  color: var(--link-hover) !important;
+}
+
+/* Modal pages (import/export, help, about) */
+#via_page_container {
+  background-color: rgba(0, 0, 0, 0.82);
+}
+
+#via_page_container > .via_page {
+  color: var(--text) !important;
+  background-color: var(--surface) !important;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
+}
+
+#via_page_container > .via_page h1,
+#via_page_container > .via_page h2,
+#via_page_container > .via_page h3 {
+  color: var(--text);
+  border-bottom-color: var(--border);
+}
+
+#via_page_container > .via_page a {
+  color: var(--link);
+}
+
+#via_page_container > .via_page a:hover {
+  color: var(--link-hover);
+}
+
+#via_page_container > .via_page > .controls {
+  border-top-color: var(--border) !important;
+}
+
+#via_page_container > .via_page > .controls button {
+  padding: 0.55rem 1.1rem;
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface-alt);
+  color: var(--text);
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+#via_page_container > .via_page > .controls button:hover {
+  background: var(--accent);
+  border-color: var(--accent-hover);
+}
+
+#via_page_container > .via_page table,
+#via_page_container > .video_page table,
+#via_page_container > .via_page th,
+#via_page_container > .via_page td {
+  border-color: var(--border) !important;
+}
+
+#via_page_container > .via_page input[type="text"],
+#via_page_container > .via_page input[type="file"],
+#via_page_container > .via_page select,
+#via_page_container > .via_page textarea {
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.45em 0.65em;
+}
+
+#via_page_container > .via_page textarea:focus,
+#via_page_container > .via_page input:focus,
+#via_page_container > .via_page select:focus {
+  outline: none;
+  border-color: var(--border-light);
+  box-shadow: 0 0 0 2px rgba(120, 120, 120, 0.2);
+}
+
+#via_page_container > .via_page pre {
+  background: var(--bg);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 1em;
+  overflow: auto;
+  font-size: 0.8rem;
+}
+
+/* Start info panel */
+#via_start_info {
+  color: var(--text);
+}
+
+#via_start_info a {
+  color: var(--link);
+}
+
+#via_start_info a:hover {
+  color: var(--link-hover);
+}
+
+/* Keyboard shortcut keys */
+.key {
+  font-family: ui-monospace, 'Consolas', monospace;
+  padding: 0.15em 0.45em;
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  border-bottom-width: 2px;
+  color: var(--text);
+  border-radius: 4px;
+  font-size: 0.95em;
+}
+
+/* Toast / message bar */
+#_via_message_container #_via_message {
+  background-color: var(--surface) !important;
+  color: var(--text) !important;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.35);
+}
+
+#_via_message_container .message_panel_close_button {
+  color: var(--text-muted);
+}
+
+#_via_message_container .message_panel_close_button:hover {
+  color: var(--text);
+}
+
+/* COCO server save — success toast (3s) */
+#_via_message_container.via-toast-success {
+  padding: 0.5rem 1rem 1rem;
+}
+
+#_via_message_container.via-toast-success #_via_message {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 0.65rem;
+  background: linear-gradient(135deg, #14241a 0%, #1a301f 100%) !important;
+  color: #c8e6c9 !important;
+  border: 1px solid #3d6b45 !important;
+  border-radius: var(--radius);
+  padding: 0.7rem 1.1rem !important;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.5);
+  white-space: normal !important;
+  max-width: min(92vw, 28rem);
+  text-align: left;
+  line-height: 1.45;
+}
+
+#_via_message_container.via-toast-success .via-toast-success-icon {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.6rem;
+  height: 1.6rem;
+  border-radius: 50%;
+  background: #2e7d32;
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+#_via_message_container.via-toast-success .via-toast-success-text {
+  flex: 1;
+  min-width: 0;
+}
+
+#_via_message_container.via-toast-success .message_panel_close_button {
+  color: #81c784;
+  align-self: flex-start;
+  margin-top: 0.1rem;
+}
+
+#_via_message_container.via-toast-success .message_panel_close_button:hover {
+  color: #e8f5e9;
+}
+
+/* Magnifier outline — keep visible on dark UI */
+#view_container > .view_content_container > .file_container > .magnifier_container {
+  border-color: var(--accent-hover);
+}

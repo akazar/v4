@@ -1,7 +1,7 @@
 /**
  * hosting-server.js — Front-end hosting for the v4 app.
  * Registers Express routes and static middleware for: root landing page, /factory (production demo),
- * /config-creator, /camera-stream, /image-upload, /server-detection, /server-reasoning, /compare, and /debug. Serves the v4 root for shared lib/ and config/.
+ * /config-creator, /camera-stream, /image-upload, /server-detection, /server-reasoning, /compare, /annotate, and /debug. Serves the v4 root for shared lib/ and config/.
  */
 
 import express from 'express';
@@ -30,6 +30,7 @@ export function setupFrontendHosting(app) {
   const factoryWebPath = path.join(__dirname, '..', 'factory', 'web');
   const debugPath = path.join(__dirname, '..', 'apps', 'debug');
   const streamingPath = path.join(__dirname, '..', 'apps', 'streaming');
+  const annotatePath = path.join(__dirname, '..', 'apps', 'annotate');
 
   // Landing page at root (index + styles from apps/landing)
   app.get('/', (req, res) => {
@@ -135,5 +136,14 @@ export function setupFrontendHosting(app) {
   });
   app.get('/streaming/', (req, res) => {
     res.sendFile(path.join(streamingPath, 'index.html'));
+  });
+
+  // VIA image annotator at /annotate
+  app.use('/annotate', express.static(annotatePath));
+  app.get('/annotate', (req, res) => {
+    res.sendFile(path.join(annotatePath, 'index.html'));
+  });
+  app.get('/annotate/', (req, res) => {
+    res.sendFile(path.join(annotatePath, 'index.html'));
   });
 }
