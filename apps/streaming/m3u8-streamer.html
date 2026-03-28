@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>M3U8 streamer</title>
+  <link rel="stylesheet" href="/ui-kit/ui-kit.css" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>M3U8 streamer</h1>
+    <div class="info">
+      <div><strong>Stream ID:</strong> <span id="streamIdText"></span></div>
+      <div><strong>Streaming mode:</strong> <span id="streamModeText"></span></div>
+      <div id="sourceInfo"></div>
+      <div class="status" id="status">Initializing...</div>
+    </div>
+
+    <video id="urlVideo" autoplay playsinline muted></video>
+
+    <div class="row" style="margin-top: 1rem;">
+      <button id="startBtn">Start HLS stream</button>
+      <button id="stopBtn" disabled>Stop stream</button>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.7/dist/hls.min.js"></script>
+  <script src="m3u8-streamer.js" type="module"></script>
+</body>
+</html>

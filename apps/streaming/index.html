@@ -16,19 +16,33 @@
         <label for="sourceNameInput">Stream Name</label>
         <input id="sourceNameInput" type="text" placeholder="Enter stream name" />
       </div>
-      <div class="row">
-        <input id="sourceUrlInput" type="url" placeholder="Video URL (leave empty for camera)" />
-      </div>
-      <div class="row stream-mode-row" style="margin-top: 0.5rem;">
-        <span class="stream-mode-label">Streaming type:</span>
-        <label class="stream-mode-option">
-          <input type="radio" name="streamModeChoice" value="p2p" checked />
-          Peer-to-peer WebRTC
-        </label>
-        <label class="stream-mode-option">
-          <input type="radio" name="streamModeChoice" value="sfu" />
-          WebRTC server streaming
-        </label>
+      <div class="home-source-tabs">
+        <div class="home-source-tablist row" role="tablist" aria-label="Stream source">
+          <button type="button" class="home-source-tab active" role="tab" aria-selected="true" id="tab-source-camera" aria-controls="panel-source-camera" data-home-source-tab="camera">
+            Local camera
+          </button>
+          <button type="button" class="home-source-tab" role="tab" aria-selected="false" id="tab-source-m3u8" aria-controls="panel-source-m3u8" data-home-source-tab="m3u8">
+            M3U8 URL
+          </button>
+        </div>
+        <div id="panel-source-camera" class="home-source-panel" role="tabpanel" aria-labelledby="tab-source-camera">
+          <div class="row stream-mode-row" style="margin-top: 0.5rem;">
+            <span class="stream-mode-label">Streaming type:</span>
+            <label class="stream-mode-option">
+              <input type="radio" name="streamModeChoice" value="p2p" checked />
+              Peer-to-peer WebRTC
+            </label>
+            <label class="stream-mode-option">
+              <input type="radio" name="streamModeChoice" value="sfu" />
+              WebRTC server streaming
+            </label>
+          </div>
+        </div>
+        <div id="panel-source-m3u8" class="home-source-panel" role="tabpanel" aria-labelledby="tab-source-m3u8" hidden>
+          <div class="row" style="margin-top: 0.5rem;">
+            <input id="sourceUrlInput" type="url" placeholder="https://example.com/playlist.m3u8" />
+          </div>
+        </div>
       </div>
       <div class="row" style="margin-top: 0.75rem;">
         <button id="openStreamerBtn">Create streamer</button>

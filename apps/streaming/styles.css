@@ -70,6 +70,63 @@ input[type='url'] {
   background: var(--bg);
 }
 
+.home-source-tabs {
+  margin-bottom: 0.25rem;
+}
+
+.home-source-tablist {
+  gap: 0;
+  flex-wrap: nowrap;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  width: fit-content;
+  max-width: 100%;
+}
+
+.home-source-tab {
+  margin: 0;
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  font-family: inherit;
+  color: var(--text-muted);
+  background: var(--surface-alt);
+  border: none;
+  border-right: 1px solid var(--border);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.home-source-tab:last-child {
+  border-right: none;
+}
+
+.home-source-tab:hover {
+  color: var(--text);
+  background: var(--surface);
+}
+
+.home-source-tab.active {
+  color: var(--text);
+  background: var(--surface);
+  box-shadow: inset 0 -2px 0 0 var(--accent-hover);
+}
+
+.home-source-tab:focus-visible {
+  outline: none;
+  box-shadow: var(--uk-focus-ring);
+  z-index: 1;
+}
+
+.home-source-tab.active:focus-visible {
+  box-shadow: var(--uk-focus-ring), inset 0 -2px 0 0 var(--accent-hover);
+}
+
+.home-source-panel[hidden] {
+  display: none;
+}
+
 .stream-mode-row {
   align-items: center;
   gap: 0.75rem;

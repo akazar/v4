@@ -2,6 +2,9 @@ const socket = io();
 
 const sourceNameInput = document.getElementById("sourceNameInput");
 const sourceUrlInput = document.getElementById("sourceUrlInput");
+const panelSourceCamera = document.getElementById("panel-source-camera");
+const panelSourceM3u8 = document.getElementById("panel-source-m3u8");
+const homeSourceTabButtons = document.querySelectorAll("[data-home-source-tab]");
 const openStreamerBtn = document.getElementById("openStreamerBtn");
 const refreshBtn = document.getElementById("refreshBtn");
 const selectAllBtn = document.getElementById("selectAllBtn");
@@ -32,6 +35,32 @@ function setCreateStatus(text) {
 
 function setViewerStatus(text) {
   viewerStatus.textContent = text;
+}
+
+/** True when the URL should be opened on the HLS streamer page (m3u8 / Apple HLS). */
+function looksLikeM3u8Url(url) {
+  const u = String(url || "").trim().toLowerCase();
+  if (!u) return false;
+  if (u.includes(".m3u8")) return true;
+  if (u.includes("format=m3u8") || u.includes("type=m3u8")) return true;
+  return false;
+}
+
+function streamerPageForSource(source) {
+  const s = String(source || "").trim();
+  if (!s) return "streamer.html";
+  return looksLikeM3u8Url(s) ? "m3u8-streamer.html" : "streamer.html";
+}
+
+function streamerOpenUrl(streamId, mode) {
+  const modeQ =
+    mode === "sfu" ? `&streamMode=${encodeURIComponent("sfu")}` : "";
+  const source = (streamSourceUrls.get(streamId) || "").trim();
+  const page = streamerPageForSource(source);
+  const sourceQ = source
+    ? `&source=${encodeURIComponent(source)}`
+    : "";
+  return `${page}?streamId=${encodeURIComponent(streamId)}${modeQ}${sourceQ}`;
 }
 
 function renderStreams(streams) {
@@ -68,12 +97,7 @@ function renderStreams(streams) {
     openLinkBtn.textContent = "Open streamer";
     openLinkBtn.addEventListener("click", () => {
       const mode = streamTypes.get(streamId) || "p2p";
-      const modeQ =
-        mode === "sfu" ? `&streamMode=${encodeURIComponent("sfu")}` : "";
-      window.open(
-        `streamer.html?streamId=${encodeURIComponent(streamId)}${modeQ}`,
-        "_blank"
-      );
+      window.open(streamerOpenUrl(streamId, mode), "_blank");
     });
 
     const qrBtn = document.createElement("button");
@@ -84,12 +108,7 @@ function renderStreams(streams) {
     qrBtn.addEventListener("click", (e) => {
       e.preventDefault();
       const mode = streamTypes.get(streamId) || "p2p";
-      const modeQ =
-        mode === "sfu" ? `&streamMode=${encodeURIComponent("sfu")}` : "";
-      const url = new URL(
-        `streamer.html?streamId=${encodeURIComponent(streamId)}${modeQ}`,
-        location.href
-      ).href;
+      const url = new URL(streamerOpenUrl(streamId, mode), location.href).href;
       showQrModal(url, streamId);
     });
 
@@ -139,10 +158,32 @@ function getSelectedCreationStreamMode() {
   return el?.value === "sfu" ? "sfu" : "p2p";
 }
 
+function getActiveHomeSourceTab() {
+  return panelSourceM3u8.hidden ? "camera" : "m3u8";
+}
+
+function setHomeSourceTab(tab) {
+  const isM3u8 = tab === "m3u8";
+  panelSourceM3u8.hidden = !isM3u8;
+  panelSourceCamera.hidden = isM3u8;
+  homeSourceTabButtons.forEach((btn) => {
+    const on = btn.dataset.homeSourceTab === tab;
+    btn.classList.toggle("active", on);
+    btn.setAttribute("aria-selected", on ? "true" : "false");
+  });
+}
+
+homeSourceTabButtons.forEach((btn) => {
+  btn.addEventListener("click", () => {
+    setHomeSourceTab(btn.dataset.homeSourceTab || "camera");
+  });
+});
+
 function removeStream(streamId) {
   preGeneratedStreams.delete(streamId);
   stickyStreamIds.delete(streamId);
   streamTypes.delete(streamId);
+  streamSourceUrls.delete(streamId);
   hiddenStreamIds.add(streamId);
   renderStreams(getMergedStreams());
 }
@@ -154,13 +195,24 @@ openStreamerBtn.addEventListener("click", () => {
   preGeneratedStreams.add(streamId);
   renderStreams(getMergedStreams());
 
-  const sourceUrl = (sourceUrlInput.value || "").trim();
+  const sourceUrl =
+    getActiveHomeSourceTab() === "m3u8"
+      ? (sourceUrlInput.value || "").trim()
+      : "";
+  if (sourceUrl) {
+    streamSourceUrls.set(streamId, sourceUrl);
+  }
   const modeLabel =
     streamTypes.get(streamId) === "sfu"
       ? " WebRTC server streaming."
       : " Peer-to-peer WebRTC.";
+  const urlHint = sourceUrl
+    ? looksLikeM3u8Url(sourceUrl)
+      ? " M3U8 opens in the HLS streamer; dashboard/viewer use the same WebRTC path."
+      : " Video URL opens in the standard streamer (progressive / file URL)."
+    : "";
   setCreateStatus(
-    `Stream "${streamId}" added (${modeLabel.trim()}) Use "Open streamer" or QR to start.${sourceUrl ? " (URL source will apply when you open.)" : ""}`
+    `Stream "${streamId}" added (${modeLabel.trim()}) Use "Open streamer" or QR to start.${urlHint}`
   );
   sourceNameInput.value = "";
   sourceUrlInput.value = "";
@@ -219,6 +271,8 @@ let serverStreams = [];
 const preGeneratedStreams = new Set();
 /** streamId -> 'p2p' | 'sfu' for streams created on this page */
 const streamTypes = new Map();
+/** streamId -> source URL from the create form (m3u8 or other); used by Open streamer / QR */
+const streamSourceUrls = new Map();
 /** Streams we've seen from the server; keep in list until Remove is clicked (do not remove when streamer tab closes). */
 const stickyStreamIds = new Set();
 const hiddenStreamIds = new Set();
