@@ -1,30 +1,7 @@
+/* Softer “danger” accent for this tool (ui-kit defaults are red) */
 :root {
-    --bg: #0a0a0a;
-    --surface: #141414;
-    --surface-alt: #1a1a1a;
-    --border: #2a2a2a;
-    --border-light: #3a3a3a;
-    --text: #e8e8e8;
-    --text-muted: #888888;
-    --accent: #6b6b6b;
-    --accent-hover: #8a8a8a;
     --danger: #6b6b6b;
     --danger-hover: #9a9a9a;
-    --radius: 8px;
-    --font-sans: 'Segoe UI', system-ui, -apple-system, sans-serif;
-}
-
-* {
-    box-sizing: border-box;
-}
-
-body {
-    margin: 0;
-    font-family: var(--font-sans);
-    background: var(--bg);
-    color: var(--text);
-    line-height: 1.5;
-    min-height: 100vh;
 }
 
 .container {

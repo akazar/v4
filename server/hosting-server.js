@@ -35,6 +35,7 @@ export function setupFrontendHosting(app) {
   const streamingPath = path.join(__dirname, '..', 'apps', 'streaming');
   const annotatePath = path.join(__dirname, '..', 'apps', 'annotate');
   const modelTrainingPath = path.join(__dirname, '..', 'apps', 'model-training');
+  const uiKitPath = path.join(appsPath, 'ui-kit');
 
   // Landing page at root (EN) and Ukrainian at /ua
   app.get('/', (req, res) => {
@@ -54,6 +55,9 @@ export function setupFrontendHosting(app) {
 
   // Serve apps static files (other app assets)
   app.use(express.static(appsPath));
+
+  // Shared stylesheet (explicit mount so /ui-kit/ui-kit.css always resolves)
+  app.use('/ui-kit', express.static(uiKitPath));
 
   // Production demo: flexible configuration web version at /factory
   app.use('/factory', express.static(factoryWebPath));

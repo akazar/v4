@@ -1,0 +1,275 @@
+/**
+ * Vision v4 UI kit — shared design tokens and base components for apps/*.
+ * Import first in each application stylesheet; keep app-specific rules below.
+ */
+
+ :root {
+  --bg: #0a0a0a;
+  --surface: #141414;
+  --surface-alt: #1a1a1a;
+  --border: #2a2a2a;
+  --border-light: #3a3a3a;
+  --text: #e8e8e8;
+  --text-muted: #888888;
+  --accent: #6b6b6b;
+  --accent-hover: #8a8a8a;
+  --danger: #c44;
+  --danger-hover: #e55;
+  --radius: 8px;
+  --font-sans: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --uk-focus-ring: 0 0 0 2px rgba(120, 120, 120, 0.2);
+}
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  font-family: var(--font-sans);
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+}
+
+code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.92em;
+}
+
+.subtitle code {
+  background: var(--surface);
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+
+/* Surfaces */
+.panel,
+.info {
+  padding: 1.25rem 1.5rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 1rem;
+}
+
+.info strong {
+  color: var(--text);
+}
+
+.list-container {
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+/* Layout helpers */
+.row {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.toolbar,
+.dashboard-toolbar {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 0.75rem;
+}
+
+/* Forms */
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-bottom: 1rem;
+}
+
+.input-group:last-child {
+  margin-bottom: 0;
+}
+
+.input-group label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+input[type='text'],
+input[type='url'],
+input[type='number'] {
+  padding: 0.6rem 0.75rem;
+  font-size: 0.9rem;
+  font-family: inherit;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface-alt);
+  color: var(--text);
+}
+
+input[type='url'] {
+  width: 100%;
+}
+
+input[type='text']:focus,
+input[type='url']:focus,
+input[type='number']:focus {
+  outline: none;
+  border-color: var(--border-light);
+  box-shadow: var(--uk-focus-ring);
+}
+
+input[type='text']::placeholder,
+input[type='url']::placeholder,
+input[type='number']::placeholder {
+  color: var(--text-muted);
+}
+
+input[type='file'] {
+  padding: 0.6rem 0.75rem;
+  font-size: 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface-alt);
+  color: var(--text);
+}
+
+input[type='file']::file-selector-button {
+  padding: 0.35rem 0.75rem;
+  margin-right: 0.75rem;
+  border: none;
+  border-radius: 4px;
+  background: var(--accent);
+  color: #fff;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+select {
+  padding: 0.6rem 2.25rem 0.6rem 0.75rem;
+  font-size: 0.9rem;
+  font-family: inherit;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface-alt);
+  color: var(--text);
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23888888' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.6rem center;
+  background-size: 1rem;
+}
+
+select:hover {
+  border-color: var(--border-light);
+}
+
+select:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+/* Buttons */
+button,
+.btn {
+  padding: 0.6rem 1.1rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  font-family: inherit;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface-alt);
+  color: var(--text);
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+button:hover:not(:disabled),
+.btn:hover:not(:disabled) {
+  background: var(--accent);
+  border-color: var(--accent-hover);
+}
+
+button:disabled,
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background: var(--accent);
+  border-color: var(--accent-hover);
+  color: #fff;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--accent-hover);
+}
+
+.btn-danger {
+  border-color: rgba(200, 68, 68, 0.5);
+  color: #f0a0a0;
+}
+
+.btn-danger:hover:not(:disabled) {
+  background: var(--danger);
+  border-color: var(--danger-hover);
+  color: #fff;
+}
+
+/* Status & links */
+.status {
+  margin-top: 0.75rem;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  min-height: 1.4em;
+}
+
+.status.error {
+  color: var(--danger);
+}
+
+.status.running {
+  color: #8ab4d4;
+}
+
+.status.done {
+  color: #7bc96b;
+}
+
+.back-link {
+  display: inline-block;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.back-link:hover {
+  color: var(--text);
+}
+
+.controls {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  align-items: center;
+}

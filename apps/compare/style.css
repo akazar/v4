@@ -1,43 +1,30 @@
+/* Compare — layout only; colors/spacing tokens from ui-kit, with a few local overrides in :root */
+
 :root {
   color-scheme: dark;
   --bg: #000000;
-  --bg-elevated: #1a1a1a;
-  --bg-elevated-soft: #1a1a1a;
-  --border-subtle: #333333;
-  --border-hover: #404040;
-  --border-focus: #606060;
-  --accent: #606060;
-  --accent-soft: #404040;
-  --accent-strong: #606060;
-  --text-primary: #e0e0e0;
-  --text-heading: #ffffff;
+  --border: #333333;
+  --border-light: #404040;
   --text-muted: #b0b0b0;
-  --text-placeholder: #666666;
   --danger: #ff4b81;
+  --text-heading: #ffffff;
+  --text-placeholder: #666666;
   --radius-lg: 16px;
   --radius-md: 12px;
   --radius-sm: 8px;
   --shadow-soft: 0 18px 45px rgba(0, 0, 0, 0.6);
   --shadow-subtle: 0 0 0 1px #333333;
-}
-
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
+  --compare-focus: #606060;
 }
 
 html,
 body {
-  margin: 0;
-  padding: 0;
   height: 100%;
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   background: var(--bg);
-  color: var(--text-primary);
+  color: var(--text);
 }
 
 .app {
@@ -65,12 +52,12 @@ body {
 }
 
 .block {
-  background: var(--bg-elevated);
+  background: var(--surface-alt);
   border-radius: var(--radius-lg);
   padding: 18px 18px 20px;
   margin-bottom: 18px;
   box-shadow: var(--shadow-soft), var(--shadow-subtle);
-  border: 1px solid var(--border-subtle);
+  border: 1px solid var(--border);
 }
 
 .block h2 {
@@ -86,10 +73,10 @@ body {
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  background: var(--bg-elevated);
+  background: var(--surface-alt);
   border-radius: var(--radius-md);
   padding: 14px 14px 14px 16px;
-  border: 1px solid var(--border-subtle);
+  border: 1px solid var(--border);
 }
 
 .upload-label span {
@@ -99,10 +86,10 @@ body {
 #image-input {
   padding: 6px 8px;
   font-size: 13px;
-  color: var(--text-primary);
-  background: var(--bg-elevated);
+  color: var(--text);
+  background: var(--surface-alt);
   border-radius: 999px;
-  border: 1px solid var(--border-subtle);
+  border: 1px solid var(--border);
   cursor: pointer;
 }
 
@@ -118,13 +105,13 @@ body {
 
 .block-original .image-wrapper {
   border-radius: var(--radius-md);
-  background: var(--bg-elevated);
+  background: var(--surface-alt);
   min-height: 180px;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 16px;
-  border: 1px dashed var(--border-subtle);
+  border: 1px dashed var(--border);
 }
 
 #original-image {
@@ -147,11 +134,13 @@ body {
   }
 }
 
-.panel {
-  background: var(--bg-elevated);
-  border-radius: var(--radius-md);
-  border: 1px solid var(--border-subtle);
+/* Tighter than default ui-kit .panel; scoped under .app */
+.app .panel {
+  margin-bottom: 0;
   padding: 10px 10px 12px;
+  background: var(--surface-alt);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -176,23 +165,23 @@ body {
   font-size: 12px;
   padding: 4px 10px;
   border-radius: 999px;
-  border: 1px solid var(--border-subtle);
-  background: var(--bg-elevated);
-  color: var(--text-primary);
+  border: 1px solid var(--border);
+  background: var(--surface-alt);
+  color: var(--text);
   outline: none;
 }
 
 .model-select:focus,
 .reasoning-select:focus {
-  border-color: var(--border-focus);
-  box-shadow: 0 0 0 1px var(--border-focus);
+  border-color: var(--compare-focus);
+  box-shadow: 0 0 0 1px var(--compare-focus);
 }
 
 .canvas-container {
   position: relative;
   border-radius: var(--radius-md);
-  background: var(--bg-elevated);
-  border: 1px dashed var(--border-subtle);
+  background: var(--surface-alt);
+  border: 1px dashed var(--border);
   overflow: hidden;
   min-height: 140px;
 }
@@ -216,11 +205,12 @@ canvas {
   resize: vertical;
   padding: 10px 10px 10px;
   border-radius: var(--radius-md);
-  border: 1px solid var(--border-subtle);
-  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  background: var(--surface-alt);
   font-size: 13px;
   line-height: 1.5;
-  color: var(--text-primary);
+  color: var(--text);
+  font-family: inherit;
 }
 
 .reasoning-output::placeholder {
@@ -228,11 +218,10 @@ canvas {
 }
 
 .reasoning-output.loading {
-  border-color: var(--border-focus);
-  box-shadow: 0 0 0 1px var(--border-focus);
+  border-color: var(--compare-focus);
+  box-shadow: 0 0 0 1px var(--compare-focus);
 }
 
 .block-reasoning .panel-header span {
   color: var(--text-muted);
 }
-
