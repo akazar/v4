@@ -477,6 +477,32 @@ button:disabled,
   vertical-align: middle;
 }
 
+.success-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 1.5rem;
+  transform: translateX(-50%) translateY(120%);
+  z-index: 3000;
+  max-width: min(90vw, 26rem);
+  padding: 0.85rem 1.35rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #e8f5e9;
+  background: rgba(34, 70, 48, 0.96);
+  border: 1px solid rgba(100, 180, 120, 0.45);
+  border-radius: var(--radius);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.45);
+  text-align: center;
+  pointer-events: none;
+  opacity: 0;
+  transition: transform 0.35s ease, opacity 0.35s ease;
+}
+
+.success-toast.success-toast--visible {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
 .hidden {
   display: none !important;
 }

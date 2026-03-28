@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vision System — платформа розпізнавання об'єктів</title>
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+    <nav class="lang-switcher" aria-label="Мова">
+        <a class="lang-switcher-link" href="/" lang="en">EN</a>
+        <span class="lang-switcher-sep" aria-hidden="true">|</span>
+        <span class="lang-switcher-current" lang="uk">UA</span>
+    </nav>
+    <div class="container">
+        <header class="hero">
+            <h1>Vision System</h1>
+            <p class="subtitle">Платформа розпізнавання об'єктів</p>
+            <details class="features-accordion">
+                <summary class="features-accordion-summary">Усі функції</summary>
+                <div class="features-accordion-panel">
+                    <div class="features-cards-grid">
+                        <a class="feature-mini-card" href="/factory/web">
+                            <span class="feature-mini-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg></span>
+                            <span class="feature-mini-card-name">Демо продакшн</span>
+                        </a>
+                        <a class="feature-mini-card" href="/streaming">
+                            <span class="feature-mini-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="15" height="10" rx="1"/><path d="M17 10l5-3v10l-5-3v-4z"/></svg></span>
+                            <span class="feature-mini-card-name">Стрімінг</span>
+                        </a>
+                        <a class="feature-mini-card" href="/config-manager">
+                            <span class="feature-mini-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></span>
+                            <span class="feature-mini-card-name">Менеджер конфігів</span>
+                        </a>
+                        <a class="feature-mini-card" href="/config-creator">
+                            <span class="feature-mini-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg></span>
+                            <span class="feature-mini-card-name">Генератор конфігів</span>
+                        </a>
+                        <a class="feature-mini-card" href="/camera-stream">
+                            <span class="feature-mini-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></span>
+                            <span class="feature-mini-card-name">Камера</span>
+                        </a>
+                        <a class="feature-mini-card" href="/image-upload">
+                            <span class="feature-mini-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></span>
+                            <span class="feature-mini-card-name">Завантаження зображень</span>
+                        </a>
+                        <a class="feature-mini-card" href="/model-training/dashboard">
+                            <span class="feature-mini-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></span>
+                            <span class="feature-mini-card-name">Моделі (дашборд)</span>
+                        </a>
+                        <a class="feature-mini-card" href="/model-training">
+                            <span class="feature-mini-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M8 17v-4"/><path d="M12 17V9"/><path d="M16 17v-7"/><path d="M20 17v-3"/></svg></span>
+                            <span class="feature-mini-card-name">Навчання моделі</span>
+                        </a>
+                        <a class="feature-mini-card" href="/annotate">
+                            <span class="feature-mini-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg></span>
+                            <span class="feature-mini-card-name">Анотатор зображень</span>
+                        </a>
+                        <a class="feature-mini-card" href="/compare">
+                            <span class="feature-mini-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="8" height="16" rx="1"/><rect x="13" y="4" width="8" height="16" rx="1"/><path d="M7 9h0M17 9h0"/></svg></span>
+                            <span class="feature-mini-card-name">Порівняння моделей</span>
+                        </a>
+                        <a class="feature-mini-card" href="/server-detection">
+                            <span class="feature-mini-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><path d="M6 6h.01M6 18h.01"/></svg></span>
+                            <span class="feature-mini-card-name">Розпізнавання на сервері</span>
+                        </a>
+                        <a class="feature-mini-card" href="/server-reasoning">
+                            <span class="feature-mini-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M9 10h6"/><path d="M9 14h4"/></svg></span>
+                            <span class="feature-mini-card-name">Міркування на сервері</span>
+                        </a>
+                    </div>
+                </div>
+            </details>
+        </header>
+
+        <main class="content">
+            <section class="intro">
+                <h2>Огляд системи</h2>
+                <p>
+                    Vision System — комплексна платформа розпізнавання об'єктів на основі сучасних моделей машинного навчання
+                    для виявлення та ідентифікації об'єктів у потоках з камер у реальному часі та на статичних зображеннях.
+                    На базі моделі MediaPipe EfficientDet Lite2 система забезпечує точне, швидке та налаштовуване розпізнавання.
+                </p>
+                <p>
+                    Платформа має модульну архітектуру: зручне налаштування класів детекції, порогів і власних дій.
+                    Підтримується обробка в реальному часі з камер і пакетна обробка завантажених зображень — для моніторингу,
+                    аналізу контенту та автоматичного відстеження об'єктів.
+                </p>
+            </section>
+
+            <section class="features">
+                <h2>Ключові можливості</h2>
+                <ul class="feature-list">
+                    <li><strong>Розпізнавання в реальному часі:</strong> обробка відео з камери з налаштовуваними інтервалами</li>
+                    <li><strong>Пакетна обробка зображень:</strong> завантаження з файлів або URL для аналізу</li>
+                    <li><strong>Серверне розпізнавання:</strong> API (Puppeteer + MediaPipe) та перегляд результатів у браузері</li>
+                    <li><strong>Серверне міркування:</strong> зображення та запит до AI (ChatGPT або Gemini) з відповіддю в браузері</li>
+                    <li><strong>Налаштовувані класи:</strong> вибір типів об'єктів (люди, транспорт, тварини тощо)</li>
+                    <li><strong>Візуалізація рамок:</strong> bounding boxes і підписи за потреби</li>
+                    <li><strong>Система дій:</strong> власні функції за результатами детекції</li>
+                    <li><strong>Інтеграція OpenAI:</strong> опційний опис зображень через AI</li>
+                    <li><strong>Модульна архітектура:</strong> легко розширювати під конкретні задачі</li>
+                    <li><strong>Навчання моделей:</strong> UI для підготовки детекції та fine-tuning VLM, розподілу датасету та графіків метрик (<a href="/model-training">навчання</a>, <a href="/model-training/dashboard">збережені моделі</a>)</li>
+                </ul>
+            </section>
+
+            <section class="modules">
+                <div class="module-card module-card-demo">
+                    <div class="module-header">
+                        <div class="module-header-title">
+                            <h2>Демо продакшн</h2>
+                            <span class="demo-badge">Гнучка конфігурація</span>
+                        </div>
+                        <a href="/factory/web" class="cta-button cta-button-primary">Запустити демо</a>
+                    </div>
+                    <div class="module-content">
+                        <h3>Гнучка конфігурація функціональності — веб-версія</h3>
+                        <p>
+                            Односторінкове демо повного vision-конвеєра в браузері на <code>config-factory.js</code>.
+                            Перемикання YOLO та MediaPipe, керування розпізнаванням і періодичними діями, UI — усе з одного конфігу.
+                        </p>
+                        <h4>Можливості:</h4>
+                        <ul>
+                            <li><strong>Керування конфігом:</strong> поведінка в <code>config-factory.js</code> (класи, пороги, модель, дії)</li>
+                            <li><strong>Дві моделі:</strong> YOLO або MediaPipe для локальної детекції</li>
+                            <li><strong>Потік з камери:</strong> живе відео з рамками та інтервалом розпізнавання</li>
+                            <li><strong>Локальні дії:</strong> дії при розпізнаванні та періодичні дії з обмеженням частоти</li>
+                            <li><strong>Опційний UI:</strong> кнопки через <code>config.ui</code>; headless для автоматизації</li>
+                        </ul>
+                        <h4>Сценарії:</h4>
+                        <ul>
+                            <li>Ознайомлення з платформою на еталонному конфігу</li>
+                            <li>Перевірка змін конфігу перед розгортанням в інших модулях</li>
+                            <li>Демо та тестування веб-версії з гнучкою конфігурацією</li>
+                        </ul>
+                        <p class="demo-note">Через <a href="/config-creator">генератор конфігів</a> зібрати <code>config.js</code>, замінити <code>config-factory.js</code> або вказати свій конфіг. <a href="/config-manager">Менеджер конфігів</a> — перегляд і видалення файлів у <code>config/public</code>.</p>
+                    </div>
+                </div>
+
+                <div class="module-card">
+                    <div class="module-header">
+                        <h2>Багатопотоковий WebRTC</h2>
+                        <a href="/streaming" class="cta-button">Відкрити стрімінг</a>
+                    </div>
+                    <div class="module-content">
+                        <h3>WebRTC: захоплення кадру та розпізнавання</h3>
+                        <p>
+                            Кілька відеопотоків WebRTC з камер пристроїв або URL відео, перегляд на одній сторінці,
+                            захоплення кадрів для детекції YOLO або MediaPipe — усе в браузері через P2P.
+                        </p>
+                        <h4>Можливості:</h4>
+                        <ul>
+                            <li><strong>Потоки з камери:</strong> сторінки стрімера з трансляцією через WebRTC</li>
+                            <li><strong>Потоки з URL:</strong> відеофайл (MP4, WebM) замість камери</li>
+                            <li><strong>Мультиперегляд:</strong> кілька потоків поруч на одній сторінці перегляду</li>
+                            <li><strong>Захоплення та розпізнавання:</strong> кадр з потоку, модель, bounding boxes</li>
+                            <li><strong>Вибір моделі:</strong> YOLO або MediaPipe для захопленого кадру</li>
+                            <li><strong>QR-коди:</strong> швидке відкриття стрімера на мобільному</li>
+                        </ul>
+                        <h4>Сценарії:</h4>
+                        <ul>
+                            <li>Мультикамерний моніторинг із детекцією за запитом</li>
+                            <li>Стрімінг файлу та аналіз окремих кадрів</li>
+                            <li>Віддалений доступ до камери через QR</li>
+                            <li>Порівняння результатів з різних ракурсів</li>
+                        </ul>
+                        <h4>Послідовність:</h4>
+                        <ol>
+                            <li>Ввести ID потоку (за потреби URL відео) на головній і відкрити стрімер</li>
+                            <li>Запустити камеру або відео на сторінці стрімера</li>
+                            <li>Обрати активні потоки та відкрити переглядач</li>
+                            <li>«Capture», модель, перегляд детекції</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="module-card">
+                    <div class="module-header">
+                        <h2>Менеджер конфігів</h2>
+                        <a href="/config-manager" class="cta-button">Відкрити менеджер</a>
+                    </div>
+                    <div class="module-content">
+                        <h3>Список, перегляд і видалення конфігурацій</h3>
+                        <p>
+                            Перелік файлів у <code>config/public</code>, відкриття демо з обраним конфігом або видалення.
+                            Завантаження через API конфігурацій.
+                        </p>
+                        <h4>Можливості:</h4>
+                        <ul>
+                            <li><strong>Список:</strong> усі імена файлів у <code>config/public</code></li>
+                            <li><strong>Перегляд:</strong> демо <code>/factory/web</code> з конфігом за id</li>
+                            <li><strong>Видалення:</strong> файл з <code>config/public</code> через API</li>
+                        </ul>
+                        <h4>Сценарії:</h4>
+                        <ul>
+                            <li>Швидке перемикання конфігів без ручної зміни URL</li>
+                            <li>Очищення тестових конфігів</li>
+                            <li>Доступ до демо з конкретним конфігом</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="module-card">
+                    <div class="module-header">
+                        <h2>Генератор конфігів</h2>
+                        <a href="/config-creator" class="cta-button">Відкрити генератор</a>
+                    </div>
+                    <div class="module-content">
+                        <h3>Створення та налаштування config.js</h3>
+                        <p>
+                            Веб-інструмент для збирання <code>config.js</code> Vision v4 без ручного редагування:
+                            класи детекції, пороги, модель, API та інше — форма, копіювання або завантаження файлу.
+                        </p>
+                        <h4>Можливості:</h4>
+                        <ul>
+                            <li><strong>Розпізнавання:</strong> класи (людина, собака, авто тощо), поріг, інтервал</li>
+                            <li><strong>Модель:</strong> шлях до ресурсу, delegate (GPU/CPU), поріг score</li>
+                            <li><strong>API:</strong> базовий URL і промпт для опису зображення у стилі OpenAI</li>
+                            <li><strong>Опції:</strong> додаткові параметри рантайму та відображення</li>
+                            <li><strong>Експорт:</strong> копія або завантаження <code>config.js</code></li>
+                        </ul>
+                        <h4>Сценарії:</h4>
+                        <ul>
+                            <li>Швидкий старт нового розгортання Vision v4</li>
+                            <li>Експерименти з класами та порогами</li>
+                            <li>Конфіги для dev / staging / production</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="module-card">
+                    <div class="module-header">
+                        <h2>Потік з камери</h2>
+                        <a href="/camera-stream" class="cta-button">Запустити камеру</a>
+                    </div>
+                    <div class="module-content">
+                        <h3>Розпізнавання об'єктів у реальному часі</h3>
+                        <p>
+                            Безперервна детекція з відеопотоку камери пристрою з накладанням bounding boxes на відео.
+                        </p>
+                        <h4>Можливості:</h4>
+                        <ul>
+                            <li><strong>Живе відео:</strong> потік камери як фон</li>
+                            <li><strong>Безперервне розпізнавання:</strong> детекція з налаштовуваним інтервалом (типово 500 мс)</li>
+                            <li><strong>Ручне розпізнавання:</strong> один прохід за запитом</li>
+                            <li><strong>Рамки в реальному часі:</strong> об'єкти та впевненість</li>
+                            <li><strong>Дії при розпізнаванні:</strong> власні функції за результатами</li>
+                            <li><strong>Періодичні дії:</strong> незалежно від циклів детекції</li>
+                        </ul>
+                        <h4>Сценарії:</h4>
+                        <ul>
+                            <li>Безпека та спостереження</li>
+                            <li>Підрахунок людей і трекінг</li>
+                            <li>Наявність об'єктів у кадрі</li>
+                            <li>Інтерактивні застосунки з візуальним фідбеком</li>
+                        </ul>
+                        <h4>Керування:</h4>
+                        <ul>
+                            <li><strong>Увімкнути камеру:</strong> показати потік</li>
+                            <li><strong>Вимкнути камеру:</strong> зупинити та звільнити ресурси</li>
+                            <li><strong>Почати розпізнавання:</strong> безперервна детекція</li>
+                            <li><strong>Зупинити розпізнавання:</strong> пауза, камера активна</li>
+                            <li><strong>Ручне розпізнавання:</strong> один прохід по поточному кадру</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="module-card">
+                    <div class="module-header">
+                        <h2>Завантаження зображень</h2>
+                        <a href="/image-upload" class="cta-button">Відкрити модуль</a>
+                    </div>
+                    <div class="module-content">
+                        <h3>Аналіз статичних зображень</h3>
+                        <p>
+                            Завантаження файлів або зображень за URL, детекція об'єктів, рамки та завантаження
+                            анотованого зображення.
+                        </p>
+                        <h4>Можливості:</h4>
+                        <ul>
+                            <li><strong>Файл:</strong> JPG, PNG з пристрою</li>
+                            <li><strong>URL:</strong> віддалене зображення</li>
+                            <li><strong>Один прохід:</strong> аналіз за кнопкою</li>
+                            <li><strong>Візуалізація:</strong> рамки та впевненість</li>
+                            <li><strong>Завантаження:</strong> зберегти результат з рамками</li>
+                            <li><strong>Дії:</strong> власні функції за результатами</li>
+                        </ul>
+                        <h4>Сценарії:</h4>
+                        <ul>
+                            <li>Пакетний аналіз зображень</li>
+                            <li>Модерація контенту</li>
+                            <li>Анотування та маркування</li>
+                            <li>Контроль якості та верифікація об'єктів</li>
+                            <li>Дослідження та збір даних</li>
+                        </ul>
+                        <h4>Послідовність:</h4>
+                        <ol>
+                            <li>Обрати файл або ввести URL</li>
+                            <li>Натиснути «Recognize» для детекції</li>
+                            <li>Переглянути рамки</li>
+                            <li>За потреби завантажити результат</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="module-card">
+                    <div class="module-header">
+                        <h2>Навчання моделі</h2>
+                        <div class="module-header-actions">
+                            <a href="/model-training/dashboard" class="cta-button">Дашборд моделей</a>
+                            <a href="/model-training" class="cta-button cta-button-primary">Навчання</a>
+                        </div>
+                    </div>
+                    <div class="module-content">
+                        <h3>Детекція та fine-tuning зорово-мовних моделей</h3>
+                        <p>
+                            Застосунок <code>/model-training</code> — підготовка до навчання розпізнавання та VLM: базова модель зі списку,
+                            зображення з файлами анотацій, розподіл train / validation / test, гіперпараметри,
+                            запуск із графіками метрик (loss, mAP, precision/recall, learning rate, час).
+                            <strong>Дашборд збережених моделей</strong> (<code>/model-training/dashboard</code>) — список checkpoint-ів у
+                            <code>apps/model-training/models-list</code> та видалення через API сервера v4.
+                        </p>
+                        <h4>Можливості:</h4>
+                        <ul>
+                            <li><strong>UI навчання:</strong> базові моделі, датасет, спліти, гіперпараметри, метрики, експорт або збереження checkpoint</li>
+                            <li><strong>Дашборд:</strong> файли <code>.pt</code> / <code>.tflite</code> / <code>.safetensors</code> у <code>models-list</code>; видалення</li>
+                            <li><strong>Завантаження:</strong> зображення та анотації; співставлення за іменем файлу</li>
+                            <li><strong>Спліти:</strong> train / val / test на рядок або авто-пресети</li>
+                            <li><strong>Запуск:</strong> епохи з оновленням графіків</li>
+                        </ul>
+                        <h4>Сценарії:</h4>
+                        <ul>
+                            <li>Прототип операторського UI перед підключенням реального тренера</li>
+                            <li>Керування збереженими checkpoint після збереження з дашборду</li>
+                            <li>Разом із <a href="/annotate">VIA</a> та <a href="/image-upload">завантаженням зображень</a></li>
+                        </ul>
+                        <p class="demo-note">Збереження checkpoint і дашборд потребують Node-сервер v4. Підключіть бекенд-тренер замість клієнтського циклу за потреби.</p>
+                    </div>
+                </div>
+
+                <div class="module-card">
+                    <div class="module-header">
+                        <h2>VIA Image Annotator</h2>
+                        <a href="/annotate" class="cta-button">Запустити анотатор</a>
+                    </div>
+                    <div class="module-content">
+                        <h3>Ручна анотація зображень, аудіо та відео</h3>
+                        <p>
+                            У пакеті — <a href="http://www.robots.ox.ac.uk/~vgg/software/via/" rel="noopener noreferrer">VGG Image Annotator (VIA)</a>
+                            у варіанті для зображень: автономний HTML/JS/CSS інструмент для міток на медіа в браузері без окремого встановлення.
+                            На цьому хості доступний за шляхом <code>/annotate</code>.
+                        </p>
+                        <h4>Можливості:</h4>
+                        <ul>
+                            <li><strong>Медіа:</strong> локальні файли або URI <code>file://</code> / <code>http://</code>, масове введення URI, тип Image / Video / Audio / auto</li>
+                            <li><strong>Просторові регіони:</strong> прямокутні рамки на зображеннях і кадрах відео (на паузі)</li>
+                            <li><strong>Часові сегменти:</strong> інтервали на аудіо та відео</li>
+                            <li><strong>Атрибути:</strong> редактор атрибутів регіонів</li>
+                            <li><strong>Імпорт / експорт:</strong> VIA3 (CSV), тільки сегменти (CSV), COCO; імпорт shared project або VIA2 JSON</li>
+                            <li><strong>Гарячі клавіші:</strong> пробіл — play/pause; n / p — наступне/попереднє зображення; повний список у довідці застосунку</li>
+                        </ul>
+                        <h4>Сценарії:</h4>
+                        <ul>
+                            <li>Ground truth для датасетів і оцінки моделей</li>
+                            <li>Маркування перед перевіркою в <a href="/image-upload">завантаженні зображень</a> або <a href="/compare">порівнянні</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="module-card">
+                    <div class="module-header">
+                        <h2>Порівняння</h2>
+                        <a href="/compare" class="cta-button">Відкрити порівняння</a>
+                    </div>
+                    <div class="module-content">
+                        <h3>Локальне та серверне розпізнавання й міркування</h3>
+                        <p>
+                            Одне зображення: локальна детекція (YOLO або MediaPipe), серверне розпізнавання та
+                            серверне міркування (ChatGPT або Gemini) — результати поруч на одному екрані.
+                        </p>
+                        <h4>Можливості:</h4>
+                        <ul>
+                            <li><strong>Одне зображення:</strong> усі панелі використовують його</li>
+                            <li><strong>Локально:</strong> YOLO або MediaPipe у браузері</li>
+                            <li><strong>Сервер:</strong> детекція через API та рамки</li>
+                            <li><strong>Міркування:</strong> ChatGPT або Gemini, текстова відповідь</li>
+                            <li><strong>Поруч:</strong> порівняння локальної та серверної детекції й міркувань</li>
+                        </ul>
+                        <h4>Сценарії:</h4>
+                        <ul>
+                            <li>Порівняння локальної та серверної детекції на тому ж зображенні</li>
+                            <li>Розпізнавання та міркування без перемикання застосунків</li>
+                            <li>Оцінка моделі або API одним завантаженням</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="module-card">
+                    <div class="module-header">
+                        <h2>Серверне розпізнавання</h2>
+                        <a href="/server-detection" class="cta-button">Відкрити модуль</a>
+                    </div>
+                    <div class="module-content">
+                        <h3>Детекція через API сервера</h3>
+                        <p>
+                            Зображення з файлу або URL; обробка на сервері розпізнавання (Puppeteer + MediaPipe),
+                            відображення рамок, завантаження анотованого JPG.
+                        </p>
+                        <h4>Можливості:</h4>
+                        <ul>
+                            <li><strong>Файл або URL:</strong> завантаження з пристрою або мережі</li>
+                            <li><strong>Сервер:</strong> без моделі в клієнті</li>
+                            <li><strong>Візуалізація:</strong> рамки та підписи</li>
+                            <li><strong>Завантаження:</strong> зберегти результат як JPG</li>
+                        </ul>
+                        <h4>Сценарії:</h4>
+                        <ul>
+                            <li>Винесення навантаження на окремий сервер</li>
+                            <li>Тест API розпізнавання з браузера</li>
+                            <li>Разова або пакетна обробка без завантаження моделі в клієнт</li>
+                        </ul>
+                        <h4>Вимоги:</h4>
+                        <ul>
+                            <li>Запущений сервер розпізнавання (наприклад <code>npm run recognize</code> або окремий процес на заданому порту)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="module-card">
+                    <div class="module-header">
+                        <h2>Серверне міркування</h2>
+                        <a href="/server-reasoning" class="cta-button">Відкрити модуль</a>
+                    </div>
+                    <div class="module-content">
+                        <h3>AI-міркування над зображеннями</h3>
+                        <p>
+                            Зображення та текстовий промпт на сервер; ChatGPT (OpenAI) або Gemini повертають текстову відповідь.
+                            Оберіть модель, введіть запит і завантажте зображення.
+                        </p>
+                        <h4>Можливості:</h4>
+                        <ul>
+                            <li><strong>Зображення + промпт:</strong> питання або запит на аналіз</li>
+                            <li><strong>Модель:</strong> ChatGPT (наприклад gpt-4.1-mini) або Gemini (наприклад gemini-3-flash-preview)</li>
+                            <li><strong>Сервер:</strong> зорово-мовне міркування через OpenAI або Google API</li>
+                            <li><strong>Відповідь:</strong> текст у браузері</li>
+                        </ul>
+                        <h4>Сценарії:</h4>
+                        <ul>
+                            <li>Опис, підпис або Q&amp;A щодо зображення</li>
+                            <li>Візуальний аналіз без моделі в клієнті</li>
+                            <li>Тест API <code>POST /api/reasoning</code></li>
+                        </ul>
+                        <h4>Вимоги:</h4>
+                        <ul>
+                            <li>Головний сервер v4 (reasoning — частина того ж сервера)</li>
+                            <li><code>OPENAI_API_KEY</code> та/або <code>GEMINI_API_KEY</code> у <code>.env</code></li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section class="technical">
+                <h2>Технічні деталі</h2>
+                <div class="tech-grid">
+                    <div class="tech-item">
+                        <h3>Модель</h3>
+                        <p>MediaPipe EfficientDet Lite2 — легка ефективна модель детекції для реального часу</p>
+                    </div>
+                    <div class="tech-item">
+                        <h3>Конфігурація</h3>
+                        <p>Централізована система: класи, пороги, інтервали, дії. <a href="/config-creator">Генератор конфігів</a> для <code>config.js</code> у браузері; <a href="/config-manager">менеджер конфігів</a> для <code>config/public</code>.</p>
+                    </div>
+                    <div class="tech-item">
+                        <h3>Архітектура</h3>
+                        <p>Модульні клієнтські застосунки та спільні бібліотеки для розпізнавання, дій і візуалізації</p>
+                    </div>
+                    <div class="tech-item">
+                        <h3>Інтеграція API</h3>
+                        <p>Опційна інтеграція OpenAI GPT-4 Vision для розширеного опису та аналізу зображень</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <p>Vision System v4 — платформа розпізнавання об'єктів</p>
+        </footer>
+    </div>
+</body>
+</html>

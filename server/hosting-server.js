@@ -1,7 +1,8 @@
 /**
  * hosting-server.js — Front-end hosting for the v4 app.
  * Registers Express routes and static middleware for: root landing page, /factory (production demo),
- * /config-creator, /config-manager, /camera-stream, /image-upload, /model-training, /model-training/dashboard,
+ * /ua (Ukrainian landing), /config-creator, /config-manager, /camera-stream, /image-upload, /model-training,
+ * /model-training/dashboard,
  * /server-detection,
  * /server-reasoning, /compare, /streaming, /annotate, and /debug. Serves the v4 root for shared lib/ and config/.
  */
@@ -35,9 +36,15 @@ export function setupFrontendHosting(app) {
   const annotatePath = path.join(__dirname, '..', 'apps', 'annotate');
   const modelTrainingPath = path.join(__dirname, '..', 'apps', 'model-training');
 
-  // Landing page at root (index + styles from apps/landing)
+  // Landing page at root (EN) and Ukrainian at /ua
   app.get('/', (req, res) => {
     res.sendFile(path.join(landingPath, 'index.html'));
+  });
+  app.get('/ua', (req, res) => {
+    res.sendFile(path.join(landingPath, 'ua', 'index.html'));
+  });
+  app.get('/ua/', (req, res) => {
+    res.sendFile(path.join(landingPath, 'ua', 'index.html'));
   });
   app.use(express.static(landingPath));
 

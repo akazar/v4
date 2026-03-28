@@ -465,6 +465,22 @@ function stopTraining() {
   trainingRunning = false;
 }
 
+let successToastTimer = null;
+
+function showSuccessToast(message) {
+  const el = document.getElementById('successToast');
+  if (!el) return;
+  clearTimeout(successToastTimer);
+  el.textContent = message;
+  el.setAttribute('aria-hidden', 'false');
+  el.classList.add('success-toast--visible');
+  successToastTimer = setTimeout(() => {
+    el.classList.remove('success-toast--visible');
+    el.setAttribute('aria-hidden', 'true');
+    el.textContent = '';
+  }, 3000);
+}
+
 function exportModelToDisk() {
   const modelId = $('modelSelect').value;
   const ext = extensionForModelId(modelId);
@@ -476,6 +492,7 @@ function exportModelToDisk() {
   a.click();
   URL.revokeObjectURL(a.href);
   $('exportStatus').textContent = `Exported empty ${ext} file: ${name}`;
+  showSuccessToast(`Exported: ${name}`);
 }
 
 async function saveModelOnServer() {
@@ -493,7 +510,9 @@ async function saveModelOnServer() {
       $('exportStatus').textContent = data.error || `Save failed (${res.status}).`;
       return;
     }
-    $('exportStatus').textContent = `Saved empty file on server: ${data.path || data.file || 'ok'}`;
+    const savedPath = data.path || data.file || 'ok';
+    $('exportStatus').textContent = `Saved empty file on server: ${savedPath}`;
+    showSuccessToast(`Saved: ${data.file || savedPath}`);
   } catch (e) {
     $('exportStatus').textContent =
       e instanceof Error ? e.message : 'Save failed (is the v4 server running on this origin?)';

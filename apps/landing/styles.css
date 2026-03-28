@@ -12,6 +12,57 @@ html, body {
     line-height: 1.6;
 }
 
+/* Top-right language switcher (EN / UA landing) */
+.lang-switcher {
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.55rem 0.9rem;
+    background: rgba(18, 18, 18, 0.94);
+    border: 1px solid #3a3a3a;
+    border-top: none;
+    border-right: none;
+    border-radius: 0 0 0 10px;
+    font-size: 0.875rem;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+}
+
+.lang-switcher-link {
+    color: #b8b8b8;
+    text-decoration: none;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    padding: 0.2rem 0.35rem;
+    border-radius: 4px;
+    transition: color 0.2s ease, background 0.2s ease;
+}
+
+.lang-switcher-link:hover {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.lang-switcher-link:focus-visible {
+    outline: 2px solid #8ab4d4;
+    outline-offset: 2px;
+}
+
+.lang-switcher-current {
+    color: #ffffff;
+    font-weight: 700;
+    padding: 0.2rem 0.35rem;
+    cursor: default;
+}
+
+.lang-switcher-sep {
+    color: #555;
+    user-select: none;
+}
+
 .container {
     max-width: 1200px;
     margin: 0 auto;
