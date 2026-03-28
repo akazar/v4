@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Saved models — Model Training — Vision v4</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <a class="back-link" href="/">← Vision System home</a>
+    <a class="back-link" href="/model-training" style="margin-left: 1rem">← Model training</a>
+    <header class="header">
+      <h1>Saved models</h1>
+      <p class="subtitle">
+        Checkpoints stored under <code>apps/model-training/models-list</code>
+        (<code>.pt</code>, <code>.tflite</code>, <code>.safetensors</code>). Delete a file with the trash control.
+        Requires the v4 Node server for the list and delete API.
+      </p>
+    </header>
+
+    <section class="panel" aria-label="Saved checkpoint files">
+      <div id="modelsDashboardStatus" class="status" aria-live="polite"></div>
+      <div class="list-container">
+        <ul id="modelsDashboardList" class="model-files-list" aria-label="Saved model files"></ul>
+      </div>
+      <div class="dashboard-toolbar">
+        <button type="button" id="refreshModelsDashboardBtn" class="btn">Refresh list</button>
+      </div>
+    </section>
+  </div>
+  <script src="dashboard.js"></script>
+</body>
+</html>

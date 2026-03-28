@@ -1,7 +1,9 @@
 /**
  * hosting-server.js — Front-end hosting for the v4 app.
  * Registers Express routes and static middleware for: root landing page, /factory (production demo),
- * /config-creator, /camera-stream, /image-upload, /server-detection, /server-reasoning, /compare, /annotate, and /debug. Serves the v4 root for shared lib/ and config/.
+ * /config-creator, /config-manager, /camera-stream, /image-upload, /model-training, /model-training/dashboard,
+ * /server-detection,
+ * /server-reasoning, /compare, /streaming, /annotate, and /debug. Serves the v4 root for shared lib/ and config/.
  */
 
 import express from 'express';
@@ -31,6 +33,7 @@ export function setupFrontendHosting(app) {
   const debugPath = path.join(__dirname, '..', 'apps', 'debug');
   const streamingPath = path.join(__dirname, '..', 'apps', 'streaming');
   const annotatePath = path.join(__dirname, '..', 'apps', 'annotate');
+  const modelTrainingPath = path.join(__dirname, '..', 'apps', 'model-training');
 
   // Landing page at root (index + styles from apps/landing)
   app.get('/', (req, res) => {
@@ -91,6 +94,21 @@ export function setupFrontendHosting(app) {
   });
   app.get('/image-upload/', (req, res) => {
     res.sendFile(path.join(imageUploadPath, 'index.html'));
+  });
+
+  // Model training / VLM fine-tuning UI at /model-training (client-only simulation)
+  app.use('/model-training', express.static(modelTrainingPath));
+  app.get('/model-training/dashboard', (req, res) => {
+    res.sendFile(path.join(modelTrainingPath, 'dashboard.html'));
+  });
+  app.get('/model-training/dashboard/', (req, res) => {
+    res.sendFile(path.join(modelTrainingPath, 'dashboard.html'));
+  });
+  app.get('/model-training', (req, res) => {
+    res.sendFile(path.join(modelTrainingPath, 'index.html'));
+  });
+  app.get('/model-training/', (req, res) => {
+    res.sendFile(path.join(modelTrainingPath, 'index.html'));
   });
 
   // Server-detection client at /server-detection

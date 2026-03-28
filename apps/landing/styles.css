@@ -150,6 +150,13 @@ p {
     flex-wrap: wrap;
 }
 
+.module-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
 .module-header h2 {
     margin: 0;
     border: none;

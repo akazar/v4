@@ -15,6 +15,7 @@ import { setupDbServer } from '../lib/cloud/action-servers/db-server.js';
 import { setupConfigurationServer } from '../lib/cloud/configuration-server.js';
 import { setupStreamingServer } from '../lib/cloud/streaming-server/streaming-server.js';
 import { setupAnnotateExportServer } from '../lib/cloud/annotate-export-server.js';
+import { setupModelTrainingServer } from '../lib/cloud/model-training-server.js';
 
 const PORT = process.env.PORT || 3001;
 
@@ -52,6 +53,9 @@ setupConfigurationServer(app);
 
 // Save COCO exports from VIA annotator to apps/annotate/annotation-list
 setupAnnotateExportServer(app);
+
+// Simulated trained weights to apps/model-training/models-list
+setupModelTrainingServer(app);
 
 // Setup streaming signaling (Socket.IO on the HTTP server)
 setupStreamingServer(server);

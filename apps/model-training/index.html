@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Model Training — Vision v4</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <a class="back-link" href="/">← Vision System home</a>
+    <a class="back-link" href="/model-training/dashboard" style="margin-left: 1rem">Saved models dashboard</a>
+    <header class="header">
+      <h1>Model training <span class="badge">UI preview</span></h1>
+      <p class="subtitle">
+        Prepare detection or vision–language fine-tuning jobs: set the output checkpoint name, choose a base model,
+        upload images and annotation files, assign splits, tune hyperparameters, and review live metrics.
+        Open the <a href="/model-training/dashboard">saved models dashboard</a> to list or remove checkpoints in
+        <code>models-list</code>.
+      </p>
+    </header>
+
+    <section class="panel" aria-labelledby="trained-name-heading">
+      <h2 id="trained-name-heading">1. Trained model name</h2>
+      <p class="panel-desc">
+        This name becomes the <strong>file name</strong> of your exported or saved checkpoint (extension is chosen from the base model:
+        <code>.pt</code>, <code>.tflite</code>, or <code>.safetensors</code>). Letters, numbers, dots, underscores, and hyphens only; a typed extension is replaced automatically.
+      </p>
+      <div class="input-group">
+        <label for="trainedModelNameInput">Output checkpoint name (without extension)</label>
+        <input type="text" id="trainedModelNameInput" maxlength="120" placeholder="e.g. my-custom-detector-v1" autocomplete="off" spellcheck="false">
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="model-heading">
+      <h2 id="model-heading">2. Base model</h2>
+      <p class="panel-desc">Pick a checkpoint family. Listed options are placeholders for your registry.</p>
+      <div class="input-group">
+        <label for="modelSelect">Model</label>
+        <select id="modelSelect"></select>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="upload-heading">
+      <h2 id="upload-heading">3. Images &amp; annotations</h2>
+      <p class="panel-desc">
+        Add image files (e.g. JPG, PNG). Add matching annotation files (JSON, XML, TXT) — pairs are matched by
+        <strong>filename without extension</strong> (same stem as the image).
+      </p>
+      <div class="row">
+        <div class="input-group">
+          <label for="imageInput">Images</label>
+          <input type="file" id="imageInput" accept="image/*" multiple>
+        </div>
+        <div class="input-group">
+          <label for="annotationInput">Annotation files</label>
+          <input type="file" id="annotationInput" accept=".json,.xml,.txt,.csv,.yaml,.yml" multiple>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="split-heading">
+      <h2 id="split-heading">4. Train / validation / test</h2>
+      <p class="panel-desc">Assign each row to a split. Use auto-split to distribute rows in file order.</p>
+      <div class="toolbar">
+        <button type="button" id="split703015" class="btn">Auto 70% / 15% / 15%</button>
+        <button type="button" id="split802010" class="btn">Auto 80% / 20% / 10%</button>
+      </div>
+      <p id="splitSummary" class="status"></p>
+      <div class="dataset-table-wrap">
+        <table class="dataset-table" aria-label="Dataset items">
+          <thead>
+            <tr>
+              <th class="thumb-cell">Preview</th>
+              <th>Image</th>
+              <th>Annotation</th>
+              <th>Split</th>
+            </tr>
+          </thead>
+          <tbody id="datasetTbody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="settings-heading">
+      <h2 id="settings-heading">5. Training settings</h2>
+      <p class="panel-desc">Basic hyperparameters</p>
+      <div class="row">
+        <div class="input-group">
+          <label for="epochsInput">Epochs</label>
+          <input type="number" id="epochsInput" min="1" max="500" value="12" step="1">
+        </div>
+        <div class="input-group">
+          <label for="batchInput">Batch size</label>
+          <input type="number" id="batchInput" min="1" max="512" value="16" step="1">
+        </div>
+        <div class="input-group">
+          <label for="lrInput">Learning rate</label>
+          <input type="text" id="lrInput" value="0.001" inputmode="decimal">
+        </div>
+        <div class="input-group">
+          <label for="wdInput">Weight decay</label>
+          <input type="text" id="wdInput" value="0.0005" inputmode="decimal">
+        </div>
+        <div class="input-group">
+          <label for="seedInput">Seed</label>
+          <input type="number" id="seedInput" min="0" value="42" step="1">
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="train-heading">
+      <h2 id="train-heading">6. Run training (simulated)</h2>
+      <p class="panel-desc">
+        Starts a client-side timer loop; each epoch appends fake metrics and refreshes the charts below.
+      </p>
+      <div class="toolbar">
+        <button type="button" id="runTrainingBtn" class="btn btn-primary">Start training</button>
+        <button type="button" id="stopTrainingBtn" class="btn">Stop</button>
+      </div>
+      <div class="progress-wrap">
+        <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+          <div id="progressFill" class="progress-bar-fill"></div>
+        </div>
+      </div>
+      <p id="trainingStatus" class="status" aria-live="polite"></p>
+      <pre id="metricsLog" class="metrics-line"></pre>
+
+      <div class="charts-grid">
+        <div class="chart-card">
+          <h3>Train vs validation loss</h3>
+          <canvas id="chartLoss" width="400" height="180" aria-label="Loss per epoch"></canvas>
+          <div class="chart-legend">
+            <span><i style="background:#6b9bd1"></i> Train loss</span>
+            <span><i style="background:#c97b6b"></i> Val loss</span>
+          </div>
+        </div>
+        <div class="chart-card">
+          <h3>mAP50 &amp; mAP50-95</h3>
+          <canvas id="chartMap" width="400" height="180" aria-label="mAP per epoch"></canvas>
+          <div class="chart-legend">
+            <span><i style="background:#7bc96b"></i> mAP50</span>
+            <span><i style="background:#b8a06b"></i> mAP50-95</span>
+          </div>
+        </div>
+        <div class="chart-card">
+          <h3>Precision &amp; recall</h3>
+          <canvas id="chartPr" width="400" height="180" aria-label="Precision and recall"></canvas>
+          <div class="chart-legend">
+            <span><i style="background:#6b9bd1"></i> Precision</span>
+            <span><i style="background:#c97b6b"></i> Recall</span>
+          </div>
+        </div>
+        <div class="chart-card">
+          <h3>Learning rate</h3>
+          <canvas id="chartLr" width="400" height="180" aria-label="Learning rate per epoch"></canvas>
+          <div class="chart-legend">
+            <span><i style="background:#a67bc9"></i> LR (cosine schedule)</span>
+          </div>
+        </div>
+        <div class="chart-card">
+          <h3>Time per epoch &amp; cumulative</h3>
+          <canvas id="chartTime" width="400" height="180" aria-label="Training time"></canvas>
+          <div class="chart-legend">
+            <span><i style="background:#6bc9b8"></i> Seconds / epoch (left axis)</span>
+            <span><i style="background:#9b8ad4"></i> Cumulative s (right axis, dashed)</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="export-heading">
+      <h2 id="export-heading">7. Export &amp; save model</h2>
+      <p class="panel-desc">
+        After a full run, download the trained checkpoint to your machine, or save it under
+        <code>apps/model-training/models-list</code> on the host (serve this app with the v4 Node server so save works).
+        The file name follows <strong>section 1</strong>: trained model name plus the extension that matches the base model type.
+      </p>
+      <div class="export-actions">
+        <button type="button" id="exportModelBtn" class="btn btn-primary">Export model</button>
+        <button type="button" id="saveModelBtn" class="btn">Save model</button>
+      </div>
+      <p id="exportStatus" class="status" aria-live="polite"></p>
+    </section>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
