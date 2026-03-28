@@ -24,6 +24,9 @@
           <button type="button" class="home-source-tab" role="tab" aria-selected="false" id="tab-source-m3u8" aria-controls="panel-source-m3u8" data-home-source-tab="m3u8">
             M3U8 URL
           </button>
+          <button type="button" class="home-source-tab" role="tab" aria-selected="false" id="tab-source-capture" aria-controls="panel-source-capture" data-home-source-tab="capture">
+            Web capture
+          </button>
         </div>
         <div id="panel-source-camera" class="home-source-panel" role="tabpanel" aria-labelledby="tab-source-camera">
           <div class="row stream-mode-row" style="margin-top: 0.5rem;">
@@ -41,6 +44,36 @@
         <div id="panel-source-m3u8" class="home-source-panel" role="tabpanel" aria-labelledby="tab-source-m3u8" hidden>
           <div class="row" style="margin-top: 0.5rem;">
             <input id="sourceUrlInput" type="url" placeholder="https://example.com/playlist.m3u8" />
+          </div>
+        </div>
+        <div id="panel-source-capture" class="home-source-panel" role="tabpanel" aria-labelledby="tab-source-capture" hidden>
+          <p class="home-capture-hint" style="margin: 0.5rem 0 0; font-size: 0.85rem; color: var(--text-muted);">
+            Capture a region of an external page (server-side) and stream it over WebRTC for viewers and the object-recognition dashboard.
+          </p>
+          <div class="inputs home-capture-inputs" style="margin-top: 0.75rem;">
+            <div class="input-group">
+              <label for="homeCapturePageUrl">Page URL</label>
+              <input id="homeCapturePageUrl" type="url" placeholder="https://example.com/dashboard" />
+            </div>
+            <div class="input-group">
+              <label for="homeCaptureSelector">CSS selector of block to capture</label>
+              <input id="homeCaptureSelector" type="text" placeholder="#player, .chart-container, main video" spellcheck="false" />
+            </div>
+            <div class="input-group">
+              <label for="homeCaptureInterval">Screenshot interval (ms)</label>
+              <input id="homeCaptureInterval" type="number" min="200" max="60000" step="100" value="1000" />
+            </div>
+          </div>
+          <div class="row stream-mode-row" style="margin-top: 0.75rem;">
+            <span class="stream-mode-label">Streaming type:</span>
+            <label class="stream-mode-option">
+              <input type="radio" name="streamModeChoiceCapture" value="p2p" checked />
+              Peer-to-peer WebRTC
+            </label>
+            <label class="stream-mode-option">
+              <input type="radio" name="streamModeChoiceCapture" value="sfu" />
+              WebRTC server streaming
+            </label>
           </div>
         </div>
       </div>

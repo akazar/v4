@@ -1,0 +1,47 @@
+.subtitle {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  margin: -0.5rem 0 1.25rem;
+  max-width: 52rem;
+  line-height: 1.5;
+}
+
+.captured-settings-panel {
+  margin-bottom: 1.25rem;
+}
+
+.captured-settings-panel .input-group input[type='text'],
+.captured-settings-panel .input-group input[type='url'],
+.captured-settings-panel .input-group input[type='number'] {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.capture-preview-heading {
+  margin-top: 0;
+  margin-bottom: 0.65rem;
+}
+
+.capture-preview {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  background: #000;
+  border-radius: 6px;
+  display: block;
+  object-fit: contain;
+}
+
+.captured-back-link {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  text-decoration: none;
+}
+
+.captured-back-link:hover {
+  color: var(--accent-hover);
+  text-decoration: underline;
+}

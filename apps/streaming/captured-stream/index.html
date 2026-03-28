@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Captured stream</title>
+  <link rel="stylesheet" href="/ui-kit/ui-kit.css" />
+  <link rel="stylesheet" href="../styles.css" />
+  <link rel="stylesheet" href="captured-stream.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>Captured stream</h1>
+    <p class="subtitle">Server opens a page with Puppeteer, screenshots a selected block on a timer, and shows frames below like a video.</p>
+
+    <div class="info">
+      <div><strong>Page URL</strong> — full address to load (http or https).</div>
+      <div><strong>Block selector</strong> — CSS selector for the element to capture (same as in DevTools).</div>
+      <div><strong>Capture interval</strong> — milliseconds between screenshots (200–60000).</div>
+      <div class="status" id="status">Idle. Enter settings and press Start capture.</div>
+    </div>
+
+    <div class="panel captured-settings-panel">
+      <h2>Settings</h2>
+      <div class="inputs">
+        <div class="input-group">
+          <label for="pageUrlInput">Page URL</label>
+          <input id="pageUrlInput" type="url" placeholder="https://example.com/dashboard" />
+        </div>
+        <div class="input-group">
+          <label for="selectorInput">CSS selector of block to capture</label>
+          <input id="selectorInput" type="text" placeholder="#player, .chart-container, main video" spellcheck="false" />
+        </div>
+        <div class="input-group">
+          <label for="intervalInput">Screenshot interval (ms)</label>
+          <input id="intervalInput" type="number" min="200" max="60000" step="100" value="1000" />
+        </div>
+      </div>
+      <div class="row" style="margin-top: 0.5rem;">
+        <button id="startBtn" type="button">Start capture</button>
+        <button id="stopBtn" type="button" disabled>Stop</button>
+      </div>
+    </div>
+
+    <h2 class="capture-preview-heading">Live preview</h2>
+    <img id="capturePreview" class="capture-preview" alt="Latest captured frame" width="1280" height="720" />
+
+    <div class="row" style="margin-top: 1rem;">
+      <a class="captured-back-link" href="../index.html">← Streaming home</a>
+    </div>
+  </div>
+
+  <script src="captured-stream.js" type="module"></script>
+</body>
+</html>

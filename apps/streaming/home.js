@@ -4,6 +4,10 @@ const sourceNameInput = document.getElementById("sourceNameInput");
 const sourceUrlInput = document.getElementById("sourceUrlInput");
 const panelSourceCamera = document.getElementById("panel-source-camera");
 const panelSourceM3u8 = document.getElementById("panel-source-m3u8");
+const panelSourceCapture = document.getElementById("panel-source-capture");
+const homeCapturePageUrl = document.getElementById("homeCapturePageUrl");
+const homeCaptureSelector = document.getElementById("homeCaptureSelector");
+const homeCaptureInterval = document.getElementById("homeCaptureInterval");
 const homeSourceTabButtons = document.querySelectorAll("[data-home-source-tab]");
 const openStreamerBtn = document.getElementById("openStreamerBtn");
 const refreshBtn = document.getElementById("refreshBtn");
@@ -53,6 +57,16 @@ function streamerPageForSource(source) {
 }
 
 function streamerOpenUrl(streamId, mode) {
+  const capture = streamCaptureParams.get(streamId);
+  if (capture) {
+    const q = new URLSearchParams();
+    q.set("streamId", streamId);
+    if (mode === "sfu") q.set("streamMode", "sfu");
+    q.set("pageUrl", capture.pageUrl);
+    q.set("selector", capture.selector);
+    q.set("intervalMs", String(capture.intervalMs));
+    return `captured-stream-streamer.html?${q.toString()}`;
+  }
   const modeQ =
     mode === "sfu" ? `&streamMode=${encodeURIComponent("sfu")}` : "";
   const source = (streamSourceUrls.get(streamId) || "").trim();
@@ -89,8 +103,16 @@ function renderStreams(streams) {
     const modeLabel = document.createElement("span");
     modeLabel.className = "stream-item-mode";
     const st = streamTypes.get(streamId) || "p2p";
-    modeLabel.textContent =
-      st === "sfu" ? " · WebRTC server streaming" : " · Peer-to-peer WebRTC";
+    const capture = streamCaptureParams.has(streamId);
+    if (capture) {
+      modeLabel.textContent =
+        st === "sfu"
+          ? " · Web capture · WebRTC server streaming"
+          : " · Web capture · Peer-to-peer WebRTC";
+    } else {
+      modeLabel.textContent =
+        st === "sfu" ? " · WebRTC server streaming" : " · Peer-to-peer WebRTC";
+    }
 
     const openLinkBtn = document.createElement("button");
     openLinkBtn.type = "button";
@@ -154,20 +176,30 @@ function getMergedStreams() {
 }
 
 function getSelectedCreationStreamMode() {
+  if (getActiveHomeSourceTab() === "capture") {
+    const el = document.querySelector(
+      'input[name="streamModeChoiceCapture"]:checked'
+    );
+    return el?.value === "sfu" ? "sfu" : "p2p";
+  }
   const el = document.querySelector('input[name="streamModeChoice"]:checked');
   return el?.value === "sfu" ? "sfu" : "p2p";
 }
 
 function getActiveHomeSourceTab() {
-  return panelSourceM3u8.hidden ? "camera" : "m3u8";
+  if (!panelSourceCamera.hidden) return "camera";
+  if (!panelSourceM3u8.hidden) return "m3u8";
+  if (!panelSourceCapture.hidden) return "capture";
+  return "camera";
 }
 
 function setHomeSourceTab(tab) {
-  const isM3u8 = tab === "m3u8";
-  panelSourceM3u8.hidden = !isM3u8;
-  panelSourceCamera.hidden = isM3u8;
+  const t = tab === "m3u8" ? "m3u8" : tab === "capture" ? "capture" : "camera";
+  panelSourceCamera.hidden = t !== "camera";
+  panelSourceM3u8.hidden = t !== "m3u8";
+  panelSourceCapture.hidden = t !== "capture";
   homeSourceTabButtons.forEach((btn) => {
-    const on = btn.dataset.homeSourceTab === tab;
+    const on = btn.dataset.homeSourceTab === t;
     btn.classList.toggle("active", on);
     btn.setAttribute("aria-selected", on ? "true" : "false");
   });
@@ -180,15 +212,53 @@ homeSourceTabButtons.forEach((btn) => {
 });
 
 function removeStream(streamId) {
+  if (streamCaptureParams.has(streamId)) {
+    socket.emit("captured-stream-stop-broadcast", { streamId });
+  }
   preGeneratedStreams.delete(streamId);
   stickyStreamIds.delete(streamId);
   streamTypes.delete(streamId);
   streamSourceUrls.delete(streamId);
+  streamCaptureParams.delete(streamId);
   hiddenStreamIds.add(streamId);
   renderStreams(getMergedStreams());
 }
 
 openStreamerBtn.addEventListener("click", () => {
+  const tab = getActiveHomeSourceTab();
+
+  if (tab === "capture") {
+    const pageUrl = (homeCapturePageUrl?.value || "").trim();
+    const selector = (homeCaptureSelector?.value || "").trim();
+    const intervalMs = Number(homeCaptureInterval?.value);
+    if (!pageUrl || !selector) {
+      setCreateStatus("Web capture: enter page URL and CSS selector.");
+      return;
+    }
+    if (!Number.isFinite(intervalMs) || intervalMs < 200 || intervalMs > 60000) {
+      setCreateStatus("Web capture: interval must be between 200 and 60000 ms.");
+      return;
+    }
+    const customName = normalizeStreamName(sourceNameInput.value);
+    const streamId = customName || generateStreamId();
+    streamTypes.set(streamId, getSelectedCreationStreamMode());
+    streamCaptureParams.set(streamId, { pageUrl, selector, intervalMs });
+    preGeneratedStreams.add(streamId);
+    renderStreams(getMergedStreams());
+    const modeLabel =
+      streamTypes.get(streamId) === "sfu"
+        ? "WebRTC server streaming."
+        : "Peer-to-peer WebRTC.";
+    setCreateStatus(
+      `Stream "${streamId}" added (Web capture · ${modeLabel.trim()}) Open streamer to start Puppeteer capture and publish.`
+    );
+    sourceNameInput.value = "";
+    homeCapturePageUrl.value = "";
+    homeCaptureSelector.value = "";
+    homeCaptureInterval.value = "1000";
+    return;
+  }
+
   const customName = normalizeStreamName(sourceNameInput.value);
   const streamId = customName || generateStreamId();
   streamTypes.set(streamId, getSelectedCreationStreamMode());
@@ -196,7 +266,7 @@ openStreamerBtn.addEventListener("click", () => {
   renderStreams(getMergedStreams());
 
   const sourceUrl =
-    getActiveHomeSourceTab() === "m3u8"
+    tab === "m3u8"
       ? (sourceUrlInput.value || "").trim()
       : "";
   if (sourceUrl) {
@@ -265,6 +335,13 @@ sourceNameInput.addEventListener("keydown", (event) => {
 sourceUrlInput.addEventListener("keydown", (event) => {
   if (event.key === "Enter") openStreamerBtn.click();
 });
+for (const el of [homeCapturePageUrl, homeCaptureSelector, homeCaptureInterval]) {
+  if (el) {
+    el.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") openStreamerBtn.click();
+    });
+  }
+}
 
 let qrInstance = null;
 let serverStreams = [];
@@ -273,6 +350,8 @@ const preGeneratedStreams = new Set();
 const streamTypes = new Map();
 /** streamId -> source URL from the create form (m3u8 or other); used by Open streamer / QR */
 const streamSourceUrls = new Map();
+/** streamId -> { pageUrl, selector, intervalMs } for Web capture streams */
+const streamCaptureParams = new Map();
 /** Streams we've seen from the server; keep in list until Remove is clicked (do not remove when streamer tab closes). */
 const stickyStreamIds = new Set();
 const hiddenStreamIds = new Set();

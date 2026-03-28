@@ -60,6 +60,14 @@ video {
   border-radius: 6px;
 }
 
+.capture-stream-canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: #000;
+  border-radius: 6px;
+}
+
 .info .status {
   margin-top: 0.5rem;
 }
@@ -125,6 +133,31 @@ input[type='url'] {
 
 .home-source-panel[hidden] {
   display: none;
+}
+
+.home-capture-inputs .input-group {
+  margin-bottom: 0.65rem;
+}
+
+.home-capture-inputs .input-group:last-child {
+  margin-bottom: 0;
+}
+
+.home-capture-inputs .input-group label {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.home-capture-inputs .input-group input[type='text'],
+.home-capture-inputs .input-group input[type='url'],
+.home-capture-inputs .input-group input[type='number'] {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 .stream-mode-row {

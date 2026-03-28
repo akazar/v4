@@ -14,6 +14,7 @@ import { setupNotificationServer } from '../lib/cloud/action-servers/notificatio
 import { setupDbServer } from '../lib/cloud/action-servers/db-server.js';
 import { setupConfigurationServer } from '../lib/cloud/configuration-server.js';
 import { setupStreamingServer } from '../lib/cloud/streaming-server/streaming-server.js';
+import { setupCapturedStreamServer } from '../lib/cloud/captured-stream-server.js';
 import { setupAnnotateExportServer } from '../lib/cloud/annotate-export-server.js';
 import { setupModelTrainingServer } from '../lib/cloud/model-training-server.js';
 
@@ -59,6 +60,9 @@ setupModelTrainingServer(app);
 
 // Setup streaming signaling (Socket.IO on the HTTP server)
 setupStreamingServer(server);
+
+// Puppeteer-based capture preview (streaming/captured-stream-streamer)
+setupCapturedStreamServer(app);
 
 // Start the server
 server.listen(PORT, () => {
