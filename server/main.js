@@ -14,6 +14,7 @@ import { setupNotificationServer } from '../lib/cloud/action-servers/notificatio
 import { setupDbServer } from '../lib/cloud/action-servers/db-server.js';
 import { setupConfigurationServer } from '../lib/cloud/configuration-server.js';
 import { setupStreamingServer } from '../lib/cloud/streaming-server/streaming-server.js';
+import { setupStreamingHomeMetaServer } from '../lib/cloud/streaming-home-meta-server.js';
 import { setupCapturedStreamServer } from '../lib/cloud/captured-stream-server.js';
 import { setupAnnotateExportServer } from '../lib/cloud/annotate-export-server.js';
 import { setupModelTrainingServer } from '../lib/cloud/model-training-server.js';
@@ -57,6 +58,9 @@ setupAnnotateExportServer(app);
 
 // Simulated trained weights to apps/model-training/models-list
 setupModelTrainingServer(app);
+
+// Home stream metadata API (for Node streamers to resolve sourceUrl by streamId)
+setupStreamingHomeMetaServer(app);
 
 // Setup streaming signaling (Socket.IO on the HTTP server)
 setupStreamingServer(server);

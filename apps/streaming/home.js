@@ -537,28 +537,42 @@ function renderSavedStreamsPanel() {
   }
 }
 
+function buildHomeStreamsPayload() {
+  const entries = [];
+  for (const sid of preGeneratedStreams) {
+    const mode = streamTypes.get(sid) === "sfu" ? "sfu" : "p2p";
+    const sourceUrl = (streamSourceUrls.get(sid) || "").trim();
+    const capture = streamCaptureParams.get(sid);
+    const row = { streamId: sid, mode };
+    if (sourceUrl) row.sourceUrl = sourceUrl;
+    if (capture && capture.pageUrl && capture.selector) {
+      row.capture = {
+        pageUrl: capture.pageUrl,
+        selector: capture.selector,
+        intervalMs: capture.intervalMs,
+      };
+    }
+    entries.push(row);
+  }
+  return { v: 1, entries, hidden: [...hiddenStreamIds] };
+}
+
+function syncHomeStreamsPayloadToServer(payload) {
+  void fetch("/api/streaming/home-streams-sync", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  }).catch(() => {});
+}
+
 function saveHomeStreamsToStorage() {
   try {
-    const entries = [];
-    for (const streamId of preGeneratedStreams) {
-      const mode = streamTypes.get(streamId) === "sfu" ? "sfu" : "p2p";
-      const sourceUrl = (streamSourceUrls.get(streamId) || "").trim();
-      const capture = streamCaptureParams.get(streamId);
-      const row = { streamId, mode };
-      if (sourceUrl) row.sourceUrl = sourceUrl;
-      if (capture && capture.pageUrl && capture.selector) {
-        row.capture = {
-          pageUrl: capture.pageUrl,
-          selector: capture.selector,
-          intervalMs: capture.intervalMs,
-        };
-      }
-      entries.push(row);
-    }
+    const payload = buildHomeStreamsPayload();
     localStorage.setItem(
       HOME_STREAMS_STORAGE_KEY,
-      JSON.stringify({ v: 1, entries, hidden: [...hiddenStreamIds] })
+      JSON.stringify(payload)
     );
+    syncHomeStreamsPayloadToServer(payload);
   } catch {
     /* quota / private mode */
   }
@@ -645,6 +659,7 @@ socket.on("available-streams", ({ streams }) => {
 });
 
 loadHomeStreamsFromStorage();
+syncHomeStreamsPayloadToServer(buildHomeStreamsPayload());
 loadSavedStreamGroupsFromStorage();
 renderStreams(getMergedStreams());
 renderSavedStreamsPanel();
