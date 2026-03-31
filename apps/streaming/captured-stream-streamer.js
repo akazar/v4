@@ -10,6 +10,9 @@ const isSfu =
   streamModeParam === "sfu" ||
   streamModeParam === "server" ||
   streamModeParam === "webrtc-server";
+const autoStart =
+  params.get("autoStart") === "1" ||
+  params.get("autostart") === "true";
 
 const streamIdText = document.getElementById("streamIdText");
 const streamModeText = document.getElementById("streamModeText");
@@ -469,10 +472,14 @@ socket.on("captured-stream-stop-request", ({ streamId: sid }) => {
 
 window.addEventListener("beforeunload", stopStreamSyncForUnload);
 
-setStatus(
-  !pageUrl || !selector
-    ? "Open this page from the home Web capture tab (or add pageUrl, selector, intervalMs query params) then press Start."
-    : isSfu
-      ? "Press Start web capture (server relay mode)."
-      : "Press Start web capture to publish to viewers / dashboard."
-);
+if (autoStart && pageUrl && selector) {
+  void startWebCapture();
+} else {
+  setStatus(
+    !pageUrl || !selector
+      ? "Open this page from the home Web capture tab (or add pageUrl, selector, intervalMs query params) then press Start."
+      : isSfu
+        ? "Press Start web capture (server relay mode)."
+        : "Press Start web capture to publish to viewers / dashboard."
+  );
+}

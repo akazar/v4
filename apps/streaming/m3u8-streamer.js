@@ -8,6 +8,9 @@ const isSfu =
   streamModeParam === "sfu" ||
   streamModeParam === "server" ||
   streamModeParam === "webrtc-server";
+const autoStart =
+  params.get("autoStart") === "1" ||
+  params.get("autostart") === "true";
 
 const streamIdText = document.getElementById("streamIdText");
 const streamModeText = document.getElementById("streamModeText");
@@ -337,10 +340,14 @@ stopBtn.addEventListener("click", stopStream);
 
 window.addEventListener("beforeunload", stopStream);
 
-setStatus(
-  !sourceUrl
-    ? "Add an m3u8 URL via the home page or ?source=… then press Start HLS stream."
-    : isSfu
-      ? "Press Start HLS stream (server relay mode)."
-      : "Press Start HLS stream to publish to viewers / dashboard."
-);
+if (autoStart && sourceUrl) {
+  void startHlsSource();
+} else {
+  setStatus(
+    !sourceUrl
+      ? "Add an m3u8 URL via the home page or ?source=… then press Start HLS stream."
+      : isSfu
+        ? "Press Start HLS stream (server relay mode)."
+        : "Press Start HLS stream to publish to viewers / dashboard."
+  );
+}

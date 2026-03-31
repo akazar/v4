@@ -63,7 +63,8 @@ function streamerPageForSource(source) {
   return looksLikeM3u8Url(s) ? "m3u8-streamer.html" : "streamer.html";
 }
 
-function streamerOpenUrl(streamId, mode) {
+function streamerOpenUrl(streamId, mode, options = {}) {
+  const autoStart = options.autoStart === true;
   const capture = streamCaptureParams.get(streamId);
   if (capture) {
     const q = new URLSearchParams();
@@ -72,6 +73,7 @@ function streamerOpenUrl(streamId, mode) {
     q.set("pageUrl", capture.pageUrl);
     q.set("selector", capture.selector);
     q.set("intervalMs", String(capture.intervalMs));
+    if (autoStart) q.set("autoStart", "1");
     return `captured-stream-streamer.html?${q.toString()}`;
   }
   const modeQ =
@@ -81,7 +83,27 @@ function streamerOpenUrl(streamId, mode) {
   const sourceQ = source
     ? `&source=${encodeURIComponent(source)}`
     : "";
-  return `${page}?streamId=${encodeURIComponent(streamId)}${modeQ}${sourceQ}`;
+  const autoQ = autoStart ? "&autoStart=1" : "";
+  return `${page}?streamId=${encodeURIComponent(streamId)}${modeQ}${sourceQ}${autoQ}`;
+}
+
+/** Suffix for Available streams row: source kind + optional SFU hint. */
+function availableStreamListModeSuffix(streamId) {
+  const st = streamTypes.get(streamId) === "sfu" ? "sfu" : "p2p";
+  if (streamCaptureParams.has(streamId)) {
+    return st === "sfu"
+      ? " · Web capture · WebRTC server streaming"
+      : " · Web capture";
+  }
+  const sourceUrl = (streamSourceUrls.get(streamId) || "").trim();
+  if (sourceUrl) {
+    return st === "sfu"
+      ? " · M3U8 URL · WebRTC server streaming"
+      : " · M3U8 URL";
+  }
+  return st === "sfu"
+    ? " · WebRTC server streaming"
+    : " · Peer-to-peer WebRTC";
 }
 
 function renderStreams(streams) {
@@ -109,17 +131,7 @@ function renderStreams(streams) {
 
     const modeLabel = document.createElement("span");
     modeLabel.className = "stream-item-mode";
-    const st = streamTypes.get(streamId) || "p2p";
-    const capture = streamCaptureParams.has(streamId);
-    if (capture) {
-      modeLabel.textContent =
-        st === "sfu"
-          ? " · Web capture · WebRTC server streaming"
-          : " · Web capture · Peer-to-peer WebRTC";
-    } else {
-      modeLabel.textContent =
-        st === "sfu" ? " · WebRTC server streaming" : " · Peer-to-peer WebRTC";
-    }
+    modeLabel.textContent = availableStreamListModeSuffix(streamId);
 
     const openLinkBtn = document.createElement("button");
     openLinkBtn.type = "button";
@@ -458,7 +470,7 @@ function openSavedStreamGroup(group) {
   ids.forEach((streamId, i) => {
     const mode = streamTypes.get(streamId) === "sfu" ? "sfu" : "p2p";
     setTimeout(() => {
-      window.open(streamerOpenUrl(streamId, mode), "_blank");
+      window.open(streamerOpenUrl(streamId, mode, { autoStart: true }), "_blank");
     }, i * gapMs);
   });
   const modes = ids

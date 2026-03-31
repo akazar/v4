@@ -406,11 +406,32 @@ function setStreamStatus(streamId, text) {
   state.statusEl.textContent = text;
 }
 
+/**
+ * Start playback without a user gesture (open/reload). Browsers often block unmuted autoplay;
+ * we retry muted so video at least runs; user can unmute via controls if the stream has audio.
+ */
+function tryStartDashboardVideoPlayback(videoEl) {
+  const tryPlay = () => {
+    void videoEl.play().catch(() => {
+      if (!videoEl.muted) {
+        videoEl.muted = true;
+        void videoEl.play().catch((e) =>
+          console.warn("Dashboard: could not start video playback", e)
+        );
+      }
+    });
+  };
+  tryPlay();
+  videoEl.addEventListener("loadedmetadata", tryPlay, { once: true });
+  videoEl.addEventListener("canplay", tryPlay, { once: true });
+}
+
 // Attaches the remote MediaStream to the video element and refreshes recognition if it is enabled.
 function onDashboardRemoteStream(streamId, state, remoteStream) {
   state.videoEl.srcObject = remoteStream;
   const isSfu = streamModes.get(streamId) === "sfu";
   setStreamStatus(streamId, isSfu ? "Live (server relay)" : "Live");
+  tryStartDashboardVideoPlayback(state.videoEl);
   if (state.recognitionCheckboxEl.checked) {
     void state.syncRecognitionWithStream();
   }

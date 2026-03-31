@@ -8,6 +8,9 @@ const isSfu =
   streamModeParam === "sfu" ||
   streamModeParam === "server" ||
   streamModeParam === "webrtc-server";
+const autoStart =
+  params.get("autoStart") === "1" ||
+  params.get("autostart") === "true";
 
 const streamIdText = document.getElementById("streamIdText");
 const streamModeText = document.getElementById("streamModeText");
@@ -296,12 +299,16 @@ stopBtn.addEventListener("click", stopStream);
 
 window.addEventListener("beforeunload", stopStream);
 
-setStatus(
-  isSfu
-    ? sourceUrl
-      ? "Press 'Start video' (server relay mode)."
-      : "Press 'Start camera' (server relay mode)."
-    : sourceUrl
-      ? "Press 'Start video' to stream from URL."
-      : "Press 'Start camera' to publish stream."
-);
+if (autoStart) {
+  void (sourceUrl ? startUrlSource() : startCamera());
+} else {
+  setStatus(
+    isSfu
+      ? sourceUrl
+        ? "Press 'Start video' (server relay mode)."
+        : "Press 'Start camera' (server relay mode)."
+      : sourceUrl
+        ? "Press 'Start video' to stream from URL."
+        : "Press 'Start camera' to publish stream."
+  );
+}
