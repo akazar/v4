@@ -162,6 +162,136 @@
     border-radius: var(--radius);
 }
 
+.declarative-action-row {
+    flex-wrap: wrap;
+    align-items: flex-end;
+}
+
+.declarative-field {
+    flex: 0 1 auto;
+    min-width: 100px;
+    margin-bottom: 0;
+}
+
+.declarative-field.flex-grow {
+    flex: 1 1 180px;
+}
+
+.mixed-kind-label {
+    flex: 0 0 auto;
+    margin-bottom: 0;
+    align-self: center;
+}
+
+.mixed-badge {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 0.2rem 0.45rem;
+    border-radius: var(--radius);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+}
+
+.mixed-local-recognition-row .action-body {
+    flex: 1 1 220px;
+    min-width: 200px;
+    font-family: 'Consolas', 'Monaco', monospace;
+    font-size: 0.85rem;
+}
+
+.reasoning-action-row .interval-field {
+    flex: 0 0 120px;
+}
+
+/* COCO-80 picker (local / server classes) */
+details.coco-picker {
+    margin-top: 0.65rem;
+    border: 1px dashed var(--border);
+    border-radius: var(--radius);
+    padding: 0.5rem 0.75rem 0.75rem;
+    background: var(--bg);
+}
+
+.coco-summary {
+    cursor: pointer;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    list-style: none;
+}
+
+.coco-summary::-webkit-details-marker {
+    display: none;
+}
+
+.coco-summary::before {
+    content: '▸ ';
+    opacity: 0.7;
+}
+
+details[open].coco-picker > .coco-summary::before {
+    content: '▾ ';
+}
+
+.coco-hint {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+input.coco-filter {
+    width: 100%;
+    margin-bottom: 0.6rem;
+    padding: 0.45rem 0.65rem;
+    font: inherit;
+    font-size: 0.88rem;
+    color: var(--text);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+}
+
+.coco-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    max-height: 200px;
+    overflow-y: auto;
+    padding: 0.25rem 0;
+    margin-bottom: 0.5rem;
+}
+
+.coco-chip {
+    margin: 0;
+    padding: 0.2rem 0.5rem;
+    font-size: 0.72rem;
+    line-height: 1.35;
+    color: var(--text);
+    background: var(--surface-alt);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background 0.12s, border-color 0.12s, color 0.12s;
+}
+
+.coco-chip:hover {
+    border-color: var(--accent-hover);
+    background: var(--border);
+}
+
+.coco-chip--hidden {
+    display: none;
+}
+
+.coco-picker-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+}
+
 /* Action rows */
 .action-row {
     display: flex;
