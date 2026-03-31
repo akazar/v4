@@ -82,8 +82,8 @@ button {
   position: relative;
   min-height: 200px;
   background: #1a1a1a;
-  border-radius: 8px;
-  border: 1px solid #333333;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
   display: flex;
   align-items: center;
   justify-content: center;

@@ -86,7 +86,7 @@ input[type='url'] {
   align-items: center;
   justify-content: center;
   border: none;
-  border-radius: 6px;
+  border-radius: var(--radius);
   background: var(--surface-alt);
   color: var(--text-muted);
   cursor: pointer;
@@ -109,8 +109,7 @@ input[type='url'] {
   padding: 4px 0;
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 6px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  border-radius: var(--radius);
   z-index: 3;
 }
 
@@ -129,7 +128,7 @@ input[type='url'] {
   font-family: inherit;
   text-align: left;
   border: none;
-  border-radius: 0;
+  border-radius: var(--radius);
   background: none;
   color: var(--text);
   cursor: pointer;
@@ -199,7 +198,7 @@ input[type='url'] {
   gap: 0.75rem;
   background: var(--surface-alt);
   border: 1px solid var(--border);
-  border-radius: 6px;
+  border-radius: var(--radius);
   padding: 0.65rem 0.85rem;
 }
 
@@ -214,7 +213,7 @@ input[type='url'] {
   background: var(--accent);
   color: #fff;
   border: 1px solid var(--accent-hover);
-  border-radius: 6px;
+  border-radius: var(--radius);
   cursor: pointer;
   transition: background 0.2s, border-color 0.2s;
 }
@@ -256,7 +255,7 @@ input[type='url'] {
   font-size: 0.85rem;
   font-family: inherit;
   border: 1px solid var(--border);
-  border-radius: 6px;
+  border-radius: var(--radius);
   background: var(--surface-alt);
   color: var(--text);
   cursor: pointer;
@@ -282,7 +281,7 @@ input[type='url'] {
 
 .capture-canvas {
   width: 100%;
-  border-radius: 6px;
+  border-radius: var(--radius);
   background: var(--surface-alt);
   border: 1px solid var(--border);
 }
@@ -302,7 +301,7 @@ input[type='url'] {
   font-family: inherit;
   background: var(--surface-alt);
   border: 1px solid var(--border);
-  border-radius: 6px;
+  border-radius: var(--radius);
   color: var(--text-muted);
   cursor: pointer;
   transition: background 0.15s, border-color 0.15s, color 0.15s;
@@ -320,7 +319,7 @@ input[type='url'] {
   font-family: inherit;
   background: var(--surface-alt);
   border: 1px solid var(--border);
-  border-radius: 6px;
+  border-radius: var(--radius);
   color: var(--text-muted);
   cursor: pointer;
   transition: background 0.15s, border-color 0.15s, color 0.15s;
@@ -357,9 +356,8 @@ input[type='url'] {
   position: relative;
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: var(--radius);
   padding: 1.75rem 2rem 1.5rem;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
   display: flex;
   flex-direction: column;
   align-items: center;

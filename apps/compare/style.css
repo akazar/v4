@@ -3,17 +3,12 @@
 :root {
   color-scheme: dark;
   --bg: #000000;
-  --border: #333333;
-  --border-light: #404040;
   --text-muted: #b0b0b0;
   --danger: #ff4b81;
   --text-heading: #ffffff;
   --text-placeholder: #666666;
-  --radius-lg: 16px;
-  --radius-md: 12px;
-  --radius-sm: 8px;
   --shadow-soft: 0 18px 45px rgba(0, 0, 0, 0.6);
-  --shadow-subtle: 0 0 0 1px #333333;
+  --shadow-subtle: 0 0 0 1px transparent;
   --compare-focus: #606060;
 }
 
@@ -56,7 +51,7 @@ body {
   border-radius: var(--radius-lg);
   padding: 18px 18px 20px;
   margin-bottom: 18px;
-  box-shadow: var(--shadow-soft), var(--shadow-subtle);
+  box-shadow: var(--shadow-soft), var(--shadow-block);
   border: 1px solid var(--border);
 }
 
@@ -88,7 +83,7 @@ body {
   font-size: 13px;
   color: var(--text);
   background: var(--surface-alt);
-  border-radius: 999px;
+  border-radius: var(--radius);
   border: 1px solid var(--border);
   cursor: pointer;
 }
@@ -119,7 +114,6 @@ body {
   max-height: 320px;
   border-radius: var(--radius-md);
   display: none;
-  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.8);
 }
 
 .two-column {
@@ -164,7 +158,7 @@ body {
 .reasoning-select {
   font-size: 12px;
   padding: 4px 10px;
-  border-radius: 999px;
+  border-radius: var(--radius);
   border: 1px solid var(--border);
   background: var(--surface-alt);
   color: var(--text);

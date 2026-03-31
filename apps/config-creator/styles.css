@@ -29,7 +29,7 @@
 .subtitle code {
     background: var(--surface);
     padding: 0.15em 0.4em;
-    border-radius: 4px;
+    border-radius: var(--radius);
     font-size: 0.9em;
 }
 
@@ -104,7 +104,7 @@
     color: var(--text);
     background: var(--bg);
     border: 1px solid var(--border);
-    border-radius: 6px;
+    border-radius: var(--radius);
 }
 
 .field input:focus,
@@ -159,7 +159,7 @@
     font-size: 0.85em;
     background: var(--bg);
     padding: 0.1em 0.3em;
-    border-radius: 4px;
+    border-radius: var(--radius);
 }
 
 /* Action rows */
@@ -200,7 +200,7 @@
     color: var(--text-muted);
     background: transparent;
     border: 1px solid var(--border);
-    border-radius: 6px;
+    border-radius: var(--radius);
     cursor: pointer;
     transition: color 0.15s, border-color 0.15s, background 0.15s;
 }
@@ -218,7 +218,7 @@
     color: var(--text-muted);
     background: transparent;
     border: 1px dashed var(--border);
-    border-radius: 6px;
+    border-radius: var(--radius);
     cursor: pointer;
     transition: border-color 0.15s, color 0.15s;
 }
@@ -242,7 +242,7 @@
     color: var(--text-muted);
     background: var(--surface-alt);
     border: 1px solid var(--border);
-    border-radius: 6px;
+    border-radius: var(--radius);
     cursor: pointer;
     transition: border-color 0.15s, color 0.15s, background 0.15s;
 }

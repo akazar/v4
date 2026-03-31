@@ -23,7 +23,7 @@
 .subtitle code {
     background: var(--surface);
     padding: 0.15em 0.4em;
-    border-radius: 4px;
+    border-radius: var(--radius);
     font-size: 0.9em;
 }
 

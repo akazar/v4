@@ -1,21 +1,22 @@
 /**
  * Vision v4 UI kit — shared design tokens and base components for apps/*.
  * Import first in each application stylesheet; keep app-specific rules below.
+ * Borders, shadows, and square corners: --border*, --shadow-block*,
+ * and --radius / --radius-{lg,md,sm} (all 0) are finalized in the :root block
+ * at the end of this file. Shared panel elevation uses two :where(...) lists there.
  */
 
  :root {
   --bg: #0a0a0a;
   --surface: #141414;
   --surface-alt: #1a1a1a;
-  --border: #2a2a2a;
-  --border-light: #3a3a3a;
   --text: #e8e8e8;
   --text-muted: #888888;
   --accent: #6b6b6b;
   --accent-hover: #8a8a8a;
   --danger: #c44;
   --danger-hover: #e55;
-  --radius: 8px;
+  /* --radius* tokens: square UI (see final :root) */
   --font-sans: 'Segoe UI', system-ui, -apple-system, sans-serif;
   --uk-focus-ring: 0 0 0 2px rgba(120, 120, 120, 0.2);
 }
@@ -45,7 +46,7 @@ code {
 .subtitle code {
   background: var(--surface);
   padding: 0.15em 0.4em;
-  border-radius: 4px;
+  border-radius: var(--radius);
   font-size: 0.9em;
 }
 
@@ -118,7 +119,7 @@ input[type='number'] {
   font-size: 0.9rem;
   font-family: inherit;
   border: 1px solid var(--border);
-  border-radius: 6px;
+  border-radius: var(--radius);
   background: var(--surface-alt);
   color: var(--text);
 }
@@ -145,7 +146,7 @@ input[type='file'] {
   padding: 0.6rem 0.75rem;
   font-size: 0.9rem;
   border: 1px solid var(--border);
-  border-radius: 6px;
+  border-radius: var(--radius);
   background: var(--surface-alt);
   color: var(--text);
 }
@@ -154,7 +155,7 @@ input[type='file']::file-selector-button {
   padding: 0.35rem 0.75rem;
   margin-right: 0.75rem;
   border: none;
-  border-radius: 4px;
+  border-radius: var(--radius);
   background: var(--accent);
   color: #fff;
   cursor: pointer;
@@ -166,7 +167,7 @@ select {
   font-size: 0.9rem;
   font-family: inherit;
   border: 1px solid var(--border);
-  border-radius: 6px;
+  border-radius: var(--radius);
   background: var(--surface-alt);
   color: var(--text);
   cursor: pointer;
@@ -194,7 +195,7 @@ button,
   font-weight: 600;
   font-family: inherit;
   border: 1px solid var(--border);
-  border-radius: 6px;
+  border-radius: var(--radius);
   background: var(--surface-alt);
   color: var(--text);
   cursor: pointer;
@@ -272,4 +273,73 @@ button:disabled,
   gap: 0.75rem;
   flex-wrap: wrap;
   align-items: center;
+}
+
+/*
+ * App-wide chrome: transparent borders + shared middle-light block shadows.
+ * Keep this block last so it wins over earlier :root entries when needed.
+ */
+:root {
+  --radius: 0;
+  --radius-lg: 0;
+  --radius-md: 0;
+  --radius-sm: 0;
+  --border: transparent;
+  --border-light: transparent;
+  /*
+   * Block elevation on near-black UI: pure black shadows vanish on var(--bg).
+   * Use a soft “ambient” light + hairline so edges read on #000 / #0a0a0a.
+   */
+  --shadow-block:
+    0 0 0 1px rgba(255, 255, 255, 0.07),
+    0 2px 10px rgba(255, 255, 255, 0.04),
+    0 8px 28px rgba(255, 255, 255, 0.03);
+  --shadow-block-lift:
+    0 0 0 1px rgba(255, 255, 255, 0.09),
+    0 4px 16px rgba(255, 255, 255, 0.05),
+    0 14px 40px rgba(255, 255, 255, 0.035);
+}
+
+/*
+ * Shared elevation for panels/cards/containers across apps.
+ * :where(...) keeps specificity at zero so app hover stacks and scoped rules
+ * (e.g. compare .block) still win when they set box-shadow.
+ */
+:where(
+  .uk-elevated,
+  .panel,
+  .info,
+  .list-container,
+  .video-card,
+  .stream-item,
+  .capture-zone,
+  .home-source-tablist,
+  .module-card,
+  .feature-mini-card,
+  .intro,
+  .technical,
+  .tech-item,
+  .card,
+  .chart-card,
+  .block,
+  .lang-switcher,
+  .annotate-files-panel,
+  .dataset-table-wrap,
+  .preview-wrapper,
+  .result-wrapper,
+  .upload-label
+) {
+  box-shadow: var(--shadow-block);
+}
+
+/* Floating overlays / popovers — slightly stronger token */
+:where(
+  .video-card-config-dropdown,
+  .qr-modal-box,
+  .success-toast,
+  #original-image,
+  #via_page_container > .via_page,
+  #_via_message_container #_via_message
+) {
+  box-shadow: var(--shadow-block-lift);
 }

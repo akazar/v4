@@ -30,7 +30,7 @@
   height: auto;
   aspect-ratio: 16 / 9;
   background: #000;
-  border-radius: 6px;
+  border-radius: var(--radius);
   display: block;
   object-fit: contain;
 }
