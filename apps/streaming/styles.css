@@ -204,6 +204,23 @@ input[type='url'] {
   padding: 0.65rem 0.85rem;
 }
 
+.saved-stream-group {
+  flex-wrap: wrap;
+}
+
+.saved-stream-group-summary {
+  flex: 1 1 12rem;
+  font-size: 0.9rem;
+  word-break: break-word;
+}
+
+.saved-stream-group-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
 /* Capture button inside stream cards */
 
 .capture-btn {

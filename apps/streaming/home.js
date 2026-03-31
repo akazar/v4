@@ -14,9 +14,12 @@ const refreshBtn = document.getElementById("refreshBtn");
 const selectAllBtn = document.getElementById("selectAllBtn");
 const openViewerBtn = document.getElementById("openViewerBtn");
 const openViewerDashboardBtn = document.getElementById("openViewerDashboardBtn");
+const saveSelectedStreamsBtn = document.getElementById("saveSelectedStreamsBtn");
 const streamsContainer = document.getElementById("streamsContainer");
+const savedStreamsContainer = document.getElementById("savedStreamsContainer");
 const createStatus = document.getElementById("createStatus");
 const viewerStatus = document.getElementById("viewerStatus");
+const savedStreamsStatus = document.getElementById("savedStreamsStatus");
 
 function normalizeStreamName(value) {
   return String(value || "")
@@ -39,6 +42,10 @@ function setCreateStatus(text) {
 
 function setViewerStatus(text) {
   viewerStatus.textContent = text;
+}
+
+function setSavedStreamsStatus(text) {
+  if (savedStreamsStatus) savedStreamsStatus.textContent = text;
 }
 
 /** True when the URL should be opened on the HLS streamer page (m3u8 / Apple HLS). */
@@ -221,6 +228,8 @@ function removeStream(streamId) {
   streamSourceUrls.delete(streamId);
   streamCaptureParams.delete(streamId);
   hiddenStreamIds.add(streamId);
+  saveHomeStreamsToStorage();
+  removeStreamFromAllSavedGroups(streamId);
   renderStreams(getMergedStreams());
 }
 
@@ -244,6 +253,7 @@ openStreamerBtn.addEventListener("click", () => {
     streamTypes.set(streamId, getSelectedCreationStreamMode());
     streamCaptureParams.set(streamId, { pageUrl, selector, intervalMs });
     preGeneratedStreams.add(streamId);
+    saveHomeStreamsToStorage();
     renderStreams(getMergedStreams());
     const modeLabel =
       streamTypes.get(streamId) === "sfu"
@@ -263,6 +273,7 @@ openStreamerBtn.addEventListener("click", () => {
   const streamId = customName || generateStreamId();
   streamTypes.set(streamId, getSelectedCreationStreamMode());
   preGeneratedStreams.add(streamId);
+  saveHomeStreamsToStorage();
   renderStreams(getMergedStreams());
 
   const sourceUrl =
@@ -271,6 +282,7 @@ openStreamerBtn.addEventListener("click", () => {
       : "";
   if (sourceUrl) {
     streamSourceUrls.set(streamId, sourceUrl);
+    saveHomeStreamsToStorage();
   }
   const modeLabel =
     streamTypes.get(streamId) === "sfu"
@@ -329,6 +341,22 @@ openViewerDashboardBtn.addEventListener("click", () => {
   setViewerStatus(`Opened viewer dashboard for: ${selectedStreams.join(", ")}`);
 });
 
+saveSelectedStreamsBtn.addEventListener("click", () => {
+  const selectedStreams = getSelectedStreams();
+
+  if (!selectedStreams.length) {
+    setViewerStatus("Select at least one stream to save.");
+    return;
+  }
+
+  const streamIds = [...new Set(selectedStreams)];
+  savedStreamGroups.push({ id: generateSavedGroupId(), streamIds });
+  saveSavedStreamGroupsToStorage();
+  renderSavedStreamsPanel();
+  setViewerStatus(`Saved ${streamIds.length} stream(s) as a new set.`);
+  setSavedStreamsStatus(`Added saved set: ${streamIds.join(", ")}`);
+});
+
 sourceNameInput.addEventListener("keydown", (event) => {
   if (event.key === "Enter") openStreamerBtn.click();
 });
@@ -355,6 +383,217 @@ const streamCaptureParams = new Map();
 /** Streams we've seen from the server; keep in list until Remove is clicked (do not remove when streamer tab closes). */
 const stickyStreamIds = new Set();
 const hiddenStreamIds = new Set();
+
+/** @type {{ id: string, streamIds: string[] }[]} */
+let savedStreamGroups = [];
+
+const HOME_STREAMS_STORAGE_KEY = "streaming-home-streams-v1";
+const HOME_SAVED_GROUPS_KEY = "streaming-home-saved-groups-v1";
+
+function generateSavedGroupId() {
+  return `saved-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
+}
+
+function saveSavedStreamGroupsToStorage() {
+  try {
+    localStorage.setItem(
+      HOME_SAVED_GROUPS_KEY,
+      JSON.stringify({ v: 1, groups: savedStreamGroups })
+    );
+  } catch {
+    /* quota / private mode */
+  }
+}
+
+function loadSavedStreamGroupsFromStorage() {
+  try {
+    const raw = localStorage.getItem(HOME_SAVED_GROUPS_KEY);
+    if (!raw) {
+      savedStreamGroups = [];
+      return;
+    }
+    const data = JSON.parse(raw);
+    if (!data || data.v !== 1 || !Array.isArray(data.groups)) {
+      savedStreamGroups = [];
+      return;
+    }
+    let needsSave = false;
+    const next = [];
+    for (const g of data.groups) {
+      if (!g || typeof g.id !== "string" || !Array.isArray(g.streamIds)) continue;
+      const streamIds = [
+        ...new Set(
+          g.streamIds.filter(
+            (sid) => typeof sid === "string" && sid.trim() && !hiddenStreamIds.has(sid)
+          )
+        ),
+      ];
+      if (streamIds.length !== g.streamIds.length) needsSave = true;
+      if (streamIds.length > 0) next.push({ id: g.id, streamIds });
+    }
+    savedStreamGroups = next;
+    if (needsSave) saveSavedStreamGroupsToStorage();
+  } catch {
+    savedStreamGroups = [];
+  }
+}
+
+function removeStreamFromAllSavedGroups(streamId) {
+  const prev = JSON.stringify(savedStreamGroups);
+  savedStreamGroups = savedStreamGroups
+    .map((g) => ({
+      id: g.id,
+      streamIds: g.streamIds.filter((id) => id !== streamId),
+    }))
+    .filter((g) => g.streamIds.length > 0);
+  if (JSON.stringify(savedStreamGroups) === prev) return;
+  saveSavedStreamGroupsToStorage();
+  renderSavedStreamsPanel();
+  setSavedStreamsStatus(`Removed "${streamId}" from saved sets.`);
+}
+
+function openSavedStreamGroup(group) {
+  const ids = group.streamIds;
+  const gapMs = 220;
+  ids.forEach((streamId, i) => {
+    const mode = streamTypes.get(streamId) === "sfu" ? "sfu" : "p2p";
+    setTimeout(() => {
+      window.open(streamerOpenUrl(streamId, mode), "_blank");
+    }, i * gapMs);
+  });
+  const modes = ids
+    .map((id) => (streamTypes.get(id) === "sfu" ? "sfu" : "p2p"))
+    .join(",");
+  setTimeout(() => {
+    window.open(
+      `dashboard.html?streams=${encodeURIComponent(ids.join(","))}&modes=${encodeURIComponent(modes)}`,
+      "_blank"
+    );
+  }, ids.length * gapMs);
+  setSavedStreamsStatus(`Opened streamers and dashboard for: ${ids.join(", ")}`);
+}
+
+function removeSavedStreamGroup(groupId) {
+  savedStreamGroups = savedStreamGroups.filter((g) => g.id !== groupId);
+  saveSavedStreamGroupsToStorage();
+  renderSavedStreamsPanel();
+  setSavedStreamsStatus("Removed saved stream set.");
+}
+
+function renderSavedStreamsPanel() {
+  if (!savedStreamsContainer) return;
+  savedStreamsContainer.innerHTML = "";
+
+  if (!savedStreamGroups.length) {
+    const empty = document.createElement("div");
+    empty.className = "status";
+    empty.textContent =
+      'No saved stream sets yet. Select streams above and click "Save selected streams".';
+    savedStreamsContainer.appendChild(empty);
+    return;
+  }
+
+  for (const group of savedStreamGroups) {
+    const row = document.createElement("div");
+    row.className = "stream-item saved-stream-group";
+
+    const summary = document.createElement("div");
+    summary.className = "saved-stream-group-summary";
+    summary.textContent = group.streamIds.join(", ");
+
+    const actions = document.createElement("div");
+    actions.className = "saved-stream-group-actions";
+
+    const openBtn = document.createElement("button");
+    openBtn.type = "button";
+    openBtn.textContent = "Open";
+    openBtn.title = "Open each streamer tab and the dashboard for this set";
+    openBtn.addEventListener("click", () => openSavedStreamGroup(group));
+
+    const removeBtn = document.createElement("button");
+    removeBtn.type = "button";
+    removeBtn.textContent = "Remove";
+    removeBtn.className = "remove-btn";
+    removeBtn.title = "Remove this saved set";
+    removeBtn.addEventListener("click", () => removeSavedStreamGroup(group.id));
+
+    actions.appendChild(openBtn);
+    actions.appendChild(removeBtn);
+    row.appendChild(summary);
+    row.appendChild(actions);
+    savedStreamsContainer.appendChild(row);
+  }
+}
+
+function saveHomeStreamsToStorage() {
+  try {
+    const entries = [];
+    for (const streamId of preGeneratedStreams) {
+      const mode = streamTypes.get(streamId) === "sfu" ? "sfu" : "p2p";
+      const sourceUrl = (streamSourceUrls.get(streamId) || "").trim();
+      const capture = streamCaptureParams.get(streamId);
+      const row = { streamId, mode };
+      if (sourceUrl) row.sourceUrl = sourceUrl;
+      if (capture && capture.pageUrl && capture.selector) {
+        row.capture = {
+          pageUrl: capture.pageUrl,
+          selector: capture.selector,
+          intervalMs: capture.intervalMs,
+        };
+      }
+      entries.push(row);
+    }
+    localStorage.setItem(
+      HOME_STREAMS_STORAGE_KEY,
+      JSON.stringify({ v: 1, entries, hidden: [...hiddenStreamIds] })
+    );
+  } catch {
+    /* quota / private mode */
+  }
+}
+
+function loadHomeStreamsFromStorage() {
+  try {
+    const raw = localStorage.getItem(HOME_STREAMS_STORAGE_KEY);
+    if (!raw) return;
+    const data = JSON.parse(raw);
+    if (!data || data.v !== 1 || !Array.isArray(data.entries)) return;
+
+    const hidden = Array.isArray(data.hidden) ? data.hidden : [];
+    for (const id of hidden) {
+      if (typeof id === "string" && id) hiddenStreamIds.add(id);
+    }
+
+    for (const e of data.entries) {
+      const streamId = e.streamId;
+      if (typeof streamId !== "string" || !streamId || hiddenStreamIds.has(streamId)) {
+        continue;
+      }
+      streamTypes.set(streamId, e.mode === "sfu" ? "sfu" : "p2p");
+      if (typeof e.sourceUrl === "string" && e.sourceUrl.trim()) {
+        streamSourceUrls.set(streamId, e.sourceUrl.trim());
+      }
+      if (
+        e.capture &&
+        typeof e.capture.pageUrl === "string" &&
+        typeof e.capture.selector === "string"
+      ) {
+        const intervalMs = Number(e.capture.intervalMs);
+        streamCaptureParams.set(streamId, {
+          pageUrl: e.capture.pageUrl.trim(),
+          selector: e.capture.selector.trim(),
+          intervalMs:
+            Number.isFinite(intervalMs) && intervalMs >= 200 && intervalMs <= 60000
+              ? intervalMs
+              : 1000,
+        });
+      }
+      preGeneratedStreams.add(streamId);
+    }
+  } catch {
+    /* corrupt or unreadable */
+  }
+}
 
 function showQrModal(url, streamId) {
   const modal = document.getElementById("qrModal");
@@ -393,4 +632,8 @@ socket.on("available-streams", ({ streams }) => {
   renderStreams(getMergedStreams());
 });
 
+loadHomeStreamsFromStorage();
+loadSavedStreamGroupsFromStorage();
+renderStreams(getMergedStreams());
+renderSavedStreamsPanel();
 requestStreams();

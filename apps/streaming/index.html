@@ -90,10 +90,20 @@
         <button id="refreshBtn">Clear selections</button>
         <button id="openViewerBtn">Open viewer for selected streams</button>
         <button id="openViewerDashboardBtn">Open viewer dashboard</button>
+        <button id="saveSelectedStreamsBtn" type="button">Save selected streams</button>
       </div>
 
       <div id="streamsContainer" class="streams-list"></div>
       <div class="status" id="viewerStatus"></div>
+    </div>
+
+    <div class="panel">
+      <h2>Saved streams</h2>
+      <p class="saved-streams-hint" style="margin: 0 0 0.75rem; font-size: 0.85rem; color: var(--text-muted);">
+        Saved combinations open each streamer in a new tab and the viewer dashboard for that set. Removing a stream from Available streams removes it from every saved set.
+      </p>
+      <div id="savedStreamsContainer" class="streams-list"></div>
+      <div class="status" id="savedStreamsStatus"></div>
     </div>
   </div>
 
