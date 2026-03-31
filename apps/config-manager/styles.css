@@ -101,3 +101,112 @@
     text-align: center;
     color: var(--text-muted);
 }
+
+/* Read-only config source panel */
+.view-panel {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+    padding: 1rem;
+    box-sizing: border-box;
+}
+
+.view-panel[hidden] {
+    display: none;
+}
+
+.view-panel__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+}
+
+.view-panel__sheet {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    width: min(920px, 100%);
+    max-height: min(90vh, 900px);
+    margin: auto;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+    overflow: hidden;
+}
+
+.view-panel__header {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.65rem 0.75rem 0.65rem 1rem;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+}
+
+.view-panel__title {
+    flex: 1;
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    word-break: break-all;
+}
+
+.view-panel__close {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    margin: 0;
+    padding: 0;
+    color: var(--text-muted);
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: color 0.15s, background 0.15s, border-color 0.15s;
+}
+
+.view-panel__close:hover {
+    color: var(--text);
+    background: var(--surface-alt);
+    border-color: var(--border);
+}
+
+.view-panel__close-icon {
+    display: block;
+}
+
+.view-panel__body {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+    padding: 0;
+}
+
+.view-panel__pre {
+    margin: 0;
+    padding: 1rem 1.1rem;
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    font-size: 0.8rem;
+    line-height: 1.45;
+    color: var(--text);
+    background: var(--bg);
+    white-space: pre;
+    overflow-x: auto;
+    user-select: text;
+    cursor: default;
+}
+
+.view-panel__pre code {
+    font-family: inherit;
+    font-size: inherit;
+    display: block;
+}

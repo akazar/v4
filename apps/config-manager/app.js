@@ -1,10 +1,15 @@
 /**
  * Config Manager: list configs from GET /api/configurations,
- * Delete via DELETE /api/configurations/:id, View opens /factory/web/?id=:id
+ * Delete via DELETE /api/configurations/:id,
+ * Test opens /factory/web/?id=:id, View shows read-only file content from /config/public/
  */
 
 const listEl = document.getElementById('configList');
 const statusEl = document.getElementById('status');
+const viewPanel = document.getElementById('viewPanel');
+const viewPanelTitle = document.getElementById('viewPanelTitle');
+const viewPanelCode = document.getElementById('viewPanelCode');
+const viewPanelClose = document.getElementById('viewPanelClose');
 
 function setStatus(message, isError = false) {
     statusEl.textContent = message || '';
@@ -41,7 +46,8 @@ async function loadList() {
             li.innerHTML = `
                 <span class="name">${escapeHtml(fileName)}</span>
                 <span class="actions">
-                    <button type="button" class="btn btn-view" data-id="${escapeAttr(id)}">View</button>
+                    <button type="button" class="btn btn-view" data-file="${escapeAttr(fileName)}">View</button>
+                    <button type="button" class="btn btn-test" data-id="${escapeAttr(id)}">Test</button>
                     <button type="button" class="btn btn-danger btn-delete" data-id="${escapeAttr(id)}" data-name="${escapeAttr(fileName)}">Delete</button>
                 </span>
             `;
@@ -66,12 +72,48 @@ function escapeAttr(s) {
     return escapeHtml(s).replace(/"/g, '&quot;');
 }
 
+function closeViewPanel() {
+    if (!viewPanel) return;
+    viewPanel.hidden = true;
+    viewPanel.setAttribute('aria-hidden', 'true');
+    viewPanelCode.textContent = '';
+}
+
+function openViewPanel(fileName, text) {
+    if (!viewPanel || !viewPanelTitle || !viewPanelCode) return;
+    viewPanelTitle.textContent = fileName;
+    viewPanelCode.textContent = text;
+    viewPanel.hidden = false;
+    viewPanel.setAttribute('aria-hidden', 'false');
+    viewPanelClose.focus();
+}
+
+async function showConfigSource(fileName) {
+    setStatus('Loading file…');
+    try {
+        const res = await fetch('/config/public/' + encodeURIComponent(fileName), { cache: 'no-store' });
+        if (!res.ok) throw new Error(res.status === 404 ? 'File not found' : `HTTP ${res.status}`);
+        const text = await res.text();
+        setStatus('');
+        openViewPanel(fileName, text);
+    } catch (err) {
+        setStatus(err.message || 'Failed to load file', true);
+    }
+}
+
 async function handleListClick(e) {
     const viewBtn = e.target.closest('.btn-view');
+    const testBtn = e.target.closest('.btn-test');
     const deleteBtn = e.target.closest('.btn-delete');
 
     if (viewBtn) {
-        const id = viewBtn.getAttribute('data-id');
+        const file = viewBtn.getAttribute('data-file');
+        if (file) await showConfigSource(file);
+        return;
+    }
+
+    if (testBtn) {
+        const id = testBtn.getAttribute('data-id');
         if (id) window.open('/factory/web/?id=' + encodeURIComponent(id), '_blank', 'noopener');
         return;
     }
@@ -96,4 +138,15 @@ async function handleListClick(e) {
 }
 
 listEl.addEventListener('click', handleListClick);
+
+if (viewPanelClose) {
+    viewPanelClose.addEventListener('click', closeViewPanel);
+}
+if (viewPanel) {
+    viewPanel.querySelector('.view-panel__backdrop')?.addEventListener('click', closeViewPanel);
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && viewPanel && !viewPanel.hidden) closeViewPanel();
+    });
+}
+
 loadList();
