@@ -228,6 +228,47 @@ body {
   box-shadow: 0 0 0 2px rgba(120, 120, 120, 0.2);
 }
 
+/* Export to server (annotation-list): labeled chip */
+#via_control_panel_container .annotate_save_server_tool {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 0.35em;
+  background: #2d2d2d;
+  color: rgba(255, 255, 255, 0.92) !important;
+  padding: 0.12em 0.45em;
+  border-radius: var(--radius);
+  cursor: pointer;
+  vertical-align: middle;
+  border: 1px solid rgba(0, 0, 0, 0.4);
+}
+
+#via_control_panel_container .annotate_save_server_tool:hover {
+  background: #3a3a3a;
+  color: #fff !important;
+}
+
+#via_control_panel_container .annotate_save_server_tool.cursor_progress {
+  cursor: progress;
+  opacity: 0.88;
+}
+
+#via_control_panel_container .annotate_save_server_tool .svg_button {
+  color: inherit !important;
+  fill: currentColor !important;
+  opacity: 1;
+}
+
+#via_control_panel_container .annotate_save_server_tool:hover .svg_button {
+  opacity: 0.95;
+}
+
+#via_control_panel_container .annotate_save_server_tool__label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  white-space: nowrap;
+  user-select: none;
+}
+
 /* Image / video viewport */
 #view_container {
   background: var(--bg);

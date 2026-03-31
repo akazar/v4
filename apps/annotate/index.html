@@ -96,6 +96,37 @@ html, body {
     padding: 0 0.5em;
 }
 
+#via_control_panel_container .annotate_save_server_tool {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35em;
+    background: #3a3a3a;
+    color: #f0f0f0;
+    padding: 0.15em 0.5em;
+    border-radius: 4px;
+    cursor: pointer;
+    vertical-align: middle;
+}
+
+#via_control_panel_container .annotate_save_server_tool:hover {
+    background: #4a4a4a;
+}
+
+#via_control_panel_container .annotate_save_server_tool.cursor_progress {
+    cursor: progress;
+    opacity: 0.85;
+}
+
+#via_control_panel_container .annotate_save_server_tool .svg_button {
+    fill: #f0f0f0;
+}
+
+#via_control_panel_container .annotate_save_server_tool__label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
 #via_control_panel_container #region_info_panel {
     font-size: 0.8em;
 }
@@ -2153,7 +2184,16 @@ _via_control_panel.prototype._add_project_tools = function() {
   this.c.appendChild(import_export_annotation);
 
   var save_annotation_toolbar = _via_util_get_svg_button('micon_save', 'Export COCO + current image to server (annotation-list)');
-  save_annotation_toolbar.addEventListener('click', function() {
+  var save_annotation_label = document.createElement('span');
+  save_annotation_label.setAttribute('class', 'annotate_save_server_tool__label');
+  save_annotation_label.textContent = 'Save Annotation';
+  var save_annotation_wrap = document.createElement('span');
+  save_annotation_wrap.setAttribute('class', 'annotate_save_server_tool');
+  save_annotation_wrap.setAttribute('title', 'Export COCO + current image to server (annotation-list)');
+  save_annotation_wrap.appendChild(save_annotation_toolbar);
+  save_annotation_wrap.appendChild(save_annotation_label);
+  save_annotation_wrap.addEventListener('click', function() {
+    save_annotation_wrap.classList.add('cursor_progress');
     var o = this.via.ie.build_coco_payload();
     var collect = typeof window.annotateCollectSidecarImage === 'function'
       ? window.annotateCollectSidecarImage(this.via)
@@ -2184,9 +2224,11 @@ _via_control_panel.prototype._add_project_tools = function() {
       });
     }).catch(function(err) {
       _via_util_msg_show('COCO export failed: ' + err.message);
+    }).finally(function() {
+      save_annotation_wrap.classList.remove('cursor_progress');
     });
   }.bind(this));
-  this.c.appendChild(save_annotation_toolbar);
+  this.c.appendChild(save_annotation_wrap);
 }
 
 _via_control_panel.prototype._page_show_import_export = function(d) {
