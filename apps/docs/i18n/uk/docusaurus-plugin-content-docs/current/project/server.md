@@ -16,7 +16,7 @@ title: server/
 
 1. Завантажується середовище (опційно ключі з `.env`).
 2. Створюється Express і нижній **http.Server** (для апгрейду WebSocket).
-3. Реєструється **статичний хостинг** для HTML/CSS/JS з `apps/`, кореня репозиторію (спільні `config/` і `lib/`), `factory/web` і UI kit.
+3. Реєструється **статичний хостинг** для HTML/CSS/JS з `apps/`, кореня репозиторію (спільні `config/` і `lib/`), `factory/web`, UI kit і зібраного Docusaurus за **`/documentation/`**, якщо існує **`apps/docs/build`**.
 4. Підключаються **API** cloud-функцій: розпізнавання, міркування, сповіщення, БД, список/видача конфігів, експорт annotate, model-training, метадані home-stream, Puppeteer-захоплення.
 5. Підключається підсистема **стримінгу** на тому ж порту (сигналінг і realtime).
 6. Прослуховується **порт** (з env або за замовчуванням).
@@ -75,11 +75,12 @@ title: server/
 |---------|-----------|----------|------|
 | **`setupFrontendHosting`** | `app` (Express) | void | **`app.get`** і **`express.static`**. |
 
-**Константи шляхів:** `v4Root`, `appsPath`, `landingPath`, шляхи до кожного апу, `factoryWebPath`, `uiKitPath` — усі через **`path.join(__dirname, '..', …)`** від **`server/`**.
+**Константи шляхів:** `v4Root`, `appsPath`, `landingPath`, шляхи до кожного апу, `factoryWebPath`, `uiKitPath`, `docsBuildPath` (`apps/docs/build`) — усі через **`path.join(__dirname, '..', …)`** від **`server/`**.
 
 **Логіка:**
 
 - **`/`**, **`/ua`** → `index.html` лендінгу.
+- **`/documentation`** — редірект на **`/documentation/`** і **`express.static(docsBuildPath)`**, якщо збірка існує (інакше попередження в консолі).
 - **`express.static(v4Root)`** — **`/lib`**, **`/config`** з кореня репозиторію.
 - **`express.static(appsPath)`** — активи `apps/`.
 - **`/ui-kit`** → `apps/ui-kit`.

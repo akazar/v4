@@ -52,4 +52,4 @@ Category docs under **[Repository roots](./project/package-manifests)**, **[Back
 
 ### Docs site only
 
-**`apps/docs/`** (this Docusaurus project) is **not** imported by the Vision server; it has its own **`package.json`** / lockfile and only documents the repo.
+**`apps/docs/`** (this Docusaurus project) is **not** imported at runtime; it has its own **`package.json`** / lockfile. After **`npm run docs:build`** at the repo root, the Vision server serves the static build at **`/documentation/`** on the same host and port as **`npm start`**. For authoring with hot reload, use **`npm run docs:dev`**.

@@ -13,7 +13,7 @@ const config = {
   },
 
   url: 'https://example.com',
-  baseUrl: '/',
+  baseUrl: '/documentation/',
 
   organizationName: 'v4',
   projectName: 'v4',

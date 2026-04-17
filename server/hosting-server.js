@@ -4,9 +4,10 @@
  * /ua (Ukrainian landing), /config-creator, /config-manager, /camera-stream, /image-upload, /model-training,
  * /model-training/dashboard,
  * /server-detection,
- * /server-reasoning, /compare, /streaming, /annotate, and /debug. Serves the v4 root for shared lib/ and config/.
+ * /server-reasoning, /compare, /streaming, /annotate, /debug, and /documentation (Docusaurus build). Serves the v4 root for shared lib/ and config/.
  */
 
+import { existsSync } from 'fs';
 import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -36,6 +37,7 @@ export function setupFrontendHosting(app) {
   const annotatePath = path.join(__dirname, '..', 'apps', 'annotate');
   const modelTrainingPath = path.join(__dirname, '..', 'apps', 'model-training');
   const uiKitPath = path.join(appsPath, 'ui-kit');
+  const docsBuildPath = path.join(__dirname, '..', 'apps', 'docs', 'build');
 
   // Landing page at root (EN) and Ukrainian at /ua
   app.get('/', (req, res) => {
@@ -48,6 +50,26 @@ export function setupFrontendHosting(app) {
     res.sendFile(path.join(landingPath, 'ua', 'index.html'));
   });
   app.use(express.static(landingPath));
+
+  // Docusaurus docs (production build). Dev / hot reload: npm run docs:dev from repo root.
+  // Serve /documentation/ explicitly: express.static's default trailing-slash redirects would
+  // 301 /documentation/ → /documentation/ and cause ERR_TOO_MANY_REDIRECTS.
+  if (existsSync(path.join(docsBuildPath, 'index.html'))) {
+    app.get('/documentation/', (req, res) => {
+      res.sendFile(path.join(docsBuildPath, 'index.html'));
+    });
+    app.get('/documentation', (req, res) => {
+      res.redirect(301, '/documentation/');
+    });
+    app.use(
+      '/documentation',
+      express.static(docsBuildPath, { redirect: false })
+    );
+  } else {
+    console.warn(
+      '[hosting] Skipping /documentation — run npm run docs:build (apps/docs/build missing).'
+    );
+  }
 
   // v4 root (config/, lib/, etc.) at / for module imports from all apps
   // This must come before apps static to ensure module imports work
