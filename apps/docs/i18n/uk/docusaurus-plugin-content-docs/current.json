@@ -1,0 +1,18 @@
+{
+  "version.label": {
+    "message": "Поточна",
+    "description": "The label for version current"
+  },
+  "sidebar.docsSidebar.category.Repository roots": {
+    "message": "Корені репозиторію",
+    "description": "The label for category 'Repository roots' in sidebar 'docsSidebar'"
+  },
+  "sidebar.docsSidebar.category.Backend & shared assets": {
+    "message": "Бекенд і спільні ресурси",
+    "description": "The label for category 'Backend & shared assets' in sidebar 'docsSidebar'"
+  },
+  "sidebar.docsSidebar.category.Applications (apps/)": {
+    "message": "Застосунки (apps/)",
+    "description": "The label for category 'Applications (apps/)' in sidebar 'docsSidebar'"
+  }
+}

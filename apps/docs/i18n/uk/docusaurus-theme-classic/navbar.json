@@ -1,0 +1,18 @@
+{
+  "title": {
+    "message": "Документація Vision v4",
+    "description": "The title in the navbar"
+  },
+  "logo.alt": {
+    "message": "Vision v4",
+    "description": "The alt text of navbar logo"
+  },
+  "item.label.Documentation": {
+    "message": "Документація",
+    "description": "Navbar item with label Documentation"
+  },
+  "item.label.Docusaurus": {
+    "message": "Docusaurus",
+    "description": "Navbar item with label Docusaurus"
+  }
+}

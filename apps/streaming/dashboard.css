@@ -32,13 +32,14 @@ input[type='url'] {
 }
 
 .video-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  display: flex;
+  flex-wrap: wrap;
   gap: 3px;
 }
 
 .video-card {
   position: relative;
+  flex-basis: min-content;
   background: #000;
   border: 1px solid var(--border);
   padding: 0;

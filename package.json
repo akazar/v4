@@ -7,7 +7,11 @@
   "scripts": {
     "start": "node server/main.js",
     "recognize:yolo": "node lib/cloud/recognition/yolo/recognize-yolo.mjs",
-    "recognize:mediapipe": "node lib/cloud/recognition/mediapipe/recognize-mediapipe.js"
+    "recognize:mediapipe": "node lib/cloud/recognition/mediapipe/recognize-mediapipe.js",
+    "docs:dev": "npm run start --prefix apps/docs",
+    "docs:dev:uk": "npm run start:uk --prefix apps/docs",
+    "docs:build": "npm run build --prefix apps/docs",
+    "docs:serve": "npm run serve --prefix apps/docs"
   },
   "engines": {
     "node": ">=18.0.0"
