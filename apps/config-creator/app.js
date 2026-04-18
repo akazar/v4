@@ -592,8 +592,8 @@
         );
     }
 
-    function buildConfigJs() {
-        const d = readFormConfig();
+    /** JavaScript object literal matching `const CONFIG = { ... }` (includes function bodies; not JSON). */
+    function buildConfigObjectLiteralBody(d) {
         const localRecognitionStr = formatLocalRecognitionJs(d.localRecognition);
         const boundingBoxStylesStr = formatBoundingBoxStylesJs(d.boundingBoxStyles);
         const serverRecognitionStr = formatServerRecognitionJs(d.serverRecognition);
@@ -609,10 +609,7 @@
         const serverReasoningActionFunctionsStr = formatReasoningActionFunctionsJs(d.serverReasoningActionFunctions);
         const serverRegularActionFunctionsStr = formatActionFunctionsJs(d.serverRegularActionFunctions, 'description');
 
-        return `/**
- * Single configuration object for the v4 app (structure like config/public/config-full.js)
- */
-const CONFIG = {
+        return `{
     /////////////////////// LOCAL CONFIG ///////////////////////
     id: '${escapeForSingleQuotedJs(d.configId)}',
     name: '${escapeForSingleQuotedJs(d.configName)}',
@@ -632,7 +629,15 @@ const CONFIG = {
     serverRecognitionActionFunctions: ${serverRecognitionActionFunctionsStr},
     serverReasoningActionFunctions: ${serverReasoningActionFunctionsStr},
     serverRegularActionFunctions: ${serverRegularActionFunctionsStr},
-};
+}`;
+    }
+
+    function buildConfigJs() {
+        const d = readFormConfig();
+        return `/**
+ * Single configuration object for the v4 app (structure like config/public/config-full.js)
+ */
+const CONFIG = ${buildConfigObjectLiteralBody(d)};
 
 export default CONFIG;
 export { CONFIG };
@@ -665,10 +670,6 @@ export { CONFIG };
     /** Same serializable object as POST /api/configurations `config` (function bodies omitted). */
     function getSharedConfigurationObject() {
         return buildConfigObject();
-    }
-
-    function formatConfigurationJson(config) {
-        return JSON.stringify(config, null, 2);
     }
 
     const PRESET_NOTIFICATION_BODY = `fetch(\`/api/notify\`, {
@@ -951,7 +952,7 @@ export { CONFIG };
     document.getElementById('btnPreviewConfig').addEventListener('click', function () {
         const previewSection = document.getElementById('configPreviewSection');
         const previewJsonEl = document.getElementById('configPreviewJson');
-        previewJsonEl.textContent = formatConfigurationJson(getSharedConfigurationObject());
+        previewJsonEl.textContent = buildConfigObjectLiteralBody(readFormConfig());
         previewSection.hidden = false;
     });
 
@@ -979,4 +980,65 @@ export { CONFIG };
             alert('Request failed. Is the server running?');
         }
     });
+
+    const CONFIG_SECTION_FILTERS = {
+        all: null,
+        general: ['meta', 'ui'],
+        local: [
+            'localRecognition',
+            'boundingBoxStyles',
+            'localRecognitionActions',
+            'localRecognitionActionFunctions',
+            'localRegularActionFunctions',
+        ],
+        server: [
+            'serverRecognition',
+            'serverReasoning',
+            'serverRecognitionActions',
+            'serverRecognitionActionFunctions',
+            'serverReasoningActionFunctions',
+            'serverRegularActionFunctions',
+        ],
+    };
+
+    function applyConfigSectionFilter(filterKey) {
+        const allowed = CONFIG_SECTION_FILTERS[filterKey];
+        document.querySelectorAll('#configForm section.card[data-section]').forEach((el) => {
+            const key = el.getAttribute('data-section');
+            if (!allowed || allowed.includes(key)) {
+                el.classList.remove('card-filter-hidden');
+            } else {
+                el.classList.add('card-filter-hidden');
+            }
+        });
+
+        const scrollEl = document.querySelector('.config-panel-scroll');
+        if (!scrollEl) return;
+        requestAnimationFrame(() => {
+            const firstVisible = scrollEl.querySelector('section.card[data-section]:not(.card-filter-hidden)');
+            if (firstVisible) {
+                firstVisible.scrollIntoView({ block: 'start', behavior: 'smooth' });
+            }
+        });
+    }
+
+    function initConfigSectionFilter() {
+        const panel = document.getElementById('configFilterPanel');
+        if (!panel) return;
+        panel.querySelectorAll('.config-filter-btn').forEach((btn) => {
+            btn.addEventListener('click', () => {
+                const key = btn.getAttribute('data-filter');
+                if (!key || !Object.prototype.hasOwnProperty.call(CONFIG_SECTION_FILTERS, key)) return;
+                panel.querySelectorAll('.config-filter-btn').forEach((b) => {
+                    const on = b === btn;
+                    b.classList.toggle('is-active', on);
+                    b.setAttribute('aria-pressed', on ? 'true' : 'false');
+                });
+                applyConfigSectionFilter(key);
+            });
+        });
+        applyConfigSectionFilter('all');
+    }
+
+    initConfigSectionFilter();
 })();

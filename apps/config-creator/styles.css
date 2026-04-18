@@ -42,6 +42,71 @@ body {
     align-items: stretch;
 }
 
+.config-filter-panel {
+    flex: 0 0 10%;
+    width: 10%;
+    max-width: 10%;
+    min-width: 0;
+    box-sizing: border-box;
+    padding: 1rem 0.5rem 1rem 0.65rem;
+    border-right: 1px solid var(--border);
+    background: var(--surface);
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.config-filter-heading {
+    margin: 0 0 0.65rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+}
+
+.config-filter-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.config-filter-btn {
+    display: block;
+    width: 100%;
+    margin: 0;
+    padding: 0.45rem 0.4rem;
+    font: inherit;
+    font-size: 0.72rem;
+    font-weight: 500;
+    line-height: 1.25;
+    text-align: left;
+    color: var(--text-muted);
+    background: var(--surface-alt);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: color 0.12s, border-color 0.12s, background 0.12s;
+}
+
+.config-filter-btn:hover {
+    color: var(--text);
+    border-color: var(--accent-hover);
+}
+
+.config-filter-btn.is-active {
+    color: var(--text);
+    background: var(--border);
+    border-color: var(--accent-hover);
+}
+
+#configForm .card.card-filter-hidden {
+    display: none !important;
+}
+
 .config-panel {
     display: flex;
     flex-direction: column;
@@ -359,8 +424,6 @@ body {
 .mixed-local-recognition-row .action-body {
     flex: 1 1 220px;
     min-width: 200px;
-    font-family: 'Consolas', 'Monaco', monospace;
-    font-size: 0.85rem;
 }
 
 .reasoning-action-row .interval-field {
@@ -452,6 +515,38 @@ input.coco-filter {
     gap: 0.45rem;
 }
 
+/* Action rows — code-style textareas (dark editor, aligned with ui-kit) */
+textarea.action-body {
+    box-sizing: border-box;
+    width: 100%;
+    margin: 0;
+    padding: 0.65rem 0.85rem;
+    font-family: ui-monospace, 'Cascadia Code', 'SF Mono', 'Consolas', 'Monaco', monospace;
+    font-size: 0.8125rem;
+    line-height: 1.55;
+    letter-spacing: 0.02em;
+    color: #d4d4d4;
+    background: #0c0c0c;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    tab-size: 2;
+    resize: vertical;
+    min-height: 3.75rem;
+    caret-color: var(--accent-hover);
+}
+
+textarea.action-body::placeholder {
+    color: var(--text-muted);
+    opacity: 0.8;
+}
+
+textarea.action-body:focus {
+    outline: none;
+    border-color: var(--accent-hover);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 0 0 2px rgba(120, 120, 120, 0.22);
+}
+
 /* Action rows */
 .action-row {
     display: flex;
@@ -467,8 +562,6 @@ input.coco-filter {
 .action-row .action-body {
     flex: 1;
     min-width: 200px;
-    font-family: 'Consolas', 'Monaco', monospace;
-    font-size: 0.85rem;
 }
 
 .action-row .interval-field {
@@ -626,6 +719,34 @@ input.coco-filter {
 @media (max-width: 900px) {
     .config-creator-main {
         flex-direction: column;
+    }
+
+    .config-filter-panel {
+        flex: 0 0 auto;
+        width: 100%;
+        max-width: none;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+        padding: 0.75rem 1rem;
+    }
+
+    .config-filter-heading {
+        margin-bottom: 0.5rem;
+    }
+
+    .config-filter-list {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 0.45rem;
+    }
+
+    .config-filter-btn {
+        width: auto;
+        flex: 1 1 auto;
+        min-width: 5.5rem;
+        text-align: center;
+        font-size: 0.8rem;
+        padding: 0.5rem 0.65rem;
     }
 
     .config-panel {
