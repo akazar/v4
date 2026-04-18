@@ -4,14 +4,170 @@
     --danger-hover: #9a9a9a;
 }
 
-.container {
-    max-width: 720px;
-    margin: 0 auto;
+html,
+body {
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+}
+
+body {
+    min-height: 100vh;
+}
+
+.config-creator-shell {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    max-height: 100vh;
+    min-height: 0;
+    width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.config-creator-top-header {
+    flex-shrink: 0;
+    margin-bottom: 0;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+}
+
+.config-creator-main {
+    display: flex;
+    flex: 1 1 0;
+    min-height: 0;
+    overflow: hidden;
+    align-items: stretch;
+}
+
+.config-panel {
+    display: flex;
+    flex-direction: column;
+    flex: 0 0 40%;
+    width: 40%;
+    max-width: 40%;
+    min-width: 0;
+    min-height: 0;
+    box-sizing: border-box;
+    overflow: hidden;
+    border-right: 1px solid var(--border);
+}
+
+.config-panel-scroll {
+    flex: 1 1 0;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+}
+
+.config-panel-inner {
     padding: 2rem 1.5rem;
+}
+
+.config-panel-footer {
+    flex-shrink: 0;
+    padding: 1rem 1.5rem 1.25rem;
+    border-top: 1px solid var(--border);
+    background: var(--surface);
+}
+
+.info-panel {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-width: 0;
+    min-height: 0;
+    box-sizing: border-box;
+    padding: 2rem 1.5rem;
+    background: var(--bg);
+    overflow: hidden;
+}
+
+.config-preview {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+    height: 100%;
+}
+
+.config-preview[hidden] {
+    display: none !important;
+}
+
+.config-preview-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-shrink: 0;
+    margin-bottom: 1rem;
+}
+
+.config-preview-title {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text);
+}
+
+.config-preview-close {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    padding: 0;
+    font-size: 1.5rem;
+    line-height: 1;
+    color: var(--text-muted);
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+
+.config-preview-close:hover {
+    color: var(--text);
+    border-color: var(--accent-hover);
+    background: var(--surface);
+}
+
+.config-preview-json {
+    flex: 1 1 0;
+    min-height: 0;
+    margin: 0;
+    padding: 1rem 1.25rem;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    font-size: 0.8rem;
+    line-height: 1.5;
+    color: var(--text);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    white-space: pre;
+    tab-size: 2;
+}
+
+.config-preview-json code {
+    font: inherit;
+    color: inherit;
+    white-space: inherit;
 }
 
 .header {
     margin-bottom: 2rem;
+}
+
+.header.config-creator-top-header {
+    margin-bottom: 0;
 }
 
 .header h1 {
@@ -135,6 +291,10 @@
 .field.checkbox-wrap label {
     margin-bottom: 0;
     cursor: pointer;
+}
+
+.field.checkbox-wrap[hidden] {
+    display: none !important;
 }
 
 .row {
@@ -398,6 +558,28 @@ input.coco-filter {
     min-width: 200px;
 }
 
+.btn-preview {
+    flex: 0 0 auto;
+    padding: 0.85rem 1.25rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text);
+    background: var(--bg);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s, border-color 0.15s;
+}
+
+.btn-preview:hover {
+    background: var(--surface);
+    border-color: var(--accent-hover);
+}
+
+.btn-preview:active {
+    transform: scale(0.99);
+}
+
 .btn-save {
     padding: 0.85rem 1.5rem;
     font-size: 1rem;
@@ -439,6 +621,24 @@ input.coco-filter {
 
 .btn-download:active {
     transform: scale(0.99);
+}
+
+@media (max-width: 900px) {
+    .config-creator-main {
+        flex-direction: column;
+    }
+
+    .config-panel {
+        flex: 1 1 0;
+        width: 100%;
+        max-width: none;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .info-panel {
+        flex: 1 1 0;
+    }
 }
 
 @media (max-width: 560px) {

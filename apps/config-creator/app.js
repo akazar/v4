@@ -35,6 +35,13 @@
 
     const num = (el, def) => (el ? (parseInt(el.value, 10) || def) : def);
     const float = (el, def) => (el ? (parseFloat(el.value) || def) : def);
+
+    const EDGE_TYPES = ['esp32', 'arduino', 'raspberry-pi', 'web'];
+
+    function readEdgeType() {
+        const raw = document.getElementById('edgeType')?.value || 'web';
+        return EDGE_TYPES.includes(raw) ? raw : 'web';
+    }
     const parseClasses = (val) => {
         const arr = (val || '').split(',').map(s => s.trim()).filter(Boolean);
         return arr.length ? arr : ['person'];
@@ -429,7 +436,8 @@
         const configId = configIdInput ? slugId(configIdInput) : slugId(configName);
         const configDescription =
             (document.getElementById('configDescription').value || '').trim() || 'Default configuration';
-        const ui = useUi && document.getElementById('ui').checked;
+        const edgeType = readEdgeType();
+        const ui = useUi && edgeType === 'web' && document.getElementById('ui').checked;
 
         let localRecognition = null;
         if (useLocalRecognition) {
@@ -487,6 +495,7 @@
             configName,
             configId,
             configDescription,
+            edgeType,
             ui,
             localRecognition,
             boundingBoxStyles,
@@ -608,6 +617,7 @@ const CONFIG = {
     id: '${escapeForSingleQuotedJs(d.configId)}',
     name: '${escapeForSingleQuotedJs(d.configName)}',
     description: '${escapeForSingleQuotedJs(d.configDescription)}',
+    edgeType: '${escapeForSingleQuotedJs(d.edgeType)}',
     ui: ${d.ui},
     localRecognition: ${localRecognitionStr},
     boundingBoxStyles: ${boundingBoxStylesStr},
@@ -636,6 +646,7 @@ export { CONFIG };
             id: d.configId,
             name: d.configName,
             description: d.configDescription,
+            edgeType: d.edgeType,
             ui: d.ui,
             localRecognition: d.localRecognition,
             boundingBoxStyles: d.boundingBoxStyles,
@@ -649,6 +660,15 @@ export { CONFIG };
             serverReasoningActionFunctions: [],
             serverRegularActionFunctions: [],
         };
+    }
+
+    /** Same serializable object as POST /api/configurations `config` (function bodies omitted). */
+    function getSharedConfigurationObject() {
+        return buildConfigObject();
+    }
+
+    function formatConfigurationJson(config) {
+        return JSON.stringify(config, null, 2);
     }
 
     const PRESET_NOTIFICATION_BODY = `fetch(\`/api/notify\`, {
@@ -912,6 +932,15 @@ export { CONFIG };
 
     document.querySelectorAll('.coco-picker-root').forEach(initCocoPicker);
 
+    function syncUiEnableFieldVisibility() {
+        const wrap = document.getElementById('uiEnableWrap');
+        if (!wrap) return;
+        wrap.hidden = readEdgeType() !== 'web';
+    }
+
+    document.getElementById('edgeType').addEventListener('change', syncUiEnableFieldVisibility);
+    syncUiEnableFieldVisibility();
+
     form.addEventListener('submit', function (e) {
         e.preventDefault();
         const d = readFormConfig();
@@ -919,8 +948,19 @@ export { CONFIG };
         downloadFile(js, d.configId + '.js');
     });
 
+    document.getElementById('btnPreviewConfig').addEventListener('click', function () {
+        const previewSection = document.getElementById('configPreviewSection');
+        const previewJsonEl = document.getElementById('configPreviewJson');
+        previewJsonEl.textContent = formatConfigurationJson(getSharedConfigurationObject());
+        previewSection.hidden = false;
+    });
+
+    document.getElementById('configPreviewClose').addEventListener('click', function () {
+        document.getElementById('configPreviewSection').hidden = true;
+    });
+
     document.getElementById('btnGenerateAndSave').addEventListener('click', async function () {
-        const config = buildConfigObject();
+        const config = getSharedConfigurationObject();
         const fileName = config.id + '.js';
         try {
             const res = await fetch('/api/configurations', {

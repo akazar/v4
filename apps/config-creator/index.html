@@ -8,327 +8,353 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="container">
-        <header class="header">
+    <div class="config-creator-shell">
+        <header class="header config-creator-top-header">
             <h1>Config Generator</h1>
             <p class="subtitle">Create <code>config.js</code> for Vision v4 from your inputs (structure aligned with <code>config/public/config-full.js</code>)</p>
         </header>
-
-        <form id="configForm" class="form">
-            <section class="card" data-section="meta">
-                <div class="card-head">
-                    <h2>Name &amp; description</h2>
-                </div>
-                <div class="row">
-                    <div class="field">
-                        <label for="configId">Config id</label>
-                        <input type="text" id="configId" value="config" placeholder="config" title="Used as id in CONFIG and default filename">
+        <div class="config-creator-main">
+            <div class="config-panel">
+                <div class="config-panel-scroll">
+                    <div class="config-panel-inner">
+                        <form id="configForm" class="form">
+                            <section class="card" data-section="meta">
+                                <div class="card-head">
+                                    <h2>Name &amp; description</h2>
+                                </div>
+                                <div class="row">
+                                    <div class="field">
+                                        <label for="configId">Config id</label>
+                                        <input type="text" id="configId" value="config" placeholder="config" title="Used as id in CONFIG and default filename">
+                                    </div>
+                                    <div class="field">
+                                        <label for="configName">Display name</label>
+                                        <input type="text" id="configName" value="config" placeholder="config">
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label for="configDescription">Description</label>
+                                    <input type="text" id="configDescription" value="Default configuration" placeholder="Default configuration">
+                                </div>
+                            </section>
+                
+                            <section class="card" data-section="ui">
+                                <div class="card-head">
+                                    <h2>Edge platform</h2>
+                                    <label class="section-enable"><input type="checkbox" id="useUi" checked> Include in config</label>
+                                </div>
+                                <div class="field">
+                                    <label for="edgeType">Edge type</label>
+                                    <select id="edgeType">
+                                        <option value="esp32">ESP32</option>
+                                        <option value="arduino">Arduino</option>
+                                        <option value="raspberry-pi">Raspberry Pi</option>
+                                        <option value="web" selected>Web</option>
+                                    </select>
+                                </div>
+                                <div class="field checkbox-wrap" id="uiEnableWrap">
+                                    <input type="checkbox" id="ui" checked>
+                                    <label for="ui">Enable UI</label>
+                                </div>
+                            </section>
+                
+                            <section class="card" data-section="localRecognition">
+                                <div class="card-head">
+                                    <h2>Local recognition</h2>
+                                    <label class="section-enable"><input type="checkbox" id="useLocalRecognition" checked> Include in config</label>
+                                </div>
+                                <div class="field">
+                                    <label for="localClasses">Classes (comma-separated)</label>
+                                    <input type="text" id="localClasses" value="person, dog, car" placeholder="person, dog, car">
+                                    <div class="coco-picker-root" data-input-id="localClasses"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="field">
+                                        <label for="localMaxResults">Max results</label>
+                                        <input type="number" id="localMaxResults" value="10" min="1">
+                                    </div>
+                                    <div class="field">
+                                        <label for="localThreshold">Threshold</label>
+                                        <input type="number" id="localThreshold" value="0.5" min="0" max="1" step="0.05">
+                                    </div>
+                                    <div class="field">
+                                        <label for="localIouThreshold">IOU threshold</label>
+                                        <input type="number" id="localIouThreshold" value="0.45" min="0" max="1" step="0.05">
+                                    </div>
+                                    <div class="field">
+                                        <label for="localModel">Model</label>
+                                        <select id="localModel">
+                                            <option value="YOLO">YOLO</option>
+                                            <option value="MEDIAPIPE">MEDIAPIPE</option>
+                                        </select>
+                                    </div>
+                                    <div class="field">
+                                        <label for="localInputSize">Input size</label>
+                                        <input type="number" id="localInputSize" value="320" min="1">
+                                    </div>
+                                    <div class="field">
+                                        <label for="localMaxCaptureSize">Max capture size</label>
+                                        <input type="number" id="localMaxCaptureSize" value="320" min="1">
+                                    </div>
+                                    <div class="field">
+                                        <label for="localInterval">Interval (ms)</label>
+                                        <input type="number" id="localInterval" value="1000" min="0">
+                                    </div>
+                                </div>
+                            </section>
+                
+                            <section class="card" data-section="boundingBoxStyles">
+                                <div class="card-head">
+                                    <h2>Bounding box styles</h2>
+                                    <label class="section-enable"><input type="checkbox" id="useBoundingBoxStyles" checked> Include in config</label>
+                                </div>
+                                <div class="grid">
+                                    <div class="field">
+                                        <label for="strokeStyle">Stroke style</label>
+                                        <input type="text" id="strokeStyle" value="#00FFAA">
+                                    </div>
+                                    <div class="field">
+                                        <label for="lineWidth">Line width</label>
+                                        <input type="number" id="lineWidth" value="3" min="1">
+                                    </div>
+                                    <div class="field">
+                                        <label for="shadowColor">Shadow color</label>
+                                        <input type="text" id="shadowColor" value="rgba(0, 0, 0, 0.5)">
+                                    </div>
+                                    <div class="field">
+                                        <label for="shadowBlur">Shadow blur</label>
+                                        <input type="number" id="shadowBlur" value="4" min="0">
+                                    </div>
+                                    <div class="field">
+                                        <label for="font">Font</label>
+                                        <input type="text" id="font" value="16px system-ui, -apple-system, sans-serif">
+                                    </div>
+                                    <div class="field">
+                                        <label for="labelBgColor">Label background color</label>
+                                        <input type="text" id="labelBgColor" value="rgba(0, 0, 0, 0.8)">
+                                    </div>
+                                    <div class="field">
+                                        <label for="labelTextColor">Label text color</label>
+                                        <input type="text" id="labelTextColor" value="#00FFAA">
+                                    </div>
+                                    <div class="field">
+                                        <label for="labelPadding">Label padding</label>
+                                        <input type="number" id="labelPadding" value="6" min="0">
+                                    </div>
+                                    <div class="field">
+                                        <label for="borderRadius">Border radius</label>
+                                        <input type="number" id="borderRadius" value="4" min="0">
+                                    </div>
+                                    <div class="field">
+                                        <label for="boundingBoxInterval">Interval (ms)</label>
+                                        <input type="number" id="boundingBoxInterval" value="1000" min="0">
+                                    </div>
+                                </div>
+                            </section>
+                
+                            <section class="card" data-section="localRecognitionActions">
+                                <div class="card-head">
+                                    <h2>Local recognition actions (declarative)</h2>
+                                    <label class="section-enable"><input type="checkbox" id="useLocalRecognitionActions" checked> Include in config</label>
+                                </div>
+                                <p class="hint"><code>localRecognitionActions</code> — <code>{ action: { type, value: [] }, timeout }</code> (DB / API / NOTIFY / custom). Used by scheduled-actions and some dashboards.</p>
+                                <div id="localRecognitionActionsList"></div>
+                                <div class="action-buttons">
+                                    <button type="button" class="btn-add" id="addLocalRecognitionDeclarativeAction">+ Add action</button>
+                                    <button type="button" class="btn-preset" id="presetLocalRecognitionActionsDb">DB</button>
+                                    <button type="button" class="btn-preset" id="presetLocalRecognitionActionsApi">API</button>
+                                    <button type="button" class="btn-preset" id="presetLocalRecognitionActionsNotify">Notify</button>
+                                </div>
+                            </section>
+                
+                            <section class="card" data-section="localRecognitionActionFunctions">
+                                <div class="card-head">
+                                    <h2>Local recognition action functions</h2>
+                                    <label class="section-enable"><input type="checkbox" id="useLocalRecognitionActionFunctions" checked> Include in config</label>
+                                </div>
+                                <p class="hint"><code>localRecognitionActionFunctions</code> — declarative rows use <code>timeout</code>; function rows use <code>func</code> + <code>interval</code> (see <code>config-full.js</code>).</p>
+                                <div id="localRecognitionActionFunctionsList"></div>
+                                <div class="action-buttons">
+                                    <button type="button" class="btn-add" id="addLocalRecognitionFuncRow">+ Function + interval</button>
+                                    <button type="button" class="btn-add" id="addLocalRecognitionActionRow">+ Declarative action</button>
+                                    <button type="button" class="btn-preset" id="addLocalRecognitionMixedDb">+ DB (declarative)</button>
+                                    <button type="button" class="btn-preset" id="addLocalRecognitionMixedNotify">+ Notify (declarative)</button>
+                                </div>
+                            </section>
+                
+                            <section class="card" data-section="localRegularActionFunctions">
+                                <div class="card-head">
+                                    <h2>Local regular action functions</h2>
+                                    <label class="section-enable"><input type="checkbox" id="useLocalRegularActionFunctions" checked> Include in config</label>
+                                </div>
+                                <p class="hint"><code>localRegularActionFunctions</code> — declarative <code>{ action, timeout }</code> (e.g. periodic DB/API/notify).</p>
+                                <div id="localRegularActionsList"></div>
+                                <div class="action-buttons">
+                                    <button type="button" class="btn-add" id="addLocalRegularDeclarative">+ Add action</button>
+                                    <button type="button" class="btn-preset" id="presetLocalRegularDb">DB</button>
+                                    <button type="button" class="btn-preset" id="presetLocalRegularApi">API</button>
+                                    <button type="button" class="btn-preset" id="presetLocalRegularNotify">Notify</button>
+                                </div>
+                            </section>
+                
+                            <section class="card" data-section="serverRecognition">
+                                <div class="card-head">
+                                    <h2>Server recognition</h2>
+                                    <label class="section-enable"><input type="checkbox" id="useServerRecognition" checked> Include in config</label>
+                                </div>
+                                <div class="field">
+                                    <label for="serverClasses">Classes (comma-separated)</label>
+                                    <input type="text" id="serverClasses" value="person, dog, car" placeholder="person, dog, car">
+                                    <div class="coco-picker-root" data-input-id="serverClasses"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="field">
+                                        <label for="serverMaxResults">Max results</label>
+                                        <input type="number" id="serverMaxResults" value="10" min="1">
+                                    </div>
+                                    <div class="field">
+                                        <label for="serverThreshold">Threshold</label>
+                                        <input type="number" id="serverThreshold" value="0.5" min="0" max="1" step="0.05">
+                                    </div>
+                                    <div class="field">
+                                        <label for="serverIouThreshold">IOU threshold</label>
+                                        <input type="number" id="serverIouThreshold" value="0.45" min="0" max="1" step="0.05">
+                                    </div>
+                                    <div class="field">
+                                        <label for="serverModel">Model</label>
+                                        <select id="serverModel">
+                                            <option value="YOLO">YOLO</option>
+                                            <option value="MEDIAPIPE">MEDIAPIPE</option>
+                                        </select>
+                                    </div>
+                                    <div class="field">
+                                        <label for="serverRecognitionInterval">Interval (ms)</label>
+                                        <input type="number" id="serverRecognitionInterval" value="1000" min="0" title="serverRecognition.interval (e.g. dashboard / server pipeline)">
+                                    </div>
+                                </div>
+                            </section>
+                
+                            <section class="card" data-section="serverReasoning">
+                                <div class="card-head">
+                                    <h2>Server reasoning</h2>
+                                    <label class="section-enable"><input type="checkbox" id="useServerReasoning" checked> Include in config</label>
+                                </div>
+                                <div class="field">
+                                    <label for="serverReasoningModel">Model</label>
+                                    <select id="serverReasoningModel">
+                                        <option value="openai">openai</option>
+                                        <option value="google">google</option>
+                                    </select>
+                                </div>
+                                <div class="field">
+                                    <label for="serverReasoningPrompt">Prompt</label>
+                                    <textarea id="serverReasoningPrompt" rows="2" placeholder="Describe this image...">Describe this image in detail. What objects, people, or scene do you see?</textarea>
+                                </div>
+                            </section>
+                
+                            <section class="card" data-section="serverRecognitionActions">
+                                <div class="card-head">
+                                    <h2>Server recognition actions (declarative)</h2>
+                                    <label class="section-enable"><input type="checkbox" id="useServerRecognitionActions" checked> Include in config</label>
+                                </div>
+                                <p class="hint"><code>serverRecognitionActions</code> — same shape as local declarative actions; optional custom <code>type</code> for orchestrators.</p>
+                                <div id="serverRecognitionActionsList"></div>
+                                <div class="action-buttons">
+                                    <button type="button" class="btn-add" id="addServerRecognitionDeclarativeAction">+ Add action</button>
+                                    <button type="button" class="btn-preset" id="presetServerRecognitionActionsDb">DB</button>
+                                    <button type="button" class="btn-preset" id="presetServerRecognitionActionsApi">API</button>
+                                    <button type="button" class="btn-preset" id="presetServerRecognitionActionsNotify">Notify</button>
+                                </div>
+                            </section>
+                
+                            <section class="card" data-section="serverRecognitionActionFunctions">
+                                <div class="card-head">
+                                    <h2>Server recognition action functions</h2>
+                                    <label class="section-enable"><input type="checkbox" id="useServerRecognitionActionFunctions" checked> Include in config</label>
+                                </div>
+                                <p class="hint">Each item: <code>{ func: (recognitionResults) => { ... }, interval: ms }</code></p>
+                                <div id="serverRecognitionActionFunctionsList">
+                                    <div class="action-row with-interval">
+                                        <textarea class="action-body" rows="2" placeholder="console.log(recognitionResults);">console.log('[Server Recognition Action] Results:', recognitionResults);</textarea>
+                                        <div class="field interval-field">
+                                            <label>Interval (ms)</label>
+                                            <input type="number" class="interval-ms" value="5000" min="0">
+                                        </div>
+                                        <button type="button" class="btn-remove" title="Remove">−</button>
+                                    </div>
+                                </div>
+                                <div class="action-buttons">
+                                    <button type="button" class="btn-add" id="addServerRecognitionAction">+ Add server recognition action</button>
+                                    <button type="button" class="btn-preset" id="addServerRecognitionNotification">Notification</button>
+                                    <button type="button" class="btn-preset" id="addServerRecognitionDb">DB record</button>
+                                </div>
+                            </section>
+                
+                            <section class="card" data-section="serverReasoningActionFunctions">
+                                <div class="card-head">
+                                    <h2>Server reasoning action functions</h2>
+                                    <label class="section-enable"><input type="checkbox" id="useServerReasoningActionFunctions" checked> Include in config</label>
+                                </div>
+                                <p class="hint">Each item: <code>{ func: (description) => { ... }, counter: null | number }</code> — matches <code>config-full.js</code> / server description callbacks.</p>
+                                <div id="serverReasoningActions">
+                                    <div class="action-row reasoning-action-row">
+                                        <textarea class="action-body" rows="2" placeholder="console.log(description);">console.log('[Server Reasoning]', description?.slice(0, 80));</textarea>
+                                        <div class="field interval-field">
+                                            <label>Counter</label>
+                                            <input type="text" class="reasoning-counter" value="" placeholder="null" title="Leave empty for null">
+                                        </div>
+                                        <button type="button" class="btn-remove" title="Remove">−</button>
+                                    </div>
+                                </div>
+                                <div class="action-buttons">
+                                    <button type="button" class="btn-add" id="addServerReasoningAction">+ Add server reasoning action</button>
+                                    <button type="button" class="btn-preset" id="addServerReasoningNotification">Notification</button>
+                                    <button type="button" class="btn-preset" id="addServerReasoningDb">DB record</button>
+                                </div>
+                            </section>
+                
+                            <section class="card" data-section="serverRegularActionFunctions">
+                                <div class="card-head">
+                                    <h2>Server regular action functions</h2>
+                                    <label class="section-enable"><input type="checkbox" id="useServerRegularActionFunctions" checked> Include in config</label>
+                                </div>
+                                <p class="hint">Each item: <code>{ func: (description) => { ... }, interval: ms }</code> — last reasoning description (see <code>config-full.js</code>).</p>
+                                <div id="serverRegularActions">
+                                    <div class="action-row with-interval">
+                                        <textarea class="action-body" rows="2" placeholder="console.log(description);">console.log('[Server Regular] Last description:', description?.slice(0, 60) + (description?.length > 60 ? '…' : ''));</textarea>
+                                        <div class="field interval-field">
+                                            <label>Interval (ms)</label>
+                                            <input type="number" class="interval-ms" value="10000" min="0">
+                                        </div>
+                                        <button type="button" class="btn-remove" title="Remove">−</button>
+                                    </div>
+                                </div>
+                                <div class="action-buttons">
+                                    <button type="button" class="btn-add" id="addServerRegularAction">+ Add server regular action</button>
+                                    <button type="button" class="btn-preset" id="addServerRegularNotification">Notification</button>
+                                    <button type="button" class="btn-preset" id="addServerRegularDb">DB record</button>
+                                </div>
+                            </section>
+                
+                        </form>
                     </div>
-                    <div class="field">
-                        <label for="configName">Display name</label>
-                        <input type="text" id="configName" value="config" placeholder="config">
-                    </div>
                 </div>
-                <div class="field">
-                    <label for="configDescription">Description</label>
-                    <input type="text" id="configDescription" value="Default configuration" placeholder="Default configuration">
+                <div class="config-panel-footer actions-footer actions-footer-buttons">
+                    <button type="button" class="btn-preview" id="btnPreviewConfig">Preview</button>
+                    <button type="submit" form="configForm" class="btn-download">Generate &amp; Download config.js</button>
+                    <button type="button" class="btn-save" id="btnGenerateAndSave">Generate and Save</button>
                 </div>
-            </section>
-
-            <section class="card" data-section="ui">
-                <div class="card-head">
-                    <h2>UI</h2>
-                    <label class="section-enable"><input type="checkbox" id="useUi" checked> Include in config</label>
-                </div>
-                <div class="field checkbox-wrap">
-                    <input type="checkbox" id="ui" checked>
-                    <label for="ui">Enable UI</label>
-                </div>
-            </section>
-
-            <section class="card" data-section="localRecognition">
-                <div class="card-head">
-                    <h2>Local recognition</h2>
-                    <label class="section-enable"><input type="checkbox" id="useLocalRecognition" checked> Include in config</label>
-                </div>
-                <div class="field">
-                    <label for="localClasses">Classes (comma-separated)</label>
-                    <input type="text" id="localClasses" value="person, dog, car" placeholder="person, dog, car">
-                    <div class="coco-picker-root" data-input-id="localClasses"></div>
-                </div>
-                <div class="row">
-                    <div class="field">
-                        <label for="localMaxResults">Max results</label>
-                        <input type="number" id="localMaxResults" value="10" min="1">
-                    </div>
-                    <div class="field">
-                        <label for="localThreshold">Threshold</label>
-                        <input type="number" id="localThreshold" value="0.5" min="0" max="1" step="0.05">
-                    </div>
-                    <div class="field">
-                        <label for="localIouThreshold">IOU threshold</label>
-                        <input type="number" id="localIouThreshold" value="0.45" min="0" max="1" step="0.05">
-                    </div>
-                    <div class="field">
-                        <label for="localModel">Model</label>
-                        <select id="localModel">
-                            <option value="YOLO">YOLO</option>
-                            <option value="MEDIAPIPE">MEDIAPIPE</option>
-                        </select>
-                    </div>
-                    <div class="field">
-                        <label for="localInputSize">Input size</label>
-                        <input type="number" id="localInputSize" value="320" min="1">
-                    </div>
-                    <div class="field">
-                        <label for="localMaxCaptureSize">Max capture size</label>
-                        <input type="number" id="localMaxCaptureSize" value="320" min="1">
-                    </div>
-                    <div class="field">
-                        <label for="localInterval">Interval (ms)</label>
-                        <input type="number" id="localInterval" value="1000" min="0">
-                    </div>
-                </div>
-            </section>
-
-            <section class="card" data-section="boundingBoxStyles">
-                <div class="card-head">
-                    <h2>Bounding box styles</h2>
-                    <label class="section-enable"><input type="checkbox" id="useBoundingBoxStyles" checked> Include in config</label>
-                </div>
-                <div class="grid">
-                    <div class="field">
-                        <label for="strokeStyle">Stroke style</label>
-                        <input type="text" id="strokeStyle" value="#00FFAA">
-                    </div>
-                    <div class="field">
-                        <label for="lineWidth">Line width</label>
-                        <input type="number" id="lineWidth" value="3" min="1">
-                    </div>
-                    <div class="field">
-                        <label for="shadowColor">Shadow color</label>
-                        <input type="text" id="shadowColor" value="rgba(0, 0, 0, 0.5)">
-                    </div>
-                    <div class="field">
-                        <label for="shadowBlur">Shadow blur</label>
-                        <input type="number" id="shadowBlur" value="4" min="0">
-                    </div>
-                    <div class="field">
-                        <label for="font">Font</label>
-                        <input type="text" id="font" value="16px system-ui, -apple-system, sans-serif">
-                    </div>
-                    <div class="field">
-                        <label for="labelBgColor">Label background color</label>
-                        <input type="text" id="labelBgColor" value="rgba(0, 0, 0, 0.8)">
-                    </div>
-                    <div class="field">
-                        <label for="labelTextColor">Label text color</label>
-                        <input type="text" id="labelTextColor" value="#00FFAA">
-                    </div>
-                    <div class="field">
-                        <label for="labelPadding">Label padding</label>
-                        <input type="number" id="labelPadding" value="6" min="0">
-                    </div>
-                    <div class="field">
-                        <label for="borderRadius">Border radius</label>
-                        <input type="number" id="borderRadius" value="4" min="0">
-                    </div>
-                    <div class="field">
-                        <label for="boundingBoxInterval">Interval (ms)</label>
-                        <input type="number" id="boundingBoxInterval" value="1000" min="0">
-                    </div>
-                </div>
-            </section>
-
-            <section class="card" data-section="localRecognitionActions">
-                <div class="card-head">
-                    <h2>Local recognition actions (declarative)</h2>
-                    <label class="section-enable"><input type="checkbox" id="useLocalRecognitionActions" checked> Include in config</label>
-                </div>
-                <p class="hint"><code>localRecognitionActions</code> — <code>{ action: { type, value: [] }, timeout }</code> (DB / API / NOTIFY / custom). Used by scheduled-actions and some dashboards.</p>
-                <div id="localRecognitionActionsList"></div>
-                <div class="action-buttons">
-                    <button type="button" class="btn-add" id="addLocalRecognitionDeclarativeAction">+ Add action</button>
-                    <button type="button" class="btn-preset" id="presetLocalRecognitionActionsDb">DB</button>
-                    <button type="button" class="btn-preset" id="presetLocalRecognitionActionsApi">API</button>
-                    <button type="button" class="btn-preset" id="presetLocalRecognitionActionsNotify">Notify</button>
-                </div>
-            </section>
-
-            <section class="card" data-section="localRecognitionActionFunctions">
-                <div class="card-head">
-                    <h2>Local recognition action functions</h2>
-                    <label class="section-enable"><input type="checkbox" id="useLocalRecognitionActionFunctions" checked> Include in config</label>
-                </div>
-                <p class="hint"><code>localRecognitionActionFunctions</code> — declarative rows use <code>timeout</code>; function rows use <code>func</code> + <code>interval</code> (see <code>config-full.js</code>).</p>
-                <div id="localRecognitionActionFunctionsList"></div>
-                <div class="action-buttons">
-                    <button type="button" class="btn-add" id="addLocalRecognitionFuncRow">+ Function + interval</button>
-                    <button type="button" class="btn-add" id="addLocalRecognitionActionRow">+ Declarative action</button>
-                    <button type="button" class="btn-preset" id="addLocalRecognitionMixedDb">+ DB (declarative)</button>
-                    <button type="button" class="btn-preset" id="addLocalRecognitionMixedNotify">+ Notify (declarative)</button>
-                </div>
-            </section>
-
-            <section class="card" data-section="localRegularActionFunctions">
-                <div class="card-head">
-                    <h2>Local regular action functions</h2>
-                    <label class="section-enable"><input type="checkbox" id="useLocalRegularActionFunctions" checked> Include in config</label>
-                </div>
-                <p class="hint"><code>localRegularActionFunctions</code> — declarative <code>{ action, timeout }</code> (e.g. periodic DB/API/notify).</p>
-                <div id="localRegularActionsList"></div>
-                <div class="action-buttons">
-                    <button type="button" class="btn-add" id="addLocalRegularDeclarative">+ Add action</button>
-                    <button type="button" class="btn-preset" id="presetLocalRegularDb">DB</button>
-                    <button type="button" class="btn-preset" id="presetLocalRegularApi">API</button>
-                    <button type="button" class="btn-preset" id="presetLocalRegularNotify">Notify</button>
-                </div>
-            </section>
-
-            <section class="card" data-section="serverRecognition">
-                <div class="card-head">
-                    <h2>Server recognition</h2>
-                    <label class="section-enable"><input type="checkbox" id="useServerRecognition" checked> Include in config</label>
-                </div>
-                <div class="field">
-                    <label for="serverClasses">Classes (comma-separated)</label>
-                    <input type="text" id="serverClasses" value="person, dog, car" placeholder="person, dog, car">
-                    <div class="coco-picker-root" data-input-id="serverClasses"></div>
-                </div>
-                <div class="row">
-                    <div class="field">
-                        <label for="serverMaxResults">Max results</label>
-                        <input type="number" id="serverMaxResults" value="10" min="1">
-                    </div>
-                    <div class="field">
-                        <label for="serverThreshold">Threshold</label>
-                        <input type="number" id="serverThreshold" value="0.5" min="0" max="1" step="0.05">
-                    </div>
-                    <div class="field">
-                        <label for="serverIouThreshold">IOU threshold</label>
-                        <input type="number" id="serverIouThreshold" value="0.45" min="0" max="1" step="0.05">
-                    </div>
-                    <div class="field">
-                        <label for="serverModel">Model</label>
-                        <select id="serverModel">
-                            <option value="YOLO">YOLO</option>
-                            <option value="MEDIAPIPE">MEDIAPIPE</option>
-                        </select>
-                    </div>
-                    <div class="field">
-                        <label for="serverRecognitionInterval">Interval (ms)</label>
-                        <input type="number" id="serverRecognitionInterval" value="1000" min="0" title="serverRecognition.interval (e.g. dashboard / server pipeline)">
-                    </div>
-                </div>
-            </section>
-
-            <section class="card" data-section="serverReasoning">
-                <div class="card-head">
-                    <h2>Server reasoning</h2>
-                    <label class="section-enable"><input type="checkbox" id="useServerReasoning" checked> Include in config</label>
-                </div>
-                <div class="field">
-                    <label for="serverReasoningModel">Model</label>
-                    <select id="serverReasoningModel">
-                        <option value="openai">openai</option>
-                        <option value="google">google</option>
-                    </select>
-                </div>
-                <div class="field">
-                    <label for="serverReasoningPrompt">Prompt</label>
-                    <textarea id="serverReasoningPrompt" rows="2" placeholder="Describe this image...">Describe this image in detail. What objects, people, or scene do you see?</textarea>
-                </div>
-            </section>
-
-            <section class="card" data-section="serverRecognitionActions">
-                <div class="card-head">
-                    <h2>Server recognition actions (declarative)</h2>
-                    <label class="section-enable"><input type="checkbox" id="useServerRecognitionActions" checked> Include in config</label>
-                </div>
-                <p class="hint"><code>serverRecognitionActions</code> — same shape as local declarative actions; optional custom <code>type</code> for orchestrators.</p>
-                <div id="serverRecognitionActionsList"></div>
-                <div class="action-buttons">
-                    <button type="button" class="btn-add" id="addServerRecognitionDeclarativeAction">+ Add action</button>
-                    <button type="button" class="btn-preset" id="presetServerRecognitionActionsDb">DB</button>
-                    <button type="button" class="btn-preset" id="presetServerRecognitionActionsApi">API</button>
-                    <button type="button" class="btn-preset" id="presetServerRecognitionActionsNotify">Notify</button>
-                </div>
-            </section>
-
-            <section class="card" data-section="serverRecognitionActionFunctions">
-                <div class="card-head">
-                    <h2>Server recognition action functions</h2>
-                    <label class="section-enable"><input type="checkbox" id="useServerRecognitionActionFunctions" checked> Include in config</label>
-                </div>
-                <p class="hint">Each item: <code>{ func: (recognitionResults) => { ... }, interval: ms }</code></p>
-                <div id="serverRecognitionActionFunctionsList">
-                    <div class="action-row with-interval">
-                        <textarea class="action-body" rows="2" placeholder="console.log(recognitionResults);">console.log('[Server Recognition Action] Results:', recognitionResults);</textarea>
-                        <div class="field interval-field">
-                            <label>Interval (ms)</label>
-                            <input type="number" class="interval-ms" value="5000" min="0">
-                        </div>
-                        <button type="button" class="btn-remove" title="Remove">−</button>
-                    </div>
-                </div>
-                <div class="action-buttons">
-                    <button type="button" class="btn-add" id="addServerRecognitionAction">+ Add server recognition action</button>
-                    <button type="button" class="btn-preset" id="addServerRecognitionNotification">Notification</button>
-                    <button type="button" class="btn-preset" id="addServerRecognitionDb">DB record</button>
-                </div>
-            </section>
-
-            <section class="card" data-section="serverReasoningActionFunctions">
-                <div class="card-head">
-                    <h2>Server reasoning action functions</h2>
-                    <label class="section-enable"><input type="checkbox" id="useServerReasoningActionFunctions" checked> Include in config</label>
-                </div>
-                <p class="hint">Each item: <code>{ func: (description) => { ... }, counter: null | number }</code> — matches <code>config-full.js</code> / server description callbacks.</p>
-                <div id="serverReasoningActions">
-                    <div class="action-row reasoning-action-row">
-                        <textarea class="action-body" rows="2" placeholder="console.log(description);">console.log('[Server Reasoning]', description?.slice(0, 80));</textarea>
-                        <div class="field interval-field">
-                            <label>Counter</label>
-                            <input type="text" class="reasoning-counter" value="" placeholder="null" title="Leave empty for null">
-                        </div>
-                        <button type="button" class="btn-remove" title="Remove">−</button>
-                    </div>
-                </div>
-                <div class="action-buttons">
-                    <button type="button" class="btn-add" id="addServerReasoningAction">+ Add server reasoning action</button>
-                    <button type="button" class="btn-preset" id="addServerReasoningNotification">Notification</button>
-                    <button type="button" class="btn-preset" id="addServerReasoningDb">DB record</button>
-                </div>
-            </section>
-
-            <section class="card" data-section="serverRegularActionFunctions">
-                <div class="card-head">
-                    <h2>Server regular action functions</h2>
-                    <label class="section-enable"><input type="checkbox" id="useServerRegularActionFunctions" checked> Include in config</label>
-                </div>
-                <p class="hint">Each item: <code>{ func: (description) => { ... }, interval: ms }</code> — last reasoning description (see <code>config-full.js</code>).</p>
-                <div id="serverRegularActions">
-                    <div class="action-row with-interval">
-                        <textarea class="action-body" rows="2" placeholder="console.log(description);">console.log('[Server Regular] Last description:', description?.slice(0, 60) + (description?.length > 60 ? '…' : ''));</textarea>
-                        <div class="field interval-field">
-                            <label>Interval (ms)</label>
-                            <input type="number" class="interval-ms" value="10000" min="0">
-                        </div>
-                        <button type="button" class="btn-remove" title="Remove">−</button>
-                    </div>
-                </div>
-                <div class="action-buttons">
-                    <button type="button" class="btn-add" id="addServerRegularAction">+ Add server regular action</button>
-                    <button type="button" class="btn-preset" id="addServerRegularNotification">Notification</button>
-                    <button type="button" class="btn-preset" id="addServerRegularDb">DB record</button>
-                </div>
-            </section>
-
-            <div class="actions-footer actions-footer-buttons">
-                <button type="submit" class="btn-download">Generate &amp; Download config.js</button>
-                <button type="button" class="btn-save" id="btnGenerateAndSave">Generate and Save</button>
             </div>
-        </form>
+            <aside class="info-panel" id="configCreatorInfoPanel" aria-label="Preview and details">
+                <div class="config-preview" id="configPreviewSection" hidden>
+                    <div class="config-preview-header">
+                        <h2 class="config-preview-title">Configuration (JSON)</h2>
+                        <button type="button" class="config-preview-close" id="configPreviewClose" aria-label="Close preview">&times;</button>
+                    </div>
+                    <pre class="config-preview-json" tabindex="0"><code id="configPreviewJson"></code></pre>
+                </div>
+            </aside>
+        </div>
     </div>
     <script src="app.js"></script>
 </body>
