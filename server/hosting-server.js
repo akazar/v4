@@ -1,7 +1,7 @@
 /**
  * hosting-server.js — Front-end hosting for the v4 app.
  * Registers Express routes and static middleware for: root landing page, /factory (production demo),
- * /ua (Ukrainian landing), /config-creator, /config-manager, /camera-stream, /image-upload, /model-training,
+ * /ua (Ukrainian landing), /config-creator, /config-creator-adv, /config-manager, /camera-stream, /image-upload, /model-training,
  * /model-training/dashboard,
  * /server-detection,
  * /server-reasoning, /compare, /streaming, /annotate, /debug, and /documentation (Docusaurus build). Serves the v4 root for shared lib/ and config/.
@@ -25,6 +25,7 @@ export function setupFrontendHosting(app) {
   const appsPath = path.join(__dirname, '..', 'apps');
   const landingPath = path.join(__dirname, '..', 'apps', 'landing');
   const configCreatorPath = path.join(__dirname, '..', 'apps', 'config-creator');
+  const configCreatorAdvPath = path.join(__dirname, '..', 'apps', 'config-creator-adv');
   const configManagerPath = path.join(__dirname, '..', 'apps', 'config-manager');
   const cameraStreamPath = path.join(__dirname, '..', 'apps', 'camera-stream');
   const imageUploadPath = path.join(__dirname, '..', 'apps', 'image-upload');
@@ -100,6 +101,15 @@ export function setupFrontendHosting(app) {
   });
   app.get('/config-creator/', (req, res) => {
     res.sendFile(path.join(configCreatorPath, 'index.html'));
+  });
+
+  // Config generator (advanced copy) at /config-creator-adv
+  app.use('/config-creator-adv', express.static(configCreatorAdvPath));
+  app.get('/config-creator-adv', (req, res) => {
+    res.sendFile(path.join(configCreatorAdvPath, 'index.html'));
+  });
+  app.get('/config-creator-adv/', (req, res) => {
+    res.sendFile(path.join(configCreatorAdvPath, 'index.html'));
   });
 
   // Configuration manager at /config-manager

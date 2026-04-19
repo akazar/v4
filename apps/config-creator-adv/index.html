@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Config Generator (Advanced) — Vision v4</title>
+    <link rel="stylesheet" href="/ui-kit/ui-kit.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="config-creator-shell">
+        <header class="header config-creator-top-header">
+            <h1>Config Generator</h1>
+            <p class="subtitle">Create <code>config.js</code> for Vision v4 from your inputs (structure aligned with <code>config/public/config-full.js</code>)</p>
+        </header>
+        <div class="config-creator-main">
+            <nav class="config-filter-panel" id="configFilterPanel" aria-label="Filter form sections">
+                <p class="config-filter-heading">Show</p>
+                <ul class="config-filter-list">
+                    <li><button type="button" class="config-filter-btn is-active" data-filter="all" aria-pressed="true">All</button></li>
+                    <li><button type="button" class="config-filter-btn" data-filter="general" aria-pressed="false">General</button></li>
+                    <li><button type="button" class="config-filter-btn" data-filter="local" aria-pressed="false">Local</button></li>
+                    <li><button type="button" class="config-filter-btn" data-filter="server" aria-pressed="false">Server</button></li>
+                </ul>
+            </nav>
+            <div class="config-panel">
+                <div class="config-panel-scroll">
+                    <div class="config-panel-inner">
+                        <form id="configForm" class="form">
+                            <section class="card" data-section="meta">
+                                <div class="card-head">
+                                    <h2>Name &amp; description</h2>
+                                </div>
+                                <div class="row">
+                                    <div class="field">
+                                        <label for="configId">Config id</label>
+                                        <input type="text" id="configId" value="config" placeholder="config" title="Used as id in CONFIG and default filename">
+                                    </div>
+                                    <div class="field">
+                                        <label for="configName">Display name</label>
+                                        <input type="text" id="configName" value="config" placeholder="config">
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label for="configDescription">Description</label>
+                                    <input type="text" id="configDescription" value="Default configuration" placeholder="Default configuration">
+                                </div>
+                            </section>
+                
+                            <section class="card" data-section="ui">
+                                <div class="card-head">
+                                    <h2>Edge platform</h2>
+                                    <label class="section-enable"><input type="checkbox" id="useUi" checked> Include in config</label>
+                                </div>
+                                <div class="field">
+                                    <label for="edgeType">Edge type</label>
+                                    <select id="edgeType">
+                                        <option value="esp32">ESP32</option>
+                                        <option value="arduino">Arduino</option>
+                                        <option value="raspberry-pi">Raspberry Pi</option>
+                                        <option value="web" selected>Web</option>
+                                    </select>
+                                </div>
+                                <div class="field checkbox-wrap" id="uiEnableWrap">
+                                    <input type="checkbox" id="ui" checked>
+                                    <label for="ui">Enable UI</label>
+                                </div>
+                                <div id="uiAssetFieldsWrap" class="ui-asset-fields" hidden>
+                                    <p class="hint">Optional: attach UI assets. Exported <code>CONFIG</code> will list the selected file names (<code>uiHtmlPath</code>, <code>uiCssPath</code>, <code>uiJsPath</code>).</p>
+                                    <div class="field">
+                                        <label for="uiHtmlFile">HTML file</label>
+                                        <input type="file" id="uiHtmlFile" accept=".html,.htm,text/html">
+                                    </div>
+                                    <div class="field">
+                                        <label for="uiCssFile">CSS file</label>
+                                        <input type="file" id="uiCssFile" accept=".css,text/css">
+                                    </div>
+                                    <div class="field">
+                                        <label for="uiJsFile">JavaScript file</label>
+                                        <input type="file" id="uiJsFile" accept=".js,text/javascript,application/javascript">
+                                    </div>
+                                </div>
+                            </section>
+                
+                            <section class="card" data-section="localRecognition">
+                                <div class="card-head">
+                                    <h2>Local recognition</h2>
+                                    <label class="section-enable"><input type="checkbox" id="useLocalRecognition" checked> Include in config</label>
+                                </div>
+                                <div class="field">
+                                    <label for="localClasses">Classes (comma-separated)</label>
+                                    <input type="text" id="localClasses" value="person, dog, car" placeholder="person, dog, car">
+                                    <div class="coco-picker-root" data-input-id="localClasses"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="field">
+                                        <label for="localMaxResults">Max results</label>
+                                        <input type="number" id="localMaxResults" value="10" min="1">
+                                    </div>
+                                    <div class="field">
+                                        <label for="localThreshold">Threshold</label>
+                                        <input type="number" id="localThreshold" value="0.5" min="0" max="1" step="0.05">
+                                    </div>
+                                    <div class="field">
+                                        <label for="localIouThreshold">IOU threshold</label>
+                                        <input type="number" id="localIouThreshold" value="0.45" min="0" max="1" step="0.05">
+                                    </div>
+                                    <div class="field">
+                                        <label for="localModel">Model</label>
+                                        <select id="localModel">
+                                            <option value="YOLO">YOLO</option>
+                                            <option value="MEDIAPIPE">MEDIAPIPE</option>
+                                        </select>
+                                    </div>
+                                    <div class="field">
+                                        <label for="localInputSize">Input size</label>
+                                        <input type="number" id="localInputSize" value="320" min="1">
+                                    </div>
+                                    <div class="field">
+                                        <label for="localMaxCaptureSize">Max capture size</label>
+                                        <input type="number" id="localMaxCaptureSize" value="320" min="1">
+                                    </div>
+                                    <div class="field">
+                                        <label for="localInterval">Interval (ms)</label>
+                                        <input type="number" id="localInterval" value="1000" min="0">
+                                    </div>
+                                </div>
+                            </section>
+                
+                            <section class="card" data-section="boundingBoxStyles">
+                                <div class="card-head">
+                                    <h2>Bounding box styles</h2>
+                                    <label class="section-enable"><input type="checkbox" id="useBoundingBoxStyles" checked> Include in config</label>
+                                </div>
+                                <div class="grid">
+                                    <div class="field">
+                                        <label for="strokeStyle">Stroke style</label>
+                                        <input type="text" id="strokeStyle" value="#00FFAA">
+                                    </div>
+                                    <div class="field">
+                                        <label for="lineWidth">Line width</label>
+                                        <input type="number" id="lineWidth" value="3" min="1">
+                                    </div>
+                                    <div class="field">
+                                        <label for="shadowColor">Shadow color</label>
+                                        <input type="text" id="shadowColor" value="rgba(0, 0, 0, 0.5)">
+                                    </div>
+                                    <div class="field">
+                                        <label for="shadowBlur">Shadow blur</label>
+                                        <input type="number" id="shadowBlur" value="4" min="0">
+                                    </div>
+                                    <div class="field">
+                                        <label for="font">Font</label>
+                                        <input type="text" id="font" value="16px system-ui, -apple-system, sans-serif">
+                                    </div>
+                                    <div class="field">
+                                        <label for="labelBgColor">Label background color</label>
+                                        <input type="text" id="labelBgColor" value="rgba(0, 0, 0, 0.8)">
+                                    </div>
+                                    <div class="field">
+                                        <label for="labelTextColor">Label text color</label>
+                                        <input type="text" id="labelTextColor" value="#00FFAA">
+                                    </div>
+                                    <div class="field">
+                                        <label for="labelPadding">Label padding</label>
+                                        <input type="number" id="labelPadding" value="6" min="0">
+                                    </div>
+                                    <div class="field">
+                                        <label for="borderRadius">Border radius</label>
+                                        <input type="number" id="borderRadius" value="4" min="0">
+                                    </div>
+                                    <div class="field">
+                                        <label for="boundingBoxInterval">Interval (ms)</label>
+                                        <input type="number" id="boundingBoxInterval" value="1000" min="0">
+                                    </div>
+                                </div>
+                            </section>
+                
+                            <section class="card" data-section="localStartupAction">
+                                <div class="card-head">
+                                    <h2>Local Startup action</h2>
+                                </div>
+                                <div class="field">
+                                    <label for="localStartupActionMethodName">Method name</label>
+                                    <input type="text" id="localStartupActionMethodName" value="" placeholder="e.g. myStartupHandler">
+                                </div>
+                            </section>
+                
+                            <section class="card" data-section="localRecognitionActions">
+                                <div class="card-head">
+                                    <h2>Local recognition actions</h2>
+                                    <label class="section-enable"><input type="checkbox" id="useLocalRecognitionActions" checked> Include in config</label>
+                                </div>
+                                <p class="hint"><code>localRecognitionActions</code> — <code>{ action: { type, value: [] }, timeout }</code> (DB / API / NOTIFY / custom). Used by scheduled-actions and some dashboards.</p>
+                                <div id="localRecognitionActionsList"></div>
+                                <div class="action-buttons">
+                                    <button type="button" class="btn-add" id="addLocalRecognitionDeclarativeAction">+ Add action</button>
+                                    <button type="button" class="btn-preset" id="presetLocalRecognitionActionsDb">DB</button>
+                                    <button type="button" class="btn-preset" id="presetLocalRecognitionActionsApi">API</button>
+                                    <button type="button" class="btn-preset" id="presetLocalRecognitionActionsNotify">Notify</button>
+                                </div>
+                                <div id="localRecognitionActionsCustomJsWrap" class="decl-custom-js-wrap" hidden>
+                                    <div class="field">
+                                        <label for="localRecognitionActionsCustomJsFile">Custom action JavaScript file</label>
+                                        <input type="file" id="localRecognitionActionsCustomJsFile" accept=".js,text/javascript,application/javascript">
+                                    </div>
+                                    <p class="hint">Shown when at least one row uses type “Custom…”. On Generate / Save, the attached file is downloaded as <code>localRecognitionActions.js</code> (not stored in <code>CONFIG</code>).</p>
+                                </div>
+                            </section>
+                
+                            <section class="card" data-section="localRecognitionActionFunctions">
+                                <div class="card-head">
+                                    <h2>Local recognition action functions</h2>
+                                    <label class="section-enable"><input type="checkbox" id="useLocalRecognitionActionFunctions" checked> Include in config</label>
+                                </div>
+                                <p class="hint"><code>localRecognitionActionFunctions</code> — same shape as <code>localRecognitionActions</code>.</p>
+                                <div id="localRecognitionActionFunctionsList"></div>
+                                <div class="action-buttons">
+                                    <button type="button" class="btn-add" id="addLocalRecognitionActionFunctionsDeclarativeAction">+ Add action</button>
+                                    <button type="button" class="btn-preset" id="presetLocalRecognitionActionFunctionsDb">DB</button>
+                                    <button type="button" class="btn-preset" id="presetLocalRecognitionActionFunctionsApi">API</button>
+                                    <button type="button" class="btn-preset" id="presetLocalRecognitionActionFunctionsNotify">Notify</button>
+                                </div>
+                                <div id="localRecognitionActionFunctionsCustomJsWrap" class="decl-custom-js-wrap" hidden>
+                                    <div class="field">
+                                        <label for="localRecognitionActionFunctionsCustomJsFile">Custom action JavaScript file</label>
+                                        <input type="file" id="localRecognitionActionFunctionsCustomJsFile" accept=".js,text/javascript,application/javascript">
+                                    </div>
+                                    <p class="hint">Shown when at least one row uses type “Custom…”. On Generate / Save, the attached file is downloaded as <code>localRecognitionActionFunctions.js</code> (not stored in <code>CONFIG</code>).</p>
+                                </div>
+                            </section>
+                
+                            <section class="card" data-section="localRegularActionFunctions">
+                                <div class="card-head">
+                                    <h2>Local regular action functions</h2>
+                                    <label class="section-enable"><input type="checkbox" id="useLocalRegularActionFunctions" checked> Include in config</label>
+                                </div>
+                                <p class="hint"><code>localRegularActionFunctions</code> — declarative <code>{ action, timeout }</code> (e.g. periodic DB/API/notify).</p>
+                                <div id="localRegularActionsList"></div>
+                                <div class="action-buttons">
+                                    <button type="button" class="btn-add" id="addLocalRegularDeclarative">+ Add action</button>
+                                    <button type="button" class="btn-preset" id="presetLocalRegularDb">DB</button>
+                                    <button type="button" class="btn-preset" id="presetLocalRegularApi">API</button>
+                                    <button type="button" class="btn-preset" id="presetLocalRegularNotify">Notify</button>
+                                </div>
+                                <div id="localRegularActionFunctionsCustomJsWrap" class="decl-custom-js-wrap" hidden>
+                                    <div class="field">
+                                        <label for="localRegularActionFunctionsCustomJsFile">Custom action JavaScript file</label>
+                                        <input type="file" id="localRegularActionFunctionsCustomJsFile" accept=".js,text/javascript,application/javascript">
+                                    </div>
+                                    <p class="hint">Shown when at least one row uses type “Custom…”. On Generate / Save, the attached file is downloaded as <code>localRegularActionFunctions.js</code> (not stored in <code>CONFIG</code>).</p>
+                                </div>
+                            </section>
+                
+                            <section class="card" data-section="serverRecognition">
+                                <div class="card-head">
+                                    <h2>Server recognition</h2>
+                                    <label class="section-enable"><input type="checkbox" id="useServerRecognition" checked> Include in config</label>
+                                </div>
+                                <div class="field">
+                                    <label for="serverClasses">Classes (comma-separated)</label>
+                                    <input type="text" id="serverClasses" value="person, dog, car" placeholder="person, dog, car">
+                                    <div class="coco-picker-root" data-input-id="serverClasses"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="field">
+                                        <label for="serverMaxResults">Max results</label>
+                                        <input type="number" id="serverMaxResults" value="10" min="1">
+                                    </div>
+                                    <div class="field">
+                                        <label for="serverThreshold">Threshold</label>
+                                        <input type="number" id="serverThreshold" value="0.5" min="0" max="1" step="0.05">
+                                    </div>
+                                    <div class="field">
+                                        <label for="serverIouThreshold">IOU threshold</label>
+                                        <input type="number" id="serverIouThreshold" value="0.45" min="0" max="1" step="0.05">
+                                    </div>
+                                    <div class="field">
+                                        <label for="serverModel">Model</label>
+                                        <select id="serverModel">
+                                            <option value="YOLO">YOLO</option>
+                                            <option value="MEDIAPIPE">MEDIAPIPE</option>
+                                        </select>
+                                    </div>
+                                    <div class="field">
+                                        <label for="serverRecognitionInterval">Interval (ms)</label>
+                                        <input type="number" id="serverRecognitionInterval" value="1000" min="0" title="serverRecognition.interval (e.g. dashboard / server pipeline)">
+                                    </div>
+                                </div>
+                            </section>
+                
+                            <section class="card" data-section="serverStartupAction">
+                                <div class="card-head">
+                                    <h2>Server Startup action</h2>
+                                </div>
+                                <div class="field">
+                                    <label for="serverStartupActionMethodName">Method name</label>
+                                    <input type="text" id="serverStartupActionMethodName" value="" placeholder="e.g. myServerStartupHandler">
+                                </div>
+                            </section>
+                
+                            <section class="card" data-section="serverRecognitionActions">
+                                <div class="card-head">
+                                    <h2>Server recognition actions</h2>
+                                    <label class="section-enable"><input type="checkbox" id="useServerRecognitionActions" checked> Include in config</label>
+                                </div>
+                                <p class="hint"><code>serverRecognitionActions</code> — same shape as local declarative actions; optional custom <code>type</code> for orchestrators.</p>
+                                <div id="serverRecognitionActionsList"></div>
+                                <div class="action-buttons">
+                                    <button type="button" class="btn-add" id="addServerRecognitionDeclarativeAction">+ Add action</button>
+                                    <button type="button" class="btn-preset" id="presetServerRecognitionActionsDb">DB</button>
+                                    <button type="button" class="btn-preset" id="presetServerRecognitionActionsApi">API</button>
+                                    <button type="button" class="btn-preset" id="presetServerRecognitionActionsNotify">Notify</button>
+                                </div>
+                                <div id="serverRecognitionActionsCustomJsWrap" class="decl-custom-js-wrap" hidden>
+                                    <div class="field">
+                                        <label for="serverRecognitionActionsCustomJsFile">Custom action JavaScript file</label>
+                                        <input type="file" id="serverRecognitionActionsCustomJsFile" accept=".js,text/javascript,application/javascript">
+                                    </div>
+                                    <p class="hint">Shown when at least one row uses type “Custom…”. On Generate / Save, the attached file is downloaded as <code>serverRecognitionActions.js</code> (not stored in <code>CONFIG</code>).</p>
+                                </div>
+                            </section>
+                
+                            <section class="card" data-section="serverRegularActionFunctions">
+                                <div class="card-head">
+                                    <h2>Server regular actions</h2>
+                                    <label class="section-enable"><input type="checkbox" id="useServerRegularActionFunctions" checked> Include in config</label>
+                                </div>
+                                <p class="hint"><code>serverRegularActionFunctions</code> — same shape as <code>serverRecognitionActions</code> and local declarative actions; optional custom <code>type</code> for orchestrators.</p>
+                                <div id="serverRegularActionFunctionsList"></div>
+                                <div class="action-buttons">
+                                    <button type="button" class="btn-add" id="addServerRegularDeclarativeAction">+ Add action</button>
+                                    <button type="button" class="btn-preset" id="presetServerRegularActionsDb">DB</button>
+                                    <button type="button" class="btn-preset" id="presetServerRegularActionsApi">API</button>
+                                    <button type="button" class="btn-preset" id="presetServerRegularActionsNotify">Notify</button>
+                                </div>
+                                <div id="serverRegularActionFunctionsCustomJsWrap" class="decl-custom-js-wrap" hidden>
+                                    <div class="field">
+                                        <label for="serverRegularActionFunctionsCustomJsFile">Custom action JavaScript file</label>
+                                        <input type="file" id="serverRegularActionFunctionsCustomJsFile" accept=".js,text/javascript,application/javascript">
+                                    </div>
+                                    <p class="hint">Shown when at least one row uses type “Custom…”. On Generate / Save, the attached file is downloaded as <code>serverRegularActionFunctions.js</code> (not stored in <code>CONFIG</code>).</p>
+                                </div>
+                            </section>
+                
+                        </form>
+                    </div>
+                </div>
+                <div class="config-panel-footer actions-footer actions-footer-buttons">
+                    <button type="button" class="btn-preview" id="btnPreviewConfig">Preview</button>
+                    <button type="submit" form="configForm" class="btn-download">Generate &amp; Download config.js</button>
+                    <button type="button" class="btn-save" id="btnGenerateAndSave">Generate and Save</button>
+                </div>
+            </div>
+            <aside class="info-panel" id="configCreatorInfoPanel" aria-label="Preview and details">
+                <div class="config-preview" id="configPreviewSection" hidden>
+                    <div class="config-preview-header">
+                        <h2 class="config-preview-title">Configuration preview</h2>
+                        <button type="button" class="config-preview-close" id="configPreviewClose" aria-label="Close preview">&times;</button>
+                    </div>
+                    <pre class="config-preview-json" tabindex="0"><code id="configPreviewJson"></code></pre>
+                </div>
+            </aside>
+        </div>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>

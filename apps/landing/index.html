@@ -37,6 +37,10 @@
                             <span class="feature-mini-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg></span>
                             <span class="feature-mini-card-name">Config generator</span>
                         </a>
+                        <a class="feature-mini-card" href="/config-creator-adv">
+                            <span class="feature-mini-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg></span>
+                            <span class="feature-mini-card-name">Config generator (Advanced)</span>
+                        </a>
                         <a class="feature-mini-card" href="/camera-stream">
                             <span class="feature-mini-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></span>
                             <span class="feature-mini-card-name">Camera stream</span>
@@ -141,7 +145,7 @@
                             <li>Validate config changes before deploying to other modules</li>
                             <li>Demo or testing of the flexible configuration web version</li>
                         </ul>
-                        <p class="demo-note">Use the <a href="/config-creator">Config Generator</a> to build a custom <code>config.js</code>, then replace <code>config-factory.js</code> or point the demo to your config for a tailored experience. Use the <a href="/config-manager">Config Manager</a> to list, view, and delete configs in <code>config/public</code>.</p>
+                        <p class="demo-note">Use the <a href="/config-creator">Config Generator</a> or the <a href="/config-creator-adv">advanced generator</a> to build a custom <code>config.js</code>, then replace <code>config-factory.js</code> or point the demo to your config for a tailored experience. Use the <a href="/config-manager">Config Manager</a> to list, view, and delete configs in <code>config/public</code>.</p>
                     </div>
                 </div>
                                 
@@ -236,6 +240,20 @@
                             <li>Experimenting with different detection classes and thresholds</li>
                             <li>Generating configs for different environments (dev, staging, production)</li>
                         </ul>
+                    </div>
+                </div>
+
+                <div class="module-card">
+                    <div class="module-header">
+                        <h2>Config Generator (Advanced)</h2>
+                        <a href="/config-creator-adv" class="cta-button">Open Advanced Generator</a>
+                    </div>
+                    <div class="module-content">
+                        <h3>Extended workspace</h3>
+                        <p>
+                            The same <code>config.js</code> builder with a wider layout: filter form sections, live configuration preview,
+                            edge platform type, and pinned generate actions. Download and server save work like the standard generator.
+                        </p>
                     </div>
                 </div>
 
@@ -486,7 +504,7 @@
                     </div>
                     <div class="tech-item">
                         <h3>Configuration</h3>
-                        <p>Centralized configuration system allows customization of detection classes, thresholds, intervals, and action functions. Use the <a href="/config-creator">Config Generator</a> to create or tweak <code>config.js</code> in the browser and the <a href="/config-manager">Config Manager</a> to list, view, and delete configs in <code>config/public</code>.</p>
+                        <p>Centralized configuration system allows customization of detection classes, thresholds, intervals, and action functions. Use the <a href="/config-creator">Config Generator</a> or <a href="/config-creator-adv">advanced generator</a> to create or tweak <code>config.js</code> in the browser and the <a href="/config-manager">Config Manager</a> to list, view, and delete configs in <code>config/public</code>.</p>
                     </div>
                     <div class="tech-item">
                         <h3>Architecture</h3>

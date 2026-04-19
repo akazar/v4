@@ -37,6 +37,10 @@
                             <span class="feature-mini-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg></span>
                             <span class="feature-mini-card-name">Генератор конфігів</span>
                         </a>
+                        <a class="feature-mini-card" href="/config-creator-adv">
+                            <span class="feature-mini-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg></span>
+                            <span class="feature-mini-card-name">Генератор (розширений)</span>
+                        </a>
                         <a class="feature-mini-card" href="/camera-stream">
                             <span class="feature-mini-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></span>
                             <span class="feature-mini-card-name">Камера</span>
@@ -138,7 +142,7 @@
                             <li>Перевірка змін конфігу перед розгортанням в інших модулях</li>
                             <li>Демо та тестування веб-версії з гнучкою конфігурацією</li>
                         </ul>
-                        <p class="demo-note">Через <a href="/config-creator">генератор конфігів</a> зібрати <code>config.js</code>, замінити <code>config-factory.js</code> або вказати свій конфіг. <a href="/config-manager">Менеджер конфігів</a> — перегляд і видалення файлів у <code>config/public</code>.</p>
+                        <p class="demo-note">Через <a href="/config-creator">генератор конфігів</a> або <a href="/config-creator-adv">розширений генератор</a> зібрати <code>config.js</code>, замінити <code>config-factory.js</code> або вказати свій конфіг. <a href="/config-manager">Менеджер конфігів</a> — перегляд і видалення файлів у <code>config/public</code>.</p>
                     </div>
                 </div>
 
@@ -230,6 +234,20 @@
                             <li>Експерименти з класами та порогами</li>
                             <li>Конфіги для dev / staging / production</li>
                         </ul>
+                    </div>
+                </div>
+
+                <div class="module-card">
+                    <div class="module-header">
+                        <h2>Генератор конфігів (розширений)</h2>
+                        <a href="/config-creator-adv" class="cta-button">Відкрити розширений</a>
+                    </div>
+                    <div class="module-content">
+                        <h3>Розширений інтерфейс</h3>
+                        <p>
+                            Той самий збірник <code>config.js</code> з ширшим макетом: фільтр секцій форми, попередній перегляд конфігу,
+                            тип edge-платформи та закріплені кнопки генерації. Завантаження та збереження на сервері — як у звичайному генераторі.
+                        </p>
                     </div>
                 </div>
 
@@ -473,7 +491,7 @@
                     </div>
                     <div class="tech-item">
                         <h3>Конфігурація</h3>
-                        <p>Централізована система: класи, пороги, інтервали, дії. <a href="/config-creator">Генератор конфігів</a> для <code>config.js</code> у браузері; <a href="/config-manager">менеджер конфігів</a> для <code>config/public</code>.</p>
+                        <p>Централізована система: класи, пороги, інтервали, дії. <a href="/config-creator">Генератор конфігів</a> або <a href="/config-creator-adv">розширений генератор</a> для <code>config.js</code> у браузері; <a href="/config-manager">менеджер конфігів</a> для <code>config/public</code>.</p>
                     </div>
                     <div class="tech-item">
                         <h3>Архітектура</h3>
