@@ -481,6 +481,13 @@ export { CONFIG };
         URL.revokeObjectURL(a.href);
     }
 
+    /** Edge / UI assets when “Enable UI” is on: fixed download names (same order as inputs). */
+    const UI_ASSET_DOWNLOADS = [
+        ['uiHtmlFile', 'ui.html'],
+        ['uiCssFile', 'ui.css'],
+        ['uiJsFile', 'ui.js'],
+    ];
+
     /** Declarative “Custom…” JS attachments: downloaded next to config.js under fixed names (not in CONFIG). */
     const CUSTOM_ACTION_JS_DOWNLOADS = [
         ['localRecognitionActionsCustomJsFile', 'localRecognitionActions.js'],
@@ -502,10 +509,28 @@ export { CONFIG };
         URL.revokeObjectURL(url);
     }
 
-    function downloadAllCustomActionAttachments() {
+    function uiAttachmentsEnabledInForm() {
+        return (
+            isSectionEnabled('useUi') &&
+            readEdgeType() === 'web' &&
+            document.getElementById('ui')?.checked === true
+        );
+    }
+
+    /** After config.js: UI assets (if Enable UI + files), then custom declarative JS files. */
+    function downloadAllAttachedFiles() {
+        const queue = [];
+        if (uiAttachmentsEnabledInForm()) {
+            for (const pair of UI_ASSET_DOWNLOADS) {
+                queue.push(pair);
+            }
+        }
+        for (const pair of CUSTOM_ACTION_JS_DOWNLOADS) {
+            queue.push(pair);
+        }
         let delay = 0;
         const stepMs = 120;
-        for (const [inputId, filename] of CUSTOM_ACTION_JS_DOWNLOADS) {
+        for (const [inputId, filename] of queue) {
             if (!document.getElementById(inputId)) continue;
             const id = inputId;
             const name = filename;
@@ -689,7 +714,7 @@ export { CONFIG };
         const d = readFormConfig();
         const js = buildConfigJs();
         downloadFile(js, d.configId + '.js');
-        downloadAllCustomActionAttachments();
+        downloadAllAttachedFiles();
     });
 
     document.getElementById('btnPreviewConfig').addEventListener('click', function () {
@@ -720,7 +745,7 @@ export { CONFIG };
             }
             alert(`Saved as ${data.file || fileName}`);
             downloadFile(js, fileName);
-            downloadAllCustomActionAttachments();
+            downloadAllAttachedFiles();
         } catch (err) {
             console.error(err);
             alert('Request failed. Is the server running?');
