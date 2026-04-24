@@ -184,6 +184,13 @@
                                     <label for="localStartupActionMethodName">Method name</label>
                                     <input type="text" id="localStartupActionMethodName" value="" placeholder="e.g. myStartupHandler">
                                 </div>
+                                <div class="decl-custom-js-wrap">
+                                    <div class="field">
+                                        <label for="localStartupActionJsFile">JavaScript file</label>
+                                        <input type="file" id="localStartupActionJsFile" accept=".js,text/javascript,application/javascript">
+                                    </div>
+                                    <p class="hint">Optional ES module with a named export matching the method name above. On Generate / Save, the attached file is uploaded to <code>config/public/assets/&lt;configId&gt;/localStartupAction.js</code> and downloaded next to the other artifacts as <code>localStartupAction.js</code>.</p>
+                                </div>
                             </section>
                 
                             <section class="card" data-section="localRecognitionActions">
@@ -297,6 +304,13 @@
                                     <label for="serverStartupActionMethodName">Method name</label>
                                     <input type="text" id="serverStartupActionMethodName" value="" placeholder="e.g. myServerStartupHandler">
                                 </div>
+                                <div class="decl-custom-js-wrap">
+                                    <div class="field">
+                                        <label for="serverStartupActionJsFile">JavaScript file</label>
+                                        <input type="file" id="serverStartupActionJsFile" accept=".js,text/javascript,application/javascript">
+                                    </div>
+                                    <p class="hint">Optional ES module with a named export matching the method name above. On Generate / Save, the attached file is uploaded to <code>config/public/assets/&lt;configId&gt;/serverStartupAction.js</code> and downloaded next to the other artifacts as <code>serverStartupAction.js</code>.</p>
+                                </div>
                             </section>
                 
                             <section class="card" data-section="serverRecognitionActions">
@@ -348,8 +362,9 @@
                 </div>
                 <div class="config-panel-footer actions-footer actions-footer-buttons">
                     <button type="button" class="btn-preview" id="btnPreviewConfig">Preview</button>
-                    <button type="submit" form="configForm" class="btn-download">Generate &amp; Download config.js</button>
+                    <button type="submit" form="configForm" class="btn-download">Generate &amp; Download bundle (.zip)</button>
                     <button type="button" class="btn-save" id="btnGenerateAndSave">Generate and Save</button>
+                    <label class="also-download-toggle"><input type="checkbox" id="alsoDownloadLocally"> Also download bundle (.zip)</label>
                 </div>
             </div>
             <aside class="info-panel" id="configCreatorInfoPanel" aria-label="Preview and details">

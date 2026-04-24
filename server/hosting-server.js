@@ -37,6 +37,7 @@ export function setupFrontendHosting(app) {
   const streamingPath = path.join(__dirname, '..', 'apps', 'streaming');
   const annotatePath = path.join(__dirname, '..', 'apps', 'annotate');
   const modelTrainingPath = path.join(__dirname, '..', 'apps', 'model-training');
+  const conveyorPocPath = path.join(__dirname, '..', 'apps', 'conveyor-poc');
   const uiKitPath = path.join(appsPath, 'ui-kit');
   const docsBuildPath = path.join(__dirname, '..', 'apps', 'docs', 'build');
 
@@ -197,6 +198,15 @@ export function setupFrontendHosting(app) {
   });
   app.get('/streaming/', (req, res) => {
     res.sendFile(path.join(streamingPath, 'index.html'));
+  });
+
+  // Conveyor POC artifact generator at /conveyor-poc
+  app.use('/conveyor-poc', express.static(conveyorPocPath));
+  app.get('/conveyor-poc', (req, res) => {
+    res.sendFile(path.join(conveyorPocPath, 'index.html'));
+  });
+  app.get('/conveyor-poc/', (req, res) => {
+    res.sendFile(path.join(conveyorPocPath, 'index.html'));
   });
 
   // VIA image annotator at /annotate

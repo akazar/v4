@@ -57,21 +57,12 @@
 import { spawn, spawnSync } from "node:child_process";
 import { createRequire } from "node:module";
 import process from "node:process";
-import { io } from "socket.io-client";
+import { createWebRtcPublisherNode } from "../../../lib/edge/webrtc-publisher.node.js";
 
 const require = createRequire(import.meta.url);
 const wrtc = require("@roamhq/wrtc");
-const {
-  MediaStream,
-  RTCPeerConnection,
-  RTCSessionDescription,
-  RTCIceCandidate,
-  getUserMedia,
-  nonstandard,
-} = wrtc;
+const { MediaStream, getUserMedia, nonstandard } = wrtc;
 const { RTCVideoSource } = nonstandard;
-
-const ICE_SERVERS = [{ urls: "stun:stun.l.google.com:19302" }];
 
 const streamIdArg = process.argv[2]?.trim();
 if (!streamIdArg) {
@@ -82,25 +73,22 @@ if (!streamIdArg) {
 }
 
 const streamId = streamIdArg;
-const serverUrl =
-  process.env.STREAMING_SERVER_URL || "http://localhost:3001";
-const modeRaw = (process.env.STREAM_MODE || "p2p").toLowerCase();
-const isSfu =
-  modeRaw === "sfu" ||
-  modeRaw === "server" ||
-  modeRaw === "webrtc-server";
+const serverUrl = process.env.STREAMING_SERVER_URL || "http://localhost:3001";
+const streamMode = (process.env.STREAM_MODE || "p2p").toLowerCase();
 
 let localStream = null;
 /** @type {import('node:child_process').ChildProcessWithoutNullStreams | null} */
 let ffmpegChild = null;
-const peerConnections = new Map();
-let sfuPublisherPc = null;
-let socket = null;
+let publisher = null;
 let isShuttingDown = false;
 
 const CAPTURE_WIDTH = 640;
 const CAPTURE_HEIGHT = 360;
 const I420_FRAME_BYTES = (CAPTURE_WIDTH * CAPTURE_HEIGHT * 3) >> 1;
+
+function log(...args) {
+  console.log(`[node-local-streamer:${streamId}]`, ...args);
+}
 
 function ffmpegOnPath() {
   const bin = process.env.FFMPEG_PATH || "ffmpeg";
@@ -174,188 +162,6 @@ function ffmpegCameraInputArgs() {
     "-i",
     dev,
   ];
-}
-
-function log(...args) {
-  console.log(`[node-local-streamer:${streamId}]`, ...args);
-}
-
-function closeSfuPublisher() {
-  if (sfuPublisherPc) {
-    try {
-      sfuPublisherPc.close();
-    } catch {
-      /* ignore */
-    }
-    sfuPublisherPc = null;
-  }
-}
-
-function cleanupPeer(viewerSocketId) {
-  const pc = peerConnections.get(viewerSocketId);
-  if (pc) {
-    try {
-      pc.close();
-    } catch {
-      /* ignore */
-    }
-    peerConnections.delete(viewerSocketId);
-  }
-}
-
-function createPeerConnection(viewerSocketId) {
-  const pc = new RTCPeerConnection({
-    iceServers: ICE_SERVERS,
-    sdpSemantics: "unified-plan",
-  });
-
-  pc.onicecandidate = (event) => {
-    if (event.candidate) {
-      socket.emit("ice-candidate", {
-        streamId,
-        targetSocketId: viewerSocketId,
-        candidate: event.candidate,
-      });
-    }
-  };
-
-  pc.onconnectionstatechange = () => {
-    log("p2p pc state", viewerSocketId, pc.connectionState);
-    if (["failed", "closed", "disconnected"].includes(pc.connectionState)) {
-      cleanupPeer(viewerSocketId);
-    }
-  };
-
-  if (localStream) {
-    for (const track of localStream.getTracks()) {
-      pc.addTrack(track, localStream);
-    }
-  }
-
-  peerConnections.set(viewerSocketId, pc);
-  return pc;
-}
-
-async function publishSfuOffer() {
-  if (!localStream || !isSfu) return;
-  closeSfuPublisher();
-  sfuPublisherPc = new RTCPeerConnection({
-    iceServers: ICE_SERVERS,
-    sdpSemantics: "unified-plan",
-  });
-
-  sfuPublisherPc.onicecandidate = (event) => {
-    if (event.candidate) {
-      socket.emit("sfu-publisher-ice", {
-        streamId,
-        candidate: event.candidate,
-      });
-    }
-  };
-
-  for (const track of localStream.getTracks()) {
-    sfuPublisherPc.addTrack(track, localStream);
-  }
-
-  const offer = await sfuPublisherPc.createOffer();
-  await sfuPublisherPc.setLocalDescription(offer);
-  socket.emit("sfu-publisher-offer", {
-    streamId,
-    offer: sfuPublisherPc.localDescription,
-  });
-}
-
-function registerSignalingHandlers() {
-  if (isSfu) {
-    socket.on("sfu-publish-ready", () => {
-      void publishSfuOffer().catch((err) => {
-        console.error(err);
-        log("SFU publish failed:", err?.message || err);
-      });
-    });
-
-    socket.on("sfu-publisher-answer", async ({ streamId: sid, answer }) => {
-      if (sid !== streamId || !sfuPublisherPc || !answer) return;
-      try {
-        await sfuPublisherPc.setRemoteDescription(
-          new RTCSessionDescription(answer)
-        );
-        log("SFU publisher connected; waiting for viewers");
-      } catch (err) {
-        console.error(err);
-        log("Failed to apply SFU answer:", err.message);
-      }
-    });
-
-    socket.on("sfu-publisher-ice", async ({ streamId: sid, candidate }) => {
-      if (sid !== streamId || !sfuPublisherPc || !candidate) return;
-      try {
-        await sfuPublisherPc.addIceCandidate(new RTCIceCandidate(candidate));
-      } catch (err) {
-        console.warn("SFU publisher ICE", err);
-      }
-    });
-
-    socket.on("sfu-error", ({ message }) => {
-      log("SFU error:", message || "unknown");
-    });
-  } else {
-    socket.on("viewer-request-offer", async ({ streamId: sid, viewerSocketId }) => {
-      if (sid !== streamId) return;
-      if (!localStream) return;
-
-      try {
-        const existing = peerConnections.get(viewerSocketId);
-        if (existing) {
-          try {
-            existing.close();
-          } catch {
-            /* ignore */
-          }
-          peerConnections.delete(viewerSocketId);
-        }
-
-        const pc = createPeerConnection(viewerSocketId);
-        const offer = await pc.createOffer();
-        await pc.setLocalDescription(offer);
-
-        socket.emit("offer", {
-          streamId,
-          viewerSocketId,
-          offer: pc.localDescription,
-        });
-
-        log("sent offer to viewer", viewerSocketId);
-      } catch (error) {
-        console.error("Error creating offer:", error);
-      }
-    });
-
-    socket.on("answer", async ({ streamId: aid, viewerSocketId, answer }) => {
-      if (aid !== streamId) return;
-      const pc = peerConnections.get(viewerSocketId);
-      if (!pc) return;
-      try {
-        await pc.setRemoteDescription(new RTCSessionDescription(answer));
-      } catch (error) {
-        console.error("Error applying answer:", error);
-      }
-    });
-
-    socket.on(
-      "ice-candidate",
-      async ({ streamId: cid, fromSocketId, candidate }) => {
-        if (cid !== streamId) return;
-        const pc = peerConnections.get(fromSocketId);
-        if (!pc || !candidate) return;
-        try {
-          await pc.addIceCandidate(new RTCIceCandidate(candidate));
-        } catch (error) {
-          console.error("ICE candidate error:", error);
-        }
-      }
-    );
-  }
 }
 
 function resolveWindowsDshowDeviceName(ffmpegBin) {
@@ -487,16 +293,12 @@ async function shutdown(exitCode = 0) {
   if (isShuttingDown) return;
   isShuttingDown = true;
   log("shutting down");
-  for (const id of [...peerConnections.keys()]) {
-    cleanupPeer(id);
+  if (publisher) {
+    try { await publisher.stop(); } catch { /* ignore */ }
+    publisher = null;
   }
-  closeSfuPublisher();
   if (ffmpegChild) {
-    try {
-      ffmpegChild.kill("SIGTERM");
-    } catch {
-      /* ignore */
-    }
+    try { ffmpegChild.kill("SIGTERM"); } catch { /* ignore */ }
     ffmpegChild = null;
   }
   if (localStream) {
@@ -505,11 +307,6 @@ async function shutdown(exitCode = 0) {
     }
     localStream = null;
   }
-  if (socket) {
-    socket.removeAllListeners();
-    socket.disconnect();
-    socket = null;
-  }
   process.exit(exitCode);
 }
 
@@ -517,24 +314,8 @@ async function main() {
   log(
     "connecting to",
     serverUrl,
-    isSfu ? "(SFU / server relay)" : "(peer-to-peer)"
+    streamMode === "sfu" ? "(SFU / server relay)" : "(peer-to-peer)"
   );
-
-  socket = io(serverUrl, {
-    transports: ["websocket", "polling"],
-    reconnection: true,
-    reconnectionAttempts: 20,
-    reconnectionDelay: 2000,
-  });
-
-  registerSignalingHandlers();
-
-  await new Promise((resolve, reject) => {
-    socket.once("connect", resolve);
-    socket.once("connect_error", reject);
-  });
-
-  log("socket connected");
 
   try {
     localStream = await acquireLocalVideoStream();
@@ -552,11 +333,13 @@ async function main() {
     "video track(s)"
   );
 
-  if (isSfu) {
-    socket.emit("sfu-register-streamer", { streamId });
-  } else {
-    socket.emit("register-streamer", { streamId });
-  }
+  publisher = await createWebRtcPublisherNode({
+    streamId,
+    mediaStream: localStream,
+    serverUrl,
+    streamMode,
+    onStatus: (msg) => log(msg),
+  });
 
   log("registered streamer; streaming until SIGINT/SIGTERM");
 

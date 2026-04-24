@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conveyor POC — Vision v4</title>
+    <link rel="stylesheet" href="/ui-kit/ui-kit.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="conveyor-shell">
+        <header class="header conveyor-header">
+            <h1>Conveyor POC</h1>
+            <p class="subtitle">Pick a saved configuration, click <strong>Run pipeline</strong>, and the generator will produce edge + server artifacts as a single ZIP bundle.</p>
+        </header>
+
+        <main class="conveyor-main">
+            <section class="card conveyor-card">
+                <div class="card-head"><h2>1. Configuration</h2></div>
+                <div class="field">
+                    <label for="configSelect">Saved configuration</label>
+                    <select id="configSelect" aria-describedby="configHint"></select>
+                    <p id="configHint" class="hint">Lists files in <code>config/public/</code>. Create new ones in
+                        <a href="/config-creator-adv" target="_blank" rel="noopener">config-creator-adv</a>.</p>
+                </div>
+                <div class="conveyor-config-summary" id="configSummary"></div>
+            </section>
+
+            <section class="card conveyor-card">
+                <div class="card-head"><h2>2. Run pipeline</h2></div>
+                <p class="hint">
+                    Generates a single ZIP named <code>&lt;configId&gt;.zip</code>. Inside it, all artifacts live under a
+                    <code>&lt;configId&gt;/</code> folder — unzip and deploy the whole folder as-is.
+                </p>
+                <div class="row conveyor-actions">
+                    <button type="button" class="btn-primary" id="btnRunPipeline">Run pipeline</button>
+                    <label class="conveyor-opt">
+                        <input type="checkbox" id="optIncludeServerPipeline" checked>
+                        Include server-pipeline.js
+                    </label>
+                </div>
+                <div class="conveyor-log" id="runLog" aria-live="polite"></div>
+            </section>
+
+            <section class="card conveyor-card">
+                <div class="card-head"><h2>3. How to run</h2></div>
+                <div class="conveyor-howto" id="howToRunPanel">
+                    <p class="hint">Pick a configuration and click <em>Run pipeline</em> to see the commands tailored to it.</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script type="module" src="app.js"></script>
+</body>
+</html>

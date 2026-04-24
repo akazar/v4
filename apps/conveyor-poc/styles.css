@@ -1,0 +1,244 @@
+/**
+ * conveyor-poc styles — layered on top of /ui-kit/ui-kit.css.
+ * Uses the shared dark-theme tokens (--bg, --surface, --surface-alt, --text,
+ * --text-muted, --accent, --border) so the page blends with the rest of the app.
+ */
+
+.conveyor-shell {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 1.75rem 1.25rem 3rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.conveyor-header h1 {
+    margin: 0 0 0.35rem;
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: var(--text);
+}
+
+.conveyor-header .subtitle {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 0.95rem;
+}
+
+.conveyor-main {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.conveyor-card {
+    padding: 1.25rem 1.5rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+}
+
+.conveyor-card .card-head {
+    margin-bottom: 0.9rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.conveyor-card .card-head h2 {
+    margin: 0;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--text);
+}
+
+.conveyor-card .field {
+    margin-bottom: 0.9rem;
+}
+
+.conveyor-card .field:last-child {
+    margin-bottom: 0;
+}
+
+.conveyor-card label {
+    display: block;
+    margin-bottom: 0.35rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+.conveyor-card select {
+    width: 100%;
+}
+
+.conveyor-config-summary {
+    margin-top: 0.75rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 0.5rem 1rem;
+    padding: 0.85rem 1rem;
+    background: var(--surface-alt);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    border-radius: var(--radius);
+    font-size: 0.85rem;
+    color: var(--text);
+}
+
+.conveyor-config-summary .summary-label {
+    display: block;
+    margin-bottom: 0.15rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.conveyor-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: 0.5rem;
+}
+
+.conveyor-opt {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--text-muted);
+    font-size: 0.88rem;
+    cursor: pointer;
+}
+
+.conveyor-opt input[type="checkbox"] {
+    width: 1rem;
+    height: 1rem;
+    accent-color: var(--accent-hover);
+    cursor: pointer;
+}
+
+.conveyor-log {
+    margin-top: 0.9rem;
+    padding: 0.85rem 1rem;
+    min-height: 130px;
+    max-height: 320px;
+    overflow-y: auto;
+    background: var(--bg);
+    color: var(--text);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.8rem;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-break: break-all;
+}
+
+.conveyor-log .log-line {
+    display: block;
+    padding: 0.1rem 0;
+    color: var(--text-muted);
+}
+
+.conveyor-log .log-line.log-error {
+    color: #f0a0a0;
+}
+
+.conveyor-log .log-line.log-success {
+    color: #8bcf7a;
+}
+
+.conveyor-howto {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.conveyor-howto .howto-step {
+    padding: 0.85rem 1rem;
+    background: var(--surface-alt);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    border-left: 3px solid var(--accent-hover);
+    border-radius: var(--radius);
+}
+
+.conveyor-howto .howto-step h3 {
+    margin: 0 0 0.4rem;
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: var(--text);
+}
+
+.conveyor-howto .howto-step .hint {
+    margin: 0 0 0.5rem;
+}
+
+.conveyor-howto .howto-step :last-child {
+    margin-bottom: 0;
+}
+
+.conveyor-howto pre {
+    margin: 0;
+    padding: 0.6rem 0.75rem;
+    background: var(--bg);
+    color: var(--text);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.8rem;
+    line-height: 1.5;
+    overflow-x: auto;
+    white-space: pre;
+}
+
+.conveyor-howto .howto-link {
+    display: inline-block;
+    margin-top: 0.4rem;
+    font-size: 0.85rem;
+    color: var(--text);
+    text-decoration: none;
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.15);
+    transition: color 0.15s, border-color 0.15s;
+}
+
+.conveyor-howto .howto-link:hover {
+    color: #fff;
+    border-bottom-color: rgba(255, 255, 255, 0.4);
+}
+
+.conveyor-howto code {
+    padding: 0.05em 0.35em;
+    background: var(--bg);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius);
+    font-size: 0.82em;
+    color: var(--text);
+}
+
+.hint {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+}
+
+.hint a {
+    color: var(--text);
+    text-decoration: none;
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
+    transition: color 0.15s, border-color 0.15s;
+}
+
+.hint a:hover {
+    color: #fff;
+    border-bottom-color: rgba(255, 255, 255, 0.4);
+}
+
+.hint code {
+    padding: 0.05em 0.35em;
+    background: var(--surface-alt);
+    border-radius: var(--radius);
+    font-size: 0.85em;
+    color: var(--text);
+}

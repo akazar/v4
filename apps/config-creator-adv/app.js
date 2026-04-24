@@ -201,11 +201,13 @@
                 const sel = row.querySelector('.decl-action-type');
                 const type = sel?.value === 'CUSTOM' ? 'CUSTOM' : sel?.value;
                 const valStr = row.querySelector('.decl-action-value')?.value ?? '';
-                const values = valStr.split(',').map((s) => s.trim()).filter(Boolean);
+                const value = valStr.split(',').map((s) => s.trim()).filter(Boolean);
                 const timeout = parseInt(row.querySelector('.decl-timeout')?.value, 10) || 0;
-                return { type, values, timeout };
+                // Canonical shape consumed by lib/edge/recognition-pipeline.js,
+                // lib/cloud/pipeline/server-pipeline.js, and lib/scheduled-actions-manager.js.
+                return { action: { type, value }, timeout };
             })
-            .filter((a) => a.type && a.values.length);
+            .filter((a) => a.action.type && a.action.value.length);
     }
 
     function formatDeclarativeActionsJs(actions) {
@@ -214,10 +216,12 @@
             '[\n' +
             actions
                 .map((a, i) => {
-                    const vals = a.values.map((s) => "'" + escapeForSingleQuotedJs(s) + "'").join(', ');
+                    const type = a?.action?.type ?? a?.type ?? '';
+                    const valueList = a?.action?.value ?? a?.value ?? a?.values ?? [];
+                    const vals = valueList.map((s) => "'" + escapeForSingleQuotedJs(s) + "'").join(', ');
                     return (
                         '        {\n' +
-                        `            action: { type: '${escapeForSingleQuotedJs(a.type)}', value: [${vals}] },\n` +
+                        `            action: { type: '${escapeForSingleQuotedJs(type)}', value: [${vals}] },\n` +
                         `            timeout: ${a.timeout}\n` +
                         '        }' +
                         (i < actions.length - 1 ? ',' : '')
@@ -472,13 +476,152 @@ export { CONFIG };
         return buildConfigObject();
     }
 
-    function downloadFile(content, filename) {
-        const blob = new Blob([content], { type: 'application/javascript' });
+    /**
+     * Minimal zero-dependency ZIP writer (STORE / no compression).
+     * Good enough for a handful of small text artifacts — no deflate, no zip64.
+     * Layout: [local file header + data] x N, [central directory entry] x N, end-of-central-directory.
+     */
+    const ZIP_CRC_TABLE = (function () {
+        const table = new Uint32Array(256);
+        for (let n = 0; n < 256; n++) {
+            let c = n;
+            for (let k = 0; k < 8; k++) {
+                c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
+            }
+            table[n] = c >>> 0;
+        }
+        return table;
+    })();
+
+    function zipCrc32(bytes) {
+        let c = 0xFFFFFFFF;
+        for (let i = 0; i < bytes.length; i++) {
+            c = ZIP_CRC_TABLE[(c ^ bytes[i]) & 0xFF] ^ (c >>> 8);
+        }
+        return (c ^ 0xFFFFFFFF) >>> 0;
+    }
+
+    function toBytes(content) {
+        if (content instanceof Uint8Array) return content;
+        if (content instanceof ArrayBuffer) return new Uint8Array(content);
+        return new TextEncoder().encode(String(content ?? ''));
+    }
+
+    /**
+     * Build a STORE-method ZIP Blob from [{ name, content }] where `content` is string | Uint8Array | ArrayBuffer.
+     * Paths with forward slashes become nested folders in the archive.
+     */
+    function createZipBlob(entries) {
+        const nameEncoder = new TextEncoder();
+        const parts = [];
+        const central = [];
+        let offset = 0;
+
+        for (const { name, content } of entries) {
+            const nameBytes = nameEncoder.encode(name);
+            const data = toBytes(content);
+            const crc = zipCrc32(data);
+            const size = data.length;
+
+            const lfh = new ArrayBuffer(30);
+            const lfhView = new DataView(lfh);
+            lfhView.setUint32(0, 0x04034b50, true);
+            lfhView.setUint16(4, 20, true);
+            lfhView.setUint16(6, 0, true);
+            lfhView.setUint16(8, 0, true);
+            lfhView.setUint16(10, 0, true);
+            lfhView.setUint16(12, 0x21, true);
+            lfhView.setUint32(14, crc, true);
+            lfhView.setUint32(18, size, true);
+            lfhView.setUint32(22, size, true);
+            lfhView.setUint16(26, nameBytes.length, true);
+            lfhView.setUint16(28, 0, true);
+            parts.push(new Uint8Array(lfh), nameBytes, data);
+
+            const cdh = new ArrayBuffer(46);
+            const cdhView = new DataView(cdh);
+            cdhView.setUint32(0, 0x02014b50, true);
+            cdhView.setUint16(4, 20, true);
+            cdhView.setUint16(6, 20, true);
+            cdhView.setUint16(8, 0, true);
+            cdhView.setUint16(10, 0, true);
+            cdhView.setUint16(12, 0, true);
+            cdhView.setUint16(14, 0x21, true);
+            cdhView.setUint32(16, crc, true);
+            cdhView.setUint32(20, size, true);
+            cdhView.setUint32(24, size, true);
+            cdhView.setUint16(28, nameBytes.length, true);
+            cdhView.setUint16(30, 0, true);
+            cdhView.setUint16(32, 0, true);
+            cdhView.setUint16(34, 0, true);
+            cdhView.setUint16(36, 0, true);
+            cdhView.setUint32(38, 0, true);
+            cdhView.setUint32(42, offset, true);
+            central.push(new Uint8Array(cdh), nameBytes);
+
+            offset += 30 + nameBytes.length + size;
+        }
+
+        let centralSize = 0;
+        for (const p of central) centralSize += p.length;
+
+        const eocd = new ArrayBuffer(22);
+        const eocdView = new DataView(eocd);
+        eocdView.setUint32(0, 0x06054b50, true);
+        eocdView.setUint16(4, 0, true);
+        eocdView.setUint16(6, 0, true);
+        eocdView.setUint16(8, entries.length, true);
+        eocdView.setUint16(10, entries.length, true);
+        eocdView.setUint32(12, centralSize, true);
+        eocdView.setUint32(16, offset, true);
+        eocdView.setUint16(20, 0, true);
+
+        return new Blob([...parts, ...central, new Uint8Array(eocd)], { type: 'application/zip' });
+    }
+
+    async function readInputAsBytes(inputId) {
+        const input = document.getElementById(inputId);
+        const file = input?.files?.[0];
+        if (!file) return null;
+        try {
+            return new Uint8Array(await file.arrayBuffer());
+        } catch (err) {
+            console.warn('[config-creator-adv] failed to read file bytes for', inputId, err);
+            return null;
+        }
+    }
+
+    /**
+     * Assemble the full artifact list: <configId>/config.js + (if UI enabled) ui.html/css/js + custom action JS files
+     * (including localStartupAction.js / serverStartupAction.js when attached).
+     */
+    async function collectBundleEntries(configId, configJs) {
+        const folder = (configId || 'config').replace(/[^a-zA-Z0-9_-]/g, '-') || 'config';
+        const entries = [{ name: `${folder}/config.js`, content: configJs }];
+
+        if (uiAttachmentsEnabledInForm()) {
+            for (const [inputId, filename] of UI_ASSET_DOWNLOADS) {
+                const bytes = await readInputAsBytes(inputId);
+                if (bytes) entries.push({ name: `${folder}/${filename}`, content: bytes });
+            }
+        }
+        for (const [inputId, filename] of CUSTOM_ACTION_JS_DOWNLOADS) {
+            const bytes = await readInputAsBytes(inputId);
+            if (bytes) entries.push({ name: `${folder}/${filename}`, content: bytes });
+        }
+        return { folder, entries };
+    }
+
+    async function downloadBundleZip(configId, configJs) {
+        const { folder, entries } = await collectBundleEntries(configId, configJs);
+        const blob = createZipBlob(entries);
+        const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = filename;
+        a.href = url;
+        a.download = `${folder}.zip`;
         a.click();
-        URL.revokeObjectURL(a.href);
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+        return entries.length;
     }
 
     /** Edge / UI assets when “Enable UI” is on: fixed download names (same order as inputs). */
@@ -495,19 +638,9 @@ export { CONFIG };
         ['localRegularActionFunctionsCustomJsFile', 'localRegularActionFunctions.js'],
         ['serverRecognitionActionsCustomJsFile', 'serverRecognitionActions.js'],
         ['serverRegularActionFunctionsCustomJsFile', 'serverRegularActionFunctions.js'],
+        ['localStartupActionJsFile', 'localStartupAction.js'],
+        ['serverStartupActionJsFile', 'serverStartupAction.js'],
     ];
-
-    function downloadFileFromInput(fileInputId, downloadAsName) {
-        const input = document.getElementById(fileInputId);
-        const file = input?.files?.[0];
-        if (!file) return;
-        const url = URL.createObjectURL(file);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = downloadAsName;
-        a.click();
-        URL.revokeObjectURL(url);
-    }
 
     function uiAttachmentsEnabledInForm() {
         return (
@@ -517,25 +650,67 @@ export { CONFIG };
         );
     }
 
-    /** After config.js: UI assets (if Enable UI + files), then custom declarative JS files. */
-    function downloadAllAttachedFiles() {
-        const queue = [];
-        if (uiAttachmentsEnabledInForm()) {
-            for (const pair of UI_ASSET_DOWNLOADS) {
-                queue.push(pair);
+    /**
+     * File-input id -> server-side asset key (matches ASSET_FILE_NAMES in lib/cloud/configuration-server.js).
+     * Used by POST /api/configurations/:id/assets so conveyor-poc can retrieve them later.
+     */
+    const ASSET_UPLOADS = [
+        ['uiHtmlFile', 'uiHtml', 'ui'],
+        ['uiCssFile', 'uiCss', 'ui'],
+        ['uiJsFile', 'uiJs', 'ui'],
+        ['localRecognitionActionsCustomJsFile', 'localRecognitionActions'],
+        ['localRecognitionActionFunctionsCustomJsFile', 'localRecognitionActionFunctions'],
+        ['localRegularActionFunctionsCustomJsFile', 'localRegularActionFunctions'],
+        ['serverRecognitionActionsCustomJsFile', 'serverRecognitionActions'],
+        ['serverRegularActionFunctionsCustomJsFile', 'serverRegularActionFunctions'],
+        ['localStartupActionJsFile', 'localStartupAction'],
+        ['serverStartupActionJsFile', 'serverStartupAction'],
+    ];
+
+    function readFileAsText(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = () => reject(reader.error || new Error('Failed to read file'));
+            reader.readAsText(file);
+        });
+    }
+
+    async function collectAssetsFromForm() {
+        const uiOn = uiAttachmentsEnabledInForm();
+        const assets = {};
+        for (const [inputId, assetKey, group] of ASSET_UPLOADS) {
+            if (group === 'ui' && !uiOn) continue;
+            const input = document.getElementById(inputId);
+            const file = input?.files?.[0];
+            if (!file) continue;
+            try {
+                assets[assetKey] = await readFileAsText(file);
+            } catch (err) {
+                console.warn('[config-creator-adv] failed to read file for', assetKey, err);
             }
         }
-        for (const pair of CUSTOM_ACTION_JS_DOWNLOADS) {
-            queue.push(pair);
-        }
-        let delay = 0;
-        const stepMs = 120;
-        for (const [inputId, filename] of queue) {
-            if (!document.getElementById(inputId)) continue;
-            const id = inputId;
-            const name = filename;
-            setTimeout(() => downloadFileFromInput(id, name), delay);
-            delay += stepMs;
+        return assets;
+    }
+
+    async function uploadAssetsForConfig(configId) {
+        const assets = await collectAssetsFromForm();
+        if (!Object.keys(assets).length) return { skipped: true };
+        try {
+            const res = await fetch(`/api/configurations/${encodeURIComponent(configId)}/assets`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ assets }),
+            });
+            const data = await res.json().catch(() => ({}));
+            if (!res.ok) {
+                console.warn('[config-creator-adv] asset upload failed:', data);
+                return { ok: false, error: data?.error || 'Asset upload failed' };
+            }
+            return { ok: true, data };
+        } catch (err) {
+            console.warn('[config-creator-adv] asset upload error:', err);
+            return { ok: false, error: String(err?.message || err) };
         }
     }
 
@@ -709,12 +884,16 @@ export { CONFIG };
         syncDeclarativeCustomJsVisibility();
     })();
 
-    form.addEventListener('submit', function (e) {
+    form.addEventListener('submit', async function (e) {
         e.preventDefault();
         const d = readFormConfig();
         const js = buildConfigJs();
-        downloadFile(js, d.configId + '.js');
-        downloadAllAttachedFiles();
+        try {
+            await downloadBundleZip(d.configId, js);
+        } catch (err) {
+            console.error('[config-creator-adv] ZIP bundle failed:', err);
+            alert('Failed to build ZIP bundle: ' + (err?.message || err));
+        }
     });
 
     document.getElementById('btnPreviewConfig').addEventListener('click', function () {
@@ -743,9 +922,25 @@ export { CONFIG };
                 alert(data.error || 'Save failed.');
                 return;
             }
-            alert(`Saved as ${data.file || fileName}`);
-            downloadFile(js, fileName);
-            downloadAllAttachedFiles();
+
+            const assetResult = await uploadAssetsForConfig(config.id);
+            const assetCount = assetResult?.data?.saved ? Object.keys(assetResult.data.saved).length : 0;
+            const assetMsg = assetResult?.skipped
+                ? ''
+                : assetResult?.ok
+                    ? ` (${assetCount} asset file${assetCount === 1 ? '' : 's'} uploaded)`
+                    : ` (assets failed: ${assetResult?.error || 'unknown'})`;
+
+            alert(`Saved as ${data.file || fileName}${assetMsg}`);
+            const alsoDownload = document.getElementById('alsoDownloadLocally')?.checked;
+            if (alsoDownload) {
+                try {
+                    await downloadBundleZip(config.id, js);
+                } catch (err) {
+                    console.error('[config-creator-adv] ZIP bundle failed:', err);
+                    alert('Failed to build ZIP bundle: ' + (err?.message || err));
+                }
+            }
         } catch (err) {
             console.error(err);
             alert('Request failed. Is the server running?');

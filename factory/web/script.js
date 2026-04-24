@@ -1,111 +1,20 @@
 import { getCameraStream, attachCameraStreamToVideo, waitForVideoAndPlay } from '../../lib/edge/capture.js';
-import { videoToReusableCanvas, scaleDetectionsToVideo } from '../../lib/edge/source-to-canvas.js';
-import { boundingBoxes, clearBoundingBoxes } from '../../lib/edge/bounding-boxes.js';
-import { action, localRecognitionActions, localRecognitionActionsFromConfig } from '../../lib/edge/actions.js';
+import { clearBoundingBoxes } from '../../lib/edge/bounding-boxes.js';
 import { injectTopButtons } from '../../lib/edge/ui.js';
+import { startRecognitionPipeline } from '../../lib/edge/recognition-pipeline.js';
 
 let cameraStream = null;
 let videoElement = null;
+let pipelineHandle = null;
 
-let recognitionInterval = null;
-let boundingBoxInterval = null;
-let regularActionIntervals = [];
-let recognitionResults = [];
-let recognitionRunning = false;
-let recognitionCanvas = null;
-
-/**
- * Start the recognition loop for real-time object detection.
- * Uses the currently selected model (YOLO or MEDIAPIPE) from the model selector.
- */
-async function startRecognitionLoop(config) {
-    const { boundingBoxStyles, localRecognition, localRecognitionActionFunctions, localRegularActionFunctions } = config;
-    let recognizer = null;
-    const model = config.localRecognition?.model ?? 'YOLO';
-
-    if (model === 'MEDIAPIPE') {
-        const { recognize } = await import('../../lib/edge/recognition/mediapipe/recognize-mediapipe.js');
-        recognizer = recognize;
-    } else {
-        const { recognizeWithYolo } = await import('../../lib/edge/recognition/yolo/recognize-yolo.js');
-        recognizer = recognizeWithYolo;
-    }
-
-    recognitionInterval = setInterval(async () => {
-        if (recognitionRunning || !videoElement || videoElement.readyState < 2) return;
-        recognitionRunning = true;
-        try {
-            const captureSize = localRecognition?.maxCaptureSize ?? 640;
-            recognitionCanvas = videoToReusableCanvas(
-                videoElement,
-                { maxWidth: captureSize, maxHeight: captureSize },
-                recognitionCanvas
-            );
-
-            const rawResults = await recognizer(recognitionCanvas, config);
-
-            recognitionResults = scaleDetectionsToVideo(
-                rawResults,
-                recognitionCanvas,
-                videoElement
-            );
-
-            if (localRecognitionActionFunctions.length > 0) {
-                localRecognitionActionsFromConfig(recognitionResults, localRecognitionActionFunctions);
-            }
-        } finally {
-            recognitionRunning = false;
-        }
-    }, localRecognition.interval);
-
-    if (boundingBoxStyles) {
-        boundingBoxInterval = setInterval(() => {
-            if (videoElement && videoElement.readyState >= 2) {
-                boundingBoxes(recognitionResults, videoElement, boundingBoxStyles);
-            }
-        }, boundingBoxStyles.interval);
-    }
-
-    // if (localRegularActionFunctions.length > 0) {
-    //     localRegularActionFunctions.forEach(funcObj => {
-    //         const id = setInterval(async () => {
-    //             action(recognitionResults, [funcObj.func]);
-    //         }, funcObj.interval);
-    //         regularActionIntervals.push(id);
-    //     });
-    // }
-}
-
-/**
- * Stop the recognition loop
- */
-function stopRecognitionLoop() {
-    if (recognitionInterval) {
-        clearInterval(recognitionInterval);
-        recognitionInterval = null;
-    }
-    if (boundingBoxInterval) {
-        clearInterval(boundingBoxInterval);
-        boundingBoxInterval = null;
-    }
-    regularActionIntervals.forEach(id => clearInterval(id));
-    regularActionIntervals = [];
-}
-
-/**
- * Start the camera stream
- */
 async function startCameraStream() {
     cameraStream = await getCameraStream();
     videoElement = attachCameraStreamToVideo(document, cameraStream);
 }
 
-/**
- * Stop the camera stream
- */
-function stopCameraStream() {   
+function stopCameraStream() {
     if (cameraStream) {
-        cameraStream.getTracks().forEach(track => track.stop());
+        cameraStream.getTracks().forEach((track) => track.stop());
         cameraStream = null;
     }
     if (videoElement) {
@@ -113,24 +22,39 @@ function stopCameraStream() {
     }
 }
 
-/**
- * Initialize the camera stream and display it as background
- */
 async function initCameraBackground() {
     try {
         await startCameraStream();
-        await waitForVideoAndPlay(videoElement);            
+        await waitForVideoAndPlay(videoElement);
     } catch (error) {
         console.error('Failed to initialize camera:', error);
         alert('Unable to access camera. Please ensure you have granted camera permissions.');
     }
 }
 
+function startPipeline(config) {
+    stopPipeline();
+    pipelineHandle = startRecognitionPipeline({
+        video: videoElement,
+        config,
+        runRegularActions: false,
+    });
+}
+
+function stopPipeline() {
+    if (pipelineHandle) {
+        pipelineHandle.stop();
+        pipelineHandle = null;
+    }
+}
+
 function initApp(config) {
-    const onReady = () => {
-        initCameraBackground();
+    const onReady = async () => {
+        await initCameraBackground();
         if (config.ui) {
             injectTopButtons(document, config);
+        } else if (videoElement) {
+            startPipeline(config);
         }
     };
 
@@ -144,18 +68,16 @@ function initApp(config) {
         document.addEventListener('ui:state', (event) => {
             const { active } = event.detail;
             if (active) {
-                startRecognitionLoop(config);
+                startPipeline(config);
             } else {
-                stopRecognitionLoop();
+                stopPipeline();
                 clearBoundingBoxes();
             }
         });
-    } else {
-        startRecognitionLoop(config);
     }
 
     window.addEventListener('beforeunload', () => {
-        stopRecognitionLoop();
+        stopPipeline();
         clearBoundingBoxes();
         stopCameraStream();
     });

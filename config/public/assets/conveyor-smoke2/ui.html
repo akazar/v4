@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conveyor smoke test</title>
+    <link rel="stylesheet" href="./ui.css">
+</head>
+<body>
+    <video id="camera-background" autoplay muted playsinline></video>
+
+    <header class="topbar">
+        <span class="topbar-dot" id="statusDot"></span>
+        <span class="topbar-label">Conveyor smoke test</span>
+        <span class="topbar-stream" id="streamLabel"></span>
+    </header>
+
+    <div class="ui-overlay" id="ui-overlay" hidden>
+        <div class="ui-overlay-content">
+            <button type="button" class="ui-close" id="btnCloseOverlay" aria-label="Close">×</button>
+            <h2>Latest recognition</h2>
+            <pre id="recognitionDump">{}</pre>
+        </div>
+    </div>
+
+    <div class="ui-controls">
+        <button type="button" id="btnManualCapture">Manual capture</button>
+        <button type="button" id="btnShowResults">Show results</button>
+    </div>
+
+    <script type="module" src="./sdk.js"></script>
+    <script type="module" src="./edge-main.js"></script>
+    <script type="module" src="./ui.js"></script>
+</body>
+</html>

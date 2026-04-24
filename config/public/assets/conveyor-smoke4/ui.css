@@ -1,0 +1,103 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background: #000;
+    color: #e8e8e8;
+    font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+    overflow: hidden;
+}
+
+#camera-background {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+}
+
+.topbar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 10000;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: linear-gradient(rgba(0,0,0,0.7), transparent);
+    font-size: 13px;
+}
+
+.topbar-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: #22c55e;
+    box-shadow: 0 0 6px #22c55e;
+}
+
+.topbar-stream { opacity: 0.7; }
+
+.ui-controls {
+    position: fixed;
+    right: 16px;
+    bottom: 16px;
+    display: flex;
+    gap: 8px;
+    z-index: 10000;
+}
+
+.ui-controls button {
+    padding: 10px 14px;
+    background: rgba(37, 99, 235, 0.9);
+    color: #fff;
+    border: 0;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.ui-controls button:hover { background: rgba(29, 78, 216, 1); }
+
+.ui-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 20000;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ui-overlay-content {
+    position: relative;
+    max-width: 85vw;
+    max-height: 80vh;
+    overflow: auto;
+    padding: 24px;
+    background: rgba(15, 23, 42, 0.95);
+    border-radius: 8px;
+}
+
+.ui-overlay-content h2 { margin: 0 0 12px; font-size: 16px; }
+.ui-overlay-content pre {
+    margin: 0;
+    color: #e2e8f0;
+    font-size: 12px;
+    white-space: pre-wrap;
+    word-break: break-all;
+}
+
+.ui-close {
+    position: absolute;
+    top: 6px; right: 10px;
+    width: 32px; height: 32px;
+    font-size: 22px;
+    background: transparent;
+    color: #fff;
+    border: 0;
+    cursor: pointer;
+}
+
+.ui-overlay[hidden] { display: none; }
