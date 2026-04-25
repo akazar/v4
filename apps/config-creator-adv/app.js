@@ -241,7 +241,6 @@
     function syncDeclarativeCustomJsVisibility() {
         const pairs = [
             ['localRecognitionActionsList', 'localRecognitionActionsCustomJsWrap'],
-            ['localRecognitionActionFunctionsList', 'localRecognitionActionFunctionsCustomJsWrap'],
             ['localRegularActionsList', 'localRegularActionFunctionsCustomJsWrap'],
             ['serverRecognitionActionsList', 'serverRecognitionActionsCustomJsWrap'],
             ['serverRegularActionFunctionsList', 'serverRegularActionFunctionsCustomJsWrap'],
@@ -259,7 +258,6 @@
         const useLocalRecognition = isSectionEnabled('useLocalRecognition');
         const useBoundingBoxStyles = isSectionEnabled('useBoundingBoxStyles');
         const useLocalRecognitionActions = isSectionEnabled('useLocalRecognitionActions');
-        const useLocalRecognitionActionFunctions = isSectionEnabled('useLocalRecognitionActionFunctions');
         const useLocalRegularActionFunctions = isSectionEnabled('useLocalRegularActionFunctions');
         const useServerRecognition = isSectionEnabled('useServerRecognition');
         const useServerRecognitionActions = isSectionEnabled('useServerRecognitionActions');
@@ -338,9 +336,6 @@
             boundingBoxStyles,
             localStartupAction,
             localRecognitionActions: useLocalRecognitionActions ? readDeclarativeActions('localRecognitionActionsList') : [],
-            localRecognitionActionFunctions: useLocalRecognitionActionFunctions
-                ? readDeclarativeActions('localRecognitionActionFunctionsList')
-                : [],
             localRegularActionFunctionsDeclarative: useLocalRegularActionFunctions
                 ? readDeclarativeActions('localRegularActionsList')
                 : [],
@@ -404,7 +399,6 @@
         const boundingBoxStylesStr = formatBoundingBoxStylesJs(d.boundingBoxStyles);
         const serverRecognitionStr = formatServerRecognitionJs(d.serverRecognition);
         const localRecognitionActionsStr = formatDeclarativeActionsJs(d.localRecognitionActions);
-        const localRecognitionActionFunctionsStr = formatDeclarativeActionsJs(d.localRecognitionActionFunctions);
         const localRegularActionFunctionsStr = formatDeclarativeActionsJs(d.localRegularActionFunctionsDeclarative);
         const serverRecognitionActionsStr = formatDeclarativeActionsJs(d.serverRecognitionActions);
         const serverRegularActionFunctionsStr = formatDeclarativeActionsJs(d.serverRegularActionFunctions);
@@ -423,7 +417,6 @@
     boundingBoxStyles: ${boundingBoxStylesStr},
     localStartupAction: '${escapeForSingleQuotedJs(d.localStartupAction)}',
     localRecognitionActions: ${localRecognitionActionsStr},
-    localRecognitionActionFunctions: ${localRecognitionActionFunctionsStr},
     localRegularActionFunctions: ${localRegularActionFunctionsStr},
 
     /////////////////////// SERVER CONFIG ///////////////////////
@@ -462,7 +455,6 @@ export { CONFIG };
             boundingBoxStyles: d.boundingBoxStyles,
             localStartupAction: d.localStartupAction,
             localRecognitionActions: d.localRecognitionActions,
-            localRecognitionActionFunctions: d.localRecognitionActionFunctions,
             localRegularActionFunctions: d.localRegularActionFunctionsDeclarative,
             serverRecognition: d.serverRecognition,
             serverStartupAction: d.serverStartupAction,
@@ -634,7 +626,6 @@ export { CONFIG };
     /** Declarative “Custom…” JS attachments: downloaded next to config.js under fixed names (not in CONFIG). */
     const CUSTOM_ACTION_JS_DOWNLOADS = [
         ['localRecognitionActionsCustomJsFile', 'localRecognitionActions.js'],
-        ['localRecognitionActionFunctionsCustomJsFile', 'localRecognitionActionFunctions.js'],
         ['localRegularActionFunctionsCustomJsFile', 'localRegularActionFunctions.js'],
         ['serverRecognitionActionsCustomJsFile', 'serverRecognitionActions.js'],
         ['serverRegularActionFunctionsCustomJsFile', 'serverRegularActionFunctions.js'],
@@ -659,7 +650,6 @@ export { CONFIG };
         ['uiCssFile', 'uiCss', 'ui'],
         ['uiJsFile', 'uiJs', 'ui'],
         ['localRecognitionActionsCustomJsFile', 'localRecognitionActions'],
-        ['localRecognitionActionFunctionsCustomJsFile', 'localRecognitionActionFunctions'],
         ['localRegularActionFunctionsCustomJsFile', 'localRegularActionFunctions'],
         ['serverRecognitionActionsCustomJsFile', 'serverRecognitionActions'],
         ['serverRegularActionFunctionsCustomJsFile', 'serverRegularActionFunctions'],
@@ -727,18 +717,6 @@ export { CONFIG };
             timeout: 11000,
         });
 
-        addDeclarativeActionRow('localRecognitionActionFunctionsList', { type: 'DB', valueStr: 'your-db-id', timeout: 2000 });
-        addDeclarativeActionRow('localRecognitionActionFunctionsList', {
-            type: 'API',
-            valueStr: 'https://your-api.com/webhook',
-            timeout: 5000,
-        });
-        addDeclarativeActionRow('localRecognitionActionFunctionsList', {
-            type: 'NOTIFY',
-            valueStr: 'your-telegram-chat-id',
-            timeout: 11000,
-        });
-
         addDeclarativeActionRow('localRegularActionsList', { type: 'DB', valueStr: 'dbNULPId', timeout: 10000 });
         addDeclarativeActionRow('localRegularActionsList', {
             type: 'API',
@@ -799,18 +777,6 @@ export { CONFIG };
         addDeclarativeActionRow('localRecognitionActionsList', { type: 'NOTIFY', timeout: 11000 })
     );
 
-    document.getElementById('addLocalRecognitionActionFunctionsDeclarativeAction').addEventListener('click', () =>
-        addDeclarativeActionRow('localRecognitionActionFunctionsList')
-    );
-    document.getElementById('presetLocalRecognitionActionFunctionsDb').addEventListener('click', () =>
-        addDeclarativeActionRow('localRecognitionActionFunctionsList', { type: 'DB', timeout: 2000 })
-    );
-    document.getElementById('presetLocalRecognitionActionFunctionsApi').addEventListener('click', () =>
-        addDeclarativeActionRow('localRecognitionActionFunctionsList', { type: 'API', timeout: 5000 })
-    );
-    document.getElementById('presetLocalRecognitionActionFunctionsNotify').addEventListener('click', () =>
-        addDeclarativeActionRow('localRecognitionActionFunctionsList', { type: 'NOTIFY', timeout: 11000 })
-    );
 
     document.getElementById('addLocalRegularDeclarative').addEventListener('click', () =>
         addDeclarativeActionRow('localRegularActionsList')
@@ -955,7 +921,6 @@ export { CONFIG };
             'boundingBoxStyles',
             'localStartupAction',
             'localRecognitionActions',
-            'localRecognitionActionFunctions',
             'localRegularActionFunctions',
         ],
         server: [

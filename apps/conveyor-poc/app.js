@@ -346,7 +346,6 @@ async function runPipeline() {
 
         const customActionAssetKeys = [
             'localRecognitionActions',
-            'localRecognitionActionFunctions',
             'localRegularActionFunctions',
             'localStartupAction',
             'serverRecognitionActions',

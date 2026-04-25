@@ -47,7 +47,7 @@ The page loads ONNX runtime for YOLO. Controls sit in a top content strip so the
 
 **`manualRecognition()`** — reads **`#modelSelect`**; **`toDataUrl(videoElement)`**; **`recognize` / `recognizeWithYolo`**; **`action(recognitionResults, manualRecognitionActionFunctions)`**.
 
-**`startRecognitionLoop()`** — interval **`CONFIG.boundingBoxStyles.interval`**; inside: model branch, **`boundingBoxes`**, **`action` + `localRecognitionActionFunctions`**; starts **`localRegularActionFunctions`** intervals calling **`action(recognitionResults, [funcObj.func])`**.
+**`startRecognitionLoop()`** — interval **`CONFIG.boundingBoxStyles.interval`**; inside: model branch, **`boundingBoxes`**, configured recognition actions; starts **`localRegularActionFunctions`** intervals calling **`action(recognitionResults, [funcObj.func])`**.
 
 **`stopRecognitionLoop`**, **`startCameraStream`**, **`stopCamera` wiring** — **`getElementById`** for **`startBtn`**, **`stopBtn`**, **`startRecognitionBtn`**, **`stopRecognitionBtn`**, **`manualRecognitionBtn`**.
 

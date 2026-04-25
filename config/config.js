@@ -39,14 +39,6 @@ const CONFIG = {
         borderRadius: 4,
         interval: 1000
     },
-    localRecognitionActionFunctions: [
-        {
-            func: (recognitionResults) => {
-                console.log(`[Recognition Action] Detected ${recognitionResults.length} object(s)`);
-            },
-            interval: 5000   
-        }     
-    ],
     localRegularActionFunctions: [
         {
             func: (recognitionResults) => {

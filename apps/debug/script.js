@@ -1,7 +1,7 @@
 import { getCameraStream, attachCameraStreamToVideo, waitForVideoAndPlay } from '../../lib/edge/capture.js';
 import { videoToReusableCanvas, scaleDetectionsToVideo } from '../../lib/edge/source-to-canvas.js';
 import { boundingBoxes } from '../../lib/edge/bounding-boxes.js';
-import { action, localRecognitionActions } from '../../lib/edge/actions.js';
+import { action } from '../../lib/edge/actions.js';
 import { injectTopButtons } from '../../lib/edge/ui.js';
 
 let cameraStream = null;
@@ -19,7 +19,7 @@ let recognitionCanvas = null;
  * Uses the currently selected model (YOLO or MEDIAPIPE) from the model selector.
  */
 async function startRecognitionLoop(config) {
-    const { boundingBoxStyles, localRecognition, localRecognitionActionFunctions, localRegularActionFunctions } = config;
+    const { boundingBoxStyles, localRecognition, localRegularActionFunctions } = config;
     let recognizer = null;
     const model = config.localRecognition?.model ?? 'YOLO';
 
@@ -51,9 +51,6 @@ async function startRecognitionLoop(config) {
             );
 
             console.log(recognitionResults);
-            // if (localRecognitionActionFunctions.length > 0) {
-            //     localRecognitionActions(recognitionResults, localRecognitionActionFunctions);
-            // }
         } finally {
             recognitionRunning = false;
         }

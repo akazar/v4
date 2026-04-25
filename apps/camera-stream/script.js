@@ -38,7 +38,7 @@ async function manualRecognition() {
  * Uses the currently selected model (YOLO or MEDIAPIPE) from the model selector.
  */
 function startRecognitionLoop() {
-    const { boundingBoxStyles, localRecognitionActionFunctions, localRegularActionFunctions } = CONFIG;
+    const { boundingBoxStyles, localRecognitionActions, localRegularActionFunctions } = CONFIG;
     const modelSelect = document.getElementById('modelSelect');
 
     recognitionInterval = setInterval(async () => {
@@ -51,8 +51,8 @@ function startRecognitionLoop() {
             if (boundingBoxStyles) {
                 boundingBoxes(recognitionResults, videoElement, boundingBoxStyles);
             }
-            if (localRecognitionActionFunctions.length > 0) {
-                action(recognitionResults, localRecognitionActionFunctions);
+            if (Array.isArray(localRecognitionActions) && localRecognitionActions.length > 0) {
+                action(recognitionResults, localRecognitionActions);
             }
         }
     }, boundingBoxStyles.interval);

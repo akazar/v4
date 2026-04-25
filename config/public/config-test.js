@@ -136,7 +136,6 @@ const CONFIG = {
             "timeout": 2000
         }
     ],
-    "localRecognitionActionFunctions": [],
     "localRegularActionFunctions": [
         {
             "type": "DB",

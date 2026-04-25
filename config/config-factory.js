@@ -36,32 +36,6 @@ const CONFIG = {
         borderRadius: 4,
         interval: 1000
     },
-    localRecognitionActionFunctions: [
-        // {
-        //     func: (recognitionResults) => {
-        //         console.log(`[Factory - Recognition Action] Detected ${recognitionResults.length} object(s)` + ' (5000ms delay)');
-        //     },
-        //     interval: 5000 // min ms between runs of this function (null = no throttle) 
-        // },
-        // {
-        //     func: (recognitionResults) => {
-        //         fetch(`/api/notify`, {
-        //             method: 'POST',
-        //             headers: { 'Content-Type': 'application/json' },
-        //             body: JSON.stringify({
-        //                 recognitionResults: recognitionResults,
-        //                 reasoningResults: reasoningResults,
-        //                 channel: 'email',
-        //                 recipient: 'test@test.com'
-        //             })
-        //         })
-        //             .then(response => response.json())
-        //             .then(data => console.log('[Notify]', data))
-        //             .catch(error => console.error('[Notify] Failed to fetch. Is the server running?', error));
-        //     },
-        //     interval: 10000 // min ms between runs of this function (null = no throttle)
-        // }  
-    ],
     localRegularActionFunctions: [
         // {
         //     func: (recognitionResults) => {

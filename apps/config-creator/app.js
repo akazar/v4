@@ -251,120 +251,6 @@
         );
     }
 
-    function addMixedFuncRow(containerId, bodyText, interval) {
-        const container = document.getElementById(containerId);
-        const row = document.createElement('div');
-        row.className = 'action-row mixed-local-recognition-row';
-        row.dataset.kind = 'func';
-        row.innerHTML =
-            '<div class="field mixed-kind-label"><span class="mixed-badge">function</span></div>' +
-            '<textarea class="action-body" rows="3" placeholder="console.log(recognitionResults);"></textarea>' +
-            '<div class="field interval-field">' +
-            '<label>Interval (ms)</label>' +
-            '<input type="number" class="interval-ms" value="' + interval + '" min="0">' +
-            '</div>' +
-            '<button type="button" class="btn-remove" title="Remove">−</button>';
-        row.querySelector('.action-body').value = bodyText;
-        row.querySelector('.btn-remove').addEventListener('click', () => row.remove());
-        container.appendChild(row);
-    }
-
-    function addMixedDeclarativeRow(containerId, preset) {
-        const container = document.getElementById(containerId);
-        const row = document.createElement('div');
-        row.className = 'action-row mixed-local-recognition-row declarative-action-row';
-        row.dataset.kind = 'action';
-        const timeout = preset?.timeout != null ? preset.timeout : 2000;
-        row.innerHTML =
-            '<div class="field mixed-kind-label"><span class="mixed-badge">action</span></div>' +
-            '<div class="field declarative-field">' +
-            '<label>Type</label>' +
-            '<select class="decl-action-type">' +
-            '<option value="DB">DB</option>' +
-            '<option value="API">API</option>' +
-            '<option value="NOTIFY">NOTIFY</option>' +
-            '<option value="CUSTOM">Custom…</option>' +
-            '</select></div>' +
-            '<div class="field declarative-field decl-custom-type-wrap" style="display:none">' +
-            '<label>Custom type</label>' +
-            '<input type="text" class="decl-custom-type" placeholder="local-001"></div>' +
-            '<div class="field declarative-field flex-grow">' +
-            '<label>Value(s), comma-separated</label>' +
-            '<input type="text" class="decl-action-value" value=""></div>' +
-            '<div class="field interval-field">' +
-            '<label>Timeout (ms)</label>' +
-            '<input type="number" class="decl-timeout" value="' + timeout + '" min="0"></div>' +
-            '<button type="button" class="btn-remove" title="Remove">−</button>';
-
-        const sel = row.querySelector('.decl-action-type');
-        const customWrap = row.querySelector('.decl-custom-type-wrap');
-        const customIn = row.querySelector('.decl-custom-type');
-        const valIn = row.querySelector('.decl-action-value');
-        const t = preset?.type || 'DB';
-        if (t === 'DB' || t === 'API' || t === 'NOTIFY') sel.value = t;
-        else {
-            sel.value = 'CUSTOM';
-            customWrap.style.display = '';
-            customIn.value = t;
-        }
-        const defaults = {
-            DB: 'dbPersonalId',
-            API: 'https://example.com/',
-            NOTIFY: 'telegramIdPersonal',
-        };
-        valIn.value = preset?.valueStr != null ? preset.valueStr : defaults[t] || 'your-db-id';
-        bindDeclTypeToggle(row);
-        row.querySelector('.btn-remove').addEventListener('click', () => row.remove());
-        container.appendChild(row);
-    }
-
-    function readMixedLocalRecognitionRows() {
-        const rows = document.querySelectorAll('#localRecognitionActionFunctionsList .mixed-local-recognition-row');
-        return Array.from(rows)
-            .map((row) => {
-                const kind = row.dataset.kind;
-                if (kind === 'func') {
-                    const body = row.querySelector('.action-body')?.value.trim() ?? '';
-                    const interval = parseInt(row.querySelector('.interval-ms')?.value, 10) || 5000;
-                    return body ? { kind: 'func', body, interval } : null;
-                }
-                const sel = row.querySelector('.decl-action-type');
-                const customIn = row.querySelector('.decl-custom-type');
-                let type = sel && sel.value === 'CUSTOM' ? (customIn?.value || '').trim() : sel?.value;
-                const valStr = row.querySelector('.decl-action-value')?.value ?? '';
-                const values = valStr.split(',').map((s) => s.trim()).filter(Boolean);
-                const timeout = parseInt(row.querySelector('.decl-timeout')?.value, 10) || 0;
-                if (!type || !values.length) return null;
-                return { kind: 'action', type, values, timeout };
-            })
-            .filter(Boolean);
-    }
-
-    function formatMixedLocalRecognitionJs(items) {
-        if (!items.length) return '[]';
-        const parts = items.map((item, i) => {
-            if (item.kind === 'func') {
-                const indented = indentBlock(item.body, 12);
-                return (
-                    '        {\n' +
-                    '            func: (recognitionResults) => {\n' +
-                    indented +
-                    '\n            },\n' +
-                    `            interval: ${item.interval}\n` +
-                    '        }'
-                );
-            }
-            const vals = item.values.map((s) => "'" + escapeForSingleQuotedJs(s) + "'").join(', ');
-            return (
-                '        {\n' +
-                `            action: { type: '${escapeForSingleQuotedJs(item.type)}', value: [${vals}] },\n` +
-                `            timeout: ${item.timeout}\n` +
-                '        }'
-            );
-        });
-        return '[\n' + parts.join(',\n') + '\n    ]';
-    }
-
     function readReasoningActionRows() {
         const rows = document.querySelectorAll('#serverReasoningActions .reasoning-action-row');
         return Array.from(rows)
@@ -422,7 +308,6 @@
         const useLocalRecognition = isSectionEnabled('useLocalRecognition');
         const useBoundingBoxStyles = isSectionEnabled('useBoundingBoxStyles');
         const useLocalRecognitionActions = isSectionEnabled('useLocalRecognitionActions');
-        const useLocalRecognitionActionFunctions = isSectionEnabled('useLocalRecognitionActionFunctions');
         const useLocalRegularActionFunctions = isSectionEnabled('useLocalRegularActionFunctions');
         const useServerRecognition = isSectionEnabled('useServerRecognition');
         const useServerReasoning = isSectionEnabled('useServerReasoning');
@@ -500,9 +385,6 @@
             localRecognition,
             boundingBoxStyles,
             localRecognitionActions: useLocalRecognitionActions ? readDeclarativeActions('localRecognitionActionsList') : [],
-            localRecognitionActionFunctionsMixed: useLocalRecognitionActionFunctions
-                ? readMixedLocalRecognitionRows()
-                : [],
             localRegularActionFunctionsDeclarative: useLocalRegularActionFunctions
                 ? readDeclarativeActions('localRegularActionsList')
                 : [],
@@ -599,7 +481,6 @@
         const serverRecognitionStr = formatServerRecognitionJs(d.serverRecognition);
         const serverReasoningStr = formatReasoningJs(d.serverReasoning);
         const localRecognitionActionsStr = formatDeclarativeActionsJs(d.localRecognitionActions);
-        const localRecognitionActionFunctionsStr = formatMixedLocalRecognitionJs(d.localRecognitionActionFunctionsMixed);
         const localRegularActionFunctionsStr = formatDeclarativeActionsJs(d.localRegularActionFunctionsDeclarative);
         const serverRecognitionActionsStr = formatDeclarativeActionsJs(d.serverRecognitionActions);
         const serverRecognitionActionFunctionsStr = formatActionFunctionsJs(
@@ -619,7 +500,6 @@
     localRecognition: ${localRecognitionStr},
     boundingBoxStyles: ${boundingBoxStylesStr},
     localRecognitionActions: ${localRecognitionActionsStr},
-    localRecognitionActionFunctions: ${localRecognitionActionFunctionsStr},
     localRegularActionFunctions: ${localRegularActionFunctionsStr},
 
     /////////////////////// SERVER CONFIG ///////////////////////
@@ -656,7 +536,6 @@ export { CONFIG };
             localRecognition: d.localRecognition,
             boundingBoxStyles: d.boundingBoxStyles,
             localRecognitionActions: d.localRecognitionActions,
-            localRecognitionActionFunctions: [],
             localRegularActionFunctions: d.localRegularActionFunctionsDeclarative,
             serverRecognition: d.serverRecognition,
             serverReasoning: d.serverReasoning,
@@ -792,23 +671,6 @@ export { CONFIG };
             timeout: 11000,
         });
 
-        addMixedDeclarativeRow('localRecognitionActionFunctionsList', { type: 'DB', valueStr: 'dbPersonalId', timeout: 2000 });
-        addMixedDeclarativeRow('localRecognitionActionFunctionsList', {
-            type: 'API',
-            valueStr: 'https://example.com/',
-            timeout: 5000,
-        });
-        addMixedDeclarativeRow('localRecognitionActionFunctionsList', {
-            type: 'NOTIFY',
-            valueStr: 'telegramIdPersonal',
-            timeout: 11000,
-        });
-        addMixedFuncRow(
-            'localRecognitionActionFunctionsList',
-            'console.log(`[Recognition Action] Detected ${recognitionResults.length} object(s)`);',
-            5000
-        );
-
         addDeclarativeActionRow('localRegularActionsList', { type: 'DB', valueStr: 'dbNULPId', timeout: 10000 });
         addDeclarativeActionRow('localRegularActionsList', {
             type: 'API',
@@ -850,19 +712,6 @@ export { CONFIG };
     );
     document.getElementById('presetLocalRecognitionActionsNotify').addEventListener('click', () =>
         addDeclarativeActionRow('localRecognitionActionsList', { type: 'NOTIFY', timeout: 11000 })
-    );
-
-    document.getElementById('addLocalRecognitionFuncRow').addEventListener('click', () =>
-        addMixedFuncRow('localRecognitionActionFunctionsList', '', 5000)
-    );
-    document.getElementById('addLocalRecognitionActionRow').addEventListener('click', () =>
-        addMixedDeclarativeRow('localRecognitionActionFunctionsList')
-    );
-    document.getElementById('addLocalRecognitionMixedDb').addEventListener('click', () =>
-        addMixedDeclarativeRow('localRecognitionActionFunctionsList', { type: 'DB', timeout: 2000 })
-    );
-    document.getElementById('addLocalRecognitionMixedNotify').addEventListener('click', () =>
-        addMixedDeclarativeRow('localRecognitionActionFunctionsList', { type: 'NOTIFY', timeout: 11000 })
     );
 
     document.getElementById('addLocalRegularDeclarative').addEventListener('click', () =>
@@ -988,7 +837,6 @@ export { CONFIG };
             'localRecognition',
             'boundingBoxStyles',
             'localRecognitionActions',
-            'localRecognitionActionFunctions',
             'localRegularActionFunctions',
         ],
         server: [

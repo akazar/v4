@@ -16,7 +16,6 @@ const CONFIG = {
         borderRadius: 4,
         interval: 1000
     },
-    localRecognitionActionFunctions: [],
     localRegularActionFunctions: [],
 
     /////////////////////// SERVER CONFIG ///////////////////////

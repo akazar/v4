@@ -39,7 +39,7 @@ title: Camera stream
 
 **`manualRecognition()`** — **`#modelSelect`**, **`toDataUrl(video)`**, **`recognize` / `recognizeWithYolo`**, **`action(..., manualRecognitionActionFunctions)`**.
 
-**`startRecognitionLoop()`** — інтервал з **`CONFIG.boundingBoxStyles.interval`**, **`boundingBoxes`**, **`action`** для **`localRecognitionActionFunctions`**, періодичні **`localRegularActionFunctions`**.
+**`startRecognitionLoop()`** — інтервал з **`CONFIG.boundingBoxStyles.interval`**, **`boundingBoxes`**, налаштовані дії розпізнавання, періодичні **`localRegularActionFunctions`**.
 
 **Кнопки:** **`startBtn`**, **`stopBtn`**, **`startRecognitionBtn`**, **`stopRecognitionBtn`**, **`manualRecognitionBtn`**.
 

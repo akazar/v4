@@ -163,7 +163,6 @@ export function edgeMainWebContents(config, { assets, configId }) {
 
     const customActionKeys = [
         'localRecognitionActions',
-        'localRecognitionActionFunctions',
         'localRegularActionFunctions',
     ];
     for (const key of customActionKeys) {

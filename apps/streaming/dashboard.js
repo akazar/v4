@@ -55,7 +55,7 @@ const configCache = new Map();
 let discoveredConfigPaths = null;
 const localScheduledActionsManager = createScheduledActionsManager({
   actionsProperty: 'localRecognitionActions',
-  fallbackActionProperties: ['localRecognitionActionFunctions'],
+  fallbackActionProperties: [],
   loadConfig: async (configName) => {
     const cfgPath = `/config/public/${configName}.js`;
     return loadConfig(cfgPath);

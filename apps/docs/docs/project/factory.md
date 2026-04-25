@@ -51,7 +51,7 @@ Behavior highlights:
 **`startRecognitionLoop(config)`**
 
 - Reads **`config.localRecognition.model`** (`YOLO` / `MEDIAPIPE`); **dynamic `import()`** of the matching **`recognize-*`** module.
-- **`setInterval`** callback: guards **`recognitionRunning`**, builds **`recognitionCanvas`** via **`videoToReusableCanvas`**, runs recognizer (**canvas**, **`config`**), scales with **`scaleDetectionsToVideo`**, calls **`localRecognitionActionsFromConfig`** when **`localRecognitionActionFunctions`** non-empty.
+- **`setInterval`** callback: guards **`recognitionRunning`**, builds **`recognitionCanvas`** via **`videoToReusableCanvas`**, runs recognizer (**canvas**, **`config`**), scales with **`scaleDetectionsToVideo`**, and runs configured recognition actions.
 - Parallel **`boundingBoxInterval`** when **`boundingBoxStyles`** exists.
 
 **`initApp(config)`**

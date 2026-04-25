@@ -30,29 +30,6 @@ const CONFIG = {
         "borderRadius": 4,
         "interval": 1000
     },
-    "localRecognitionActionFunctions": [
-        {
-          "action": {
-            "type": "DB",
-            "value": ["dbPersonalId"]
-          },
-          "timeout": 2000
-        },
-        {
-          "action": {
-            "type": "API",
-            "value": ["https://223.com/"]
-          },
-          "timeout": 5000
-        },
-        {
-          "action": {
-            "type": "NOTIFY",
-            "value": ["telegramIdPersonal"]
-          },
-          "timeout": 11000
-        }
-    ],
     "localRegularActionFunctions": [
         {
             "action": {

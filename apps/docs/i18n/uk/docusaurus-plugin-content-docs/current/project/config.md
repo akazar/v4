@@ -40,7 +40,7 @@ title: config/
 
 | Символ | Роль |
 |--------|------|
-| **`CONFIG`** | Об’єкт: **`id`**, **`name`**, **`description`**, **`ui`**, **`localRecognition`**, **`boundingBoxStyles`**, **`localRecognitionActionFunctions`**, **`localRegularActionFunctions`**, **`manualRecognitionActionFunctions`**, **`serverRecognition`**, **`serverReasoning`**, **`serverReasoningActionFunctions`**, **`serverRegularActionFunctions`** тощо. |
+| **`CONFIG`** | Об’єкт: **`id`**, **`name`**, **`description`**, **`ui`**, **`localRecognition`**, **`boundingBoxStyles`**, **`localRegularActionFunctions`**, **`manualRecognitionActionFunctions`**, **`serverRecognition`**, **`serverReasoning`**, **`serverReasoningActionFunctions`**, **`serverRegularActionFunctions`** тощо. |
 | **`export default CONFIG`**, **`export { CONFIG }`** | Подвійний ESM-експорт. |
 
 **Використовують:** **`apps/camera-stream/script.js`**, **`image-upload`**, **`server-detection`**, **`server-reasoning`** — статичний import; **`lib/cloud/recognition-server.js`**, **`api-server.js`** — серверні дефолти та списки дій.

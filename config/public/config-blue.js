@@ -30,7 +30,6 @@ const CONFIG = {
         "borderRadius": 4,
         "interval": 1000
     },
-    "localRecognitionActionFunctions": [],
     "localRegularActionFunctions": [],
     "serverRecognition": {
         "classes": [

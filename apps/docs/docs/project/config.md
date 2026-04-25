@@ -40,7 +40,7 @@ Many files (e.g. color-themed or scenario-themed names) are **ready-made profile
 
 | Symbol | Role |
 |--------|------|
-| **`CONFIG`** | Plain object: **`id`**, **`name`**, **`description`**, **`ui`**, **`localRecognition`** (classes, thresholds, **model**, **interval**, sizes), **`boundingBoxStyles`**, **`localRecognitionActionFunctions`**, **`localRegularActionFunctions`**, **`manualRecognitionActionFunctions`**, **`serverRecognition`**, **`serverReasoning`**, **`serverReasoningActionFunctions`**, **`serverRegularActionFunctions`**, etc. |
+| **`CONFIG`** | Plain object: **`id`**, **`name`**, **`description`**, **`ui`**, **`localRecognition`** (classes, thresholds, **model**, **`interval`**, sizes), **`boundingBoxStyles`**, **`localRegularActionFunctions`**, **`manualRecognitionActionFunctions`**, **`serverRecognition`**, **`serverReasoning`**, **`serverReasoningActionFunctions`**, **`serverRegularActionFunctions`**, etc. |
 | **`export default CONFIG`**, **`export { CONFIG }`** | ESM dual export so **`import CONFIG`** or **`import { CONFIG }`** both work. |
 
 **Used by:**
