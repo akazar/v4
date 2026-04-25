@@ -667,7 +667,8 @@ textarea.action-body:focus {
     min-width: 200px;
 }
 
-.btn-preview {
+.btn-preview,
+.btn-import {
     flex: 0 0 auto;
     padding: 0.85rem 1.25rem;
     font-size: 1rem;
@@ -680,12 +681,14 @@ textarea.action-body:focus {
     transition: background 0.15s, transform 0.1s, border-color 0.15s;
 }
 
-.btn-preview:hover {
+.btn-preview:hover,
+.btn-import:hover {
     background: var(--surface);
     border-color: var(--accent-hover);
 }
 
-.btn-preview:active {
+.btn-preview:active,
+.btn-import:active {
     transform: scale(0.99);
 }
 

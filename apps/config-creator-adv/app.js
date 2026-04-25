@@ -704,6 +704,350 @@ export { CONFIG };
         }
     }
 
+    // Import is intentionally isolated so it can be removed without changing form generation/export code.
+    async function importConfig(zipFile) {
+        if (!zipFile) return;
+
+        const entries = await readZipFileEntries(zipFile);
+        const configEntry = findZipEntry(entries, ['config.js']);
+        if (!configEntry) {
+            throw new Error('ZIP does not contain config.js');
+        }
+
+        const config = parseConfigModuleSource(configEntry.text);
+        if (!config || typeof config !== 'object') {
+            throw new Error('config.js did not export a CONFIG object');
+        }
+
+        const assetByFileName = getImportAssetEntries(entries);
+        const exportedNamesByFileName = {};
+        for (const [fileName, entry] of Object.entries(assetByFileName)) {
+            exportedNamesByFileName[fileName] = extractNamedExports(entry.text);
+        }
+
+        fillImportedConfigFields(config, exportedNamesByFileName);
+        attachImportedAssetFiles(config, assetByFileName);
+        syncUiEnableFieldVisibility();
+        syncDeclarativeCustomJsVisibility();
+        refreshPreviewIfOpen();
+    }
+
+    async function readZipFileEntries(file) {
+        const bytes = new Uint8Array(await file.arrayBuffer());
+        const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+        const eocdOffset = findZipEndOfCentralDirectory(view);
+        if (eocdOffset < 0) throw new Error('Invalid ZIP file');
+
+        const entryCount = view.getUint16(eocdOffset + 10, true);
+        let centralOffset = view.getUint32(eocdOffset + 16, true);
+        const decoder = new TextDecoder('utf-8');
+        const entries = [];
+
+        for (let i = 0; i < entryCount; i++) {
+            if (view.getUint32(centralOffset, true) !== 0x02014b50) {
+                throw new Error('Invalid ZIP central directory');
+            }
+
+            const method = view.getUint16(centralOffset + 10, true);
+            const compressedSize = view.getUint32(centralOffset + 20, true);
+            const nameLength = view.getUint16(centralOffset + 28, true);
+            const extraLength = view.getUint16(centralOffset + 30, true);
+            const commentLength = view.getUint16(centralOffset + 32, true);
+            const localHeaderOffset = view.getUint32(centralOffset + 42, true);
+            const nameBytes = bytes.slice(centralOffset + 46, centralOffset + 46 + nameLength);
+            const name = decoder.decode(nameBytes).replace(/\\/g, '/');
+
+            if (!name.endsWith('/')) {
+                const localNameLength = view.getUint16(localHeaderOffset + 26, true);
+                const localExtraLength = view.getUint16(localHeaderOffset + 28, true);
+                const dataStart = localHeaderOffset + 30 + localNameLength + localExtraLength;
+                const compressed = bytes.slice(dataStart, dataStart + compressedSize);
+                const content = method === 0 ? compressed : await inflateZipEntry(method, compressed);
+                entries.push({ name, bytes: content, text: decoder.decode(content) });
+            }
+
+            centralOffset += 46 + nameLength + extraLength + commentLength;
+        }
+
+        return entries;
+    }
+
+    function findZipEndOfCentralDirectory(view) {
+        const minOffset = Math.max(0, view.byteLength - 0xFFFF - 22);
+        for (let i = view.byteLength - 22; i >= minOffset; i--) {
+            if (view.getUint32(i, true) === 0x06054b50) return i;
+        }
+        return -1;
+    }
+
+    async function inflateZipEntry(method, compressed) {
+        if (method !== 8 || typeof DecompressionStream === 'undefined') {
+            throw new Error('Only STORE or DEFLATE ZIP entries are supported in this browser');
+        }
+
+        const inflateWith = async (format) => {
+            const stream = new Blob([compressed]).stream().pipeThrough(new DecompressionStream(format));
+            return new Uint8Array(await new Response(stream).arrayBuffer());
+        };
+
+        try {
+            return await inflateWith('deflate-raw');
+        } catch (err) {
+            return inflateWith('deflate');
+        }
+    }
+
+    function parseConfigModuleSource(source) {
+        const moduleSource = String(source || '')
+            .replace(/export\s+default\s+CONFIG\s*;?/g, '')
+            .replace(/export\s*\{\s*CONFIG\s*\}\s*;?/g, '')
+            .replace(/export\s+(const|let|var)\s+CONFIG\s*=/, '$1 CONFIG =')
+            .replace(/export\s+default\s+\{/, 'const CONFIG = {');
+
+        return Function(`${moduleSource}\n; return typeof CONFIG !== 'undefined' ? CONFIG : null;`)();
+    }
+
+    function findZipEntry(entries, fileNames) {
+        const wanted = fileNames.map((name) => name.toLowerCase());
+        return entries.find((entry) => {
+            const normalized = entry.name.toLowerCase();
+            return wanted.some((fileName) => normalized === fileName || normalized.endsWith('/' + fileName));
+        }) || null;
+    }
+
+    function getImportAssetEntries(entries) {
+        const fileNames = [
+            'ui.html',
+            'ui.css',
+            'ui.js',
+            'localRecognitionActions.js',
+            'localRegularActionFunctions.js',
+            'serverRecognitionActions.js',
+            'serverRegularActionFunctions.js',
+            'localStartupAction.js',
+            'serverStartupAction.js',
+        ];
+        return Object.fromEntries(
+            fileNames
+                .map((fileName) => [fileName, findZipEntry(entries, [fileName])])
+                .filter(([, entry]) => Boolean(entry))
+        );
+    }
+
+    function extractNamedExports(source) {
+        const names = new Set();
+        const text = String(source || '');
+        const declarationRe = /export\s+(?:async\s+)?function\s+([A-Za-z_$][\w$]*)|export\s+(?:const|let|var)\s+([A-Za-z_$][\w$]*)\s*=/g;
+        let match;
+        while ((match = declarationRe.exec(text))) {
+            names.add(match[1] || match[2]);
+        }
+
+        const listRe = /export\s*\{\s*([^}]+)\s*\}/g;
+        while ((match = listRe.exec(text))) {
+            match[1]
+                .split(',')
+                .map((part) => part.trim().split(/\s+as\s+/i).pop().trim())
+                .filter(Boolean)
+                .forEach((name) => names.add(name));
+        }
+
+        return Array.from(names);
+    }
+
+    function fillImportedConfigFields(config, exportedNamesByFileName) {
+        setFormValue('configId', config.id);
+        setFormValue('configName', config.name);
+        setFormValue('configDescription', config.description);
+        setSelectValue('edgeType', config.edgeType || (config.ui ? 'web' : null));
+        setCheckboxValue('useUi', Object.prototype.hasOwnProperty.call(config, 'ui'));
+        setCheckboxValue('ui', Boolean(config.ui));
+
+        fillRecognitionFields('local', config.localRecognition);
+        fillBoundingBoxFields(config.boundingBoxStyles);
+        fillRecognitionFields('server', config.serverRecognition);
+
+        setFormValue(
+            'localStartupActionMethodName',
+            config.localStartupAction || exportedNamesByFileName['localStartupAction.js']?.[0] || ''
+        );
+        setFormValue(
+            'serverStartupActionMethodName',
+            config.serverStartupAction || exportedNamesByFileName['serverStartupAction.js']?.[0] || ''
+        );
+
+        const localRecognitionActions = pickActionList(config, 'localRecognitionActions', 'localRecognitionActionFunctions');
+        fillActionRows(
+            'localRecognitionActionsList',
+            'useLocalRecognitionActions',
+            localRecognitionActions,
+            exportedNamesByFileName['localRecognitionActions.js'] || []
+        );
+        fillActionRows(
+            'localRegularActionsList',
+            'useLocalRegularActionFunctions',
+            pickActionList(config, 'localRegularActionFunctions'),
+            exportedNamesByFileName['localRegularActionFunctions.js'] || []
+        );
+        fillActionRows(
+            'serverRecognitionActionsList',
+            'useServerRecognitionActions',
+            pickActionList(config, 'serverRecognitionActions', 'serverRecognitionActionFunctions'),
+            exportedNamesByFileName['serverRecognitionActions.js'] || []
+        );
+        fillActionRows(
+            'serverRegularActionFunctionsList',
+            'useServerRegularActionFunctions',
+            pickActionList(config, 'serverRegularActionFunctions'),
+            exportedNamesByFileName['serverRegularActionFunctions.js'] || []
+        );
+    }
+
+    function fillRecognitionFields(kind, recognition) {
+        const isLocal = kind === 'local';
+        setCheckboxValue(isLocal ? 'useLocalRecognition' : 'useServerRecognition', Boolean(recognition));
+        if (!recognition) return;
+
+        setFormValue(isLocal ? 'localClasses' : 'serverClasses', Array.isArray(recognition.classes) ? recognition.classes.join(', ') : '');
+        setFormValue(isLocal ? 'localMaxResults' : 'serverMaxResults', recognition.maxResults);
+        setFormValue(isLocal ? 'localThreshold' : 'serverThreshold', recognition.threshold);
+        setFormValue(isLocal ? 'localIouThreshold' : 'serverIouThreshold', recognition.iouThreshold);
+        setSelectValue(isLocal ? 'localModel' : 'serverModel', recognition.model);
+        setFormValue(isLocal ? 'localInterval' : 'serverRecognitionInterval', recognition.interval);
+
+        if (isLocal) {
+            setFormValue('localInputSize', recognition.inputSize);
+            setFormValue('localMaxCaptureSize', recognition.maxCaptureSize);
+        }
+    }
+
+    function fillBoundingBoxFields(styles) {
+        setCheckboxValue('useBoundingBoxStyles', Boolean(styles));
+        if (!styles) return;
+
+        setFormValue('strokeStyle', styles.strokeStyle);
+        setFormValue('lineWidth', styles.lineWidth);
+        setFormValue('shadowColor', styles.shadowColor);
+        setFormValue('shadowBlur', styles.shadowBlur);
+        setFormValue('font', styles.font);
+        setFormValue('labelBgColor', styles.labelBgColor);
+        setFormValue('labelTextColor', styles.labelTextColor);
+        setFormValue('labelPadding', styles.labelPadding);
+        setFormValue('borderRadius', styles.borderRadius);
+        setFormValue('boundingBoxInterval', styles.interval);
+    }
+
+    function pickActionList(config, ...keys) {
+        for (const key of keys) {
+            if (Object.prototype.hasOwnProperty.call(config, key)) {
+                return Array.isArray(config[key]) ? config[key] : [];
+            }
+        }
+        return null;
+    }
+
+    function fillActionRows(containerId, includeCheckboxId, actionList, fallbackFunctionNames) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+
+        container.innerHTML = '';
+        const actions = actionList === null && fallbackFunctionNames.length
+            ? [{ action: { type: 'CUSTOM', value: fallbackFunctionNames }, timeout: 2000 }]
+            : (actionList || []);
+        setCheckboxValue(includeCheckboxId, actionList !== null || fallbackFunctionNames.length > 0);
+
+        for (const action of actions) {
+            const preset = normalizeImportedAction(action);
+            if (preset) addDeclarativeActionRow(containerId, preset);
+        }
+    }
+
+    function normalizeImportedAction(action) {
+        if (!action || typeof action !== 'object') return null;
+        const actionObj = action.action || action;
+        const type = actionObj.type || (action.func ? 'CUSTOM' : '');
+        const value = actionObj.value || actionObj.values || (action.func?.name ? [action.func.name] : []);
+        const valueStr = Array.isArray(value) ? value.join(', ') : String(value || '');
+        const timeout = action.timeout ?? action.interval ?? action.counter ?? 2000;
+        if (!type && !valueStr) return null;
+        return { type: type || 'CUSTOM', valueStr, timeout };
+    }
+
+    function attachImportedAssetFiles(config, assetByFileName) {
+        const assets = [
+            ['uiHtmlFile', config.uiHtmlPath || 'ui.html', assetByFileName['ui.html']],
+            ['uiCssFile', config.uiCssPath || 'ui.css', assetByFileName['ui.css']],
+            ['uiJsFile', config.uiJsPath || 'ui.js', assetByFileName['ui.js']],
+            ['localRecognitionActionsCustomJsFile', 'localRecognitionActions.js', assetByFileName['localRecognitionActions.js']],
+            ['localRegularActionFunctionsCustomJsFile', 'localRegularActionFunctions.js', assetByFileName['localRegularActionFunctions.js']],
+            ['serverRecognitionActionsCustomJsFile', 'serverRecognitionActions.js', assetByFileName['serverRecognitionActions.js']],
+            ['serverRegularActionFunctionsCustomJsFile', 'serverRegularActionFunctions.js', assetByFileName['serverRegularActionFunctions.js']],
+            ['localStartupActionJsFile', 'localStartupAction.js', assetByFileName['localStartupAction.js']],
+            ['serverStartupActionJsFile', 'serverStartupAction.js', assetByFileName['serverStartupAction.js']],
+        ];
+
+        for (const [inputId, preferredName, entry] of assets) {
+            if (entry) setFileInputFromZipEntry(inputId, entry, preferredName);
+        }
+    }
+
+    function setFileInputFromZipEntry(inputId, entry, preferredName) {
+        const input = document.getElementById(inputId);
+        if (!input || typeof DataTransfer === 'undefined' || typeof File === 'undefined') return false;
+
+        const dt = new DataTransfer();
+        const fileName = zipBaseName(preferredName || entry.name);
+        dt.items.add(new File([entry.bytes], fileName, { type: mimeTypeForFileName(fileName) }));
+        input.files = dt.files;
+        input.dispatchEvent(new Event('change', { bubbles: true }));
+        return true;
+    }
+
+    function zipBaseName(path) {
+        return String(path || '').replace(/\\/g, '/').split('/').filter(Boolean).pop() || 'asset.js';
+    }
+
+    function mimeTypeForFileName(fileName) {
+        if (/\.html?$/i.test(fileName)) return 'text/html';
+        if (/\.css$/i.test(fileName)) return 'text/css';
+        if (/\.js$/i.test(fileName)) return 'text/javascript';
+        return 'application/octet-stream';
+    }
+
+    function setFormValue(id, value) {
+        if (value === undefined || value === null) return;
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.value = Array.isArray(value) ? value.join(', ') : String(value);
+        el.dispatchEvent(new Event('input', { bubbles: true }));
+        el.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+
+    function setSelectValue(id, value) {
+        if (value === undefined || value === null) return;
+        const el = document.getElementById(id);
+        if (!el) return;
+        const normalized = String(value);
+        if (Array.from(el.options).some((option) => option.value === normalized)) {
+            el.value = normalized;
+            el.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+    }
+
+    function setCheckboxValue(id, checked) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.checked = Boolean(checked);
+        el.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+
+    function refreshPreviewIfOpen() {
+        const previewSection = document.getElementById('configPreviewSection');
+        const previewJsonEl = document.getElementById('configPreviewJson');
+        if (!previewSection || previewSection.hidden || !previewJsonEl) return;
+        previewJsonEl.textContent = buildConfigObjectLiteralBody(readFormConfig());
+    }
+
     function seedInitialRows() {
         addDeclarativeActionRow('localRecognitionActionsList', { type: 'DB', valueStr: 'your-db-id', timeout: 2000 });
         addDeclarativeActionRow('localRecognitionActionsList', {
@@ -833,6 +1177,24 @@ export { CONFIG };
     document.getElementById('edgeType').addEventListener('change', syncUiEnableFieldVisibility);
     document.getElementById('ui').addEventListener('change', syncUiEnableFieldVisibility);
     syncUiEnableFieldVisibility();
+
+    document.getElementById('btnImportConfig').addEventListener('click', () => {
+        document.getElementById('importConfigZipFile')?.click();
+    });
+
+    document.getElementById('importConfigZipFile').addEventListener('change', async (e) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        try {
+            await importConfig(file);
+            alert('Configuration imported from ZIP.');
+        } catch (err) {
+            console.error('[config-creator-adv] import failed:', err);
+            alert('Failed to import configuration: ' + (err?.message || err));
+        } finally {
+            e.target.value = '';
+        }
+    });
 
     (function initDeclarativeCustomJsVisibility() {
         const formEl = document.getElementById('configForm');
