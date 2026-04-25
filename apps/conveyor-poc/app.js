@@ -315,6 +315,8 @@ async function runPipeline() {
         const edgeType = inferEdgeType(config);
         const assets = manifest?.assets || {};
         const includeServer = optIncludeServerPipeline.checked && hasServerPipelineOptions(config);
+        const localRecognitionModel = String(config?.localRecognition?.model || 'YOLO').toUpperCase();
+        const hasLocalRecognition = Boolean(config?.localRecognition);
 
         log(`Edge type: ${edgeType}; server pipeline: ${includeServer ? 'yes' : 'no'}`);
 
@@ -388,6 +390,8 @@ async function runPipeline() {
                     configId,
                     hasNodeEdge,
                     hasServerPipeline: includeServer,
+                    hasLocalRecognition,
+                    localRecognitionModel,
                 }),
             });
         }
@@ -403,6 +407,14 @@ async function runPipeline() {
             );
         } else {
             entries.push('lib/edge/webrtc-publisher.node.js');
+            if (hasLocalRecognition) {
+                entries.push('lib/cloud/streaming-server/i420-jpeg.js');
+                entries.push(
+                    localRecognitionModel === 'MEDIAPIPE'
+                        ? 'lib/cloud/recognition/mediapipe/recognize-mediapipe.js'
+                        : 'lib/cloud/recognition/yolo/recognize-yolo.mjs'
+                );
+            }
         }
         if (includeServer) {
             entries.push('lib/cloud/pipeline/server-pipeline.js');
@@ -418,10 +430,11 @@ async function runPipeline() {
         // copy into the asset folder instead of base64-roundtripping multi-MB binaries.
         const binaryFiles = {};
         const binaryCopyMap = {};
-        const lrModel = String(config?.localRecognition?.model || '').toUpperCase();
-        const usesYolo = Boolean(config?.localRecognition) && (lrModel === '' || lrModel === 'YOLO' || lrModel.startsWith('YOLO'));
-        if (edgeType === 'web' && usesYolo) {
-            const yoloModelRel = 'lib/edge/recognition/yolo/models/yolo11n.onnx';
+        const usesYolo = hasLocalRecognition && (localRecognitionModel === '' || localRecognitionModel === 'YOLO' || localRecognitionModel.startsWith('YOLO'));
+        if (usesYolo) {
+            const yoloModelRel = edgeType === 'web'
+                ? 'lib/edge/recognition/yolo/models/yolo11n.onnx'
+                : 'lib/cloud/recognition/yolo/models/yolo11n.onnx';
             try {
                 log(`Fetching ${yoloModelRel} (binary, ~10 MB)…`);
                 const res = await fetch('/' + yoloModelRel);

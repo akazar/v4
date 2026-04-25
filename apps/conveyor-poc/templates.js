@@ -59,7 +59,9 @@ does NOT require \`V4_ROOT\`. Move the folder anywhere.
 
 Escape hatches (optional):
   - \`V4_ROOT=<path-to-v4>\`    — point at a different lib/ root (e.g. during development).
-  - Run from v4 repo root after dropping the folder inside — \`lib/\` is auto-detected one level up.`;
+  - Run from v4 repo root after dropping the folder inside — \`lib/\` is auto-detected one level up.
+  - Windows camera override: run \`ffmpeg -f dshow -list_devices true -i dummy\`, then set
+    \`$env:CAMERA_DSHOW_NAME = "Exact Camera Name"\` before \`node edge-main.js <streamId>\`.`;
     const runServer = hasServerPipeline
         ? `\n\n### Server pipeline\n\nFrom inside the extracted folder:
 
@@ -100,7 +102,7 @@ ${runEdge}${runServer}
 - The SDK namespace is always called \`vision\` for parity with in-process demos.
 - \`manualCapture()\` is a no-op (\`console.log\`); wire it to your own capture code if needed.
 - Bounding boxes are drawn when \`config.boundingBoxStyles\` is set.
-- Local recognition runs in the browser (YOLO by default, MediaPipe as a fallback).
+- Local recognition runs on the edge runtime: browser for web bundles, Node.js for node bundles.
 - Server recognition is handled by the running v4 server + \`server-pipeline.js\`.
 `;
 }
@@ -479,9 +481,25 @@ if (btnManualCapture) {
 export function edgeMainNodeContents(config, { configId, assets }) {
     const edgeTypeName = config?.edgeType || 'node';
     const hasLocalStartup = Boolean(assets?.localStartupAction);
+    const hasLocalRecognition = Boolean(config?.localRecognition);
+    const localModel = String(config?.localRecognition?.model || 'YOLO').toUpperCase();
+    const localRecognizerPath = localModel === 'MEDIAPIPE'
+        ? 'lib/cloud/recognition/mediapipe/recognize-mediapipe.js'
+        : 'lib/cloud/recognition/yolo/recognize-yolo.mjs';
     const startupImport = hasLocalStartup
         ? `const localStartupAction = await import(new URL('./localStartupAction.js', import.meta.url).href);`
         : `const localStartupAction = null;`;
+    const localRecognitionImports = hasLocalRecognition
+        ? `const { i420FrameToJpegDataUrl } = await import(libUrl('lib/cloud/streaming-server/i420-jpeg.js'));
+const { recognize: localRecognize } = await import(libUrl('${localRecognizerPath}'));`
+        : `const i420FrameToJpegDataUrl = null;
+const localRecognize = null;`;
+    const localRecognitionActionsImport = assets?.localRecognitionActions
+        ? `const localRecognitionActions = await import(new URL('./localRecognitionActions.js', import.meta.url).href);`
+        : `const localRecognitionActions = null;`;
+    const localRegularActionFunctionsImport = assets?.localRegularActionFunctions
+        ? `const localRegularActionFunctions = await import(new URL('./localRegularActionFunctions.js', import.meta.url).href);`
+        : `const localRegularActionFunctions = null;`;
     const startupInvocation = hasLocalStartup
         ? `    if (CONFIG.localStartupAction && typeof localStartupAction?.[CONFIG.localStartupAction] === 'function') {
         try { await Promise.resolve(localStartupAction[CONFIG.localStartupAction](CONFIG)); }
@@ -501,7 +519,7 @@ export function edgeMainNodeContents(config, { configId, assets }) {
  * instead; this file provides a Node-based reference runtime that mirrors the web edge behavior.
  */
 
-import { spawn } from 'node:child_process';
+import { spawn, spawnSync } from 'node:child_process';
 import { createRequire } from 'node:module';
 import path from 'node:path';
 import fs from 'node:fs';
@@ -527,16 +545,21 @@ function detectV4Root() {
 const v4Root = detectV4Root();
 const libUrl = (rel) => pathToFileURL(path.resolve(v4Root, rel)).href;
 const { createWebRtcPublisherNode } = await import(libUrl('lib/edge/webrtc-publisher.node.js'));
+${localRecognitionImports}
 ${startupImport}
+${localRecognitionActionsImport}
+${localRegularActionFunctionsImport}
 
 const require = createRequire(import.meta.url);
 const wrtc = require('@roamhq/wrtc');
 const { MediaStream, nonstandard } = wrtc;
-const { RTCVideoSource } = nonstandard;
+const { RTCVideoSource, i420ToRgba } = nonstandard;
 
 const CAPTURE_WIDTH = 640;
 const CAPTURE_HEIGHT = 360;
 const I420_FRAME_BYTES = (CAPTURE_WIDTH * CAPTURE_HEIGHT * 3) >> 1;
+let latestFrame = null;
+let latestRecognitionResults = [];
 
 function log(...args) { console.log('[edge-main]', ...args); }
 
@@ -550,10 +573,41 @@ function resolveFfmpegPath() {
     return 'ffmpeg';
 }
 
-function ffmpegInputArgs() {
+function detectFirstDshowVideoDevice(ffmpegBin) {
+    const r = spawnSync(
+        ffmpegBin,
+        ['-hide_banner', '-f', 'dshow', '-list_devices', 'true', '-i', 'dummy'],
+        { encoding: 'utf8', windowsHide: true, maxBuffer: 1024 * 1024 }
+    );
+    const text = \`\${r.stderr || ''}\\n\${r.stdout || ''}\`;
+    const re = /"([^"]+)"\\s*\\(video\\)/g;
+    const found = re.exec(text);
+    return found ? found[1] : null;
+}
+
+function resolveWindowsDshowDeviceName(ffmpegBin) {
+    const fromEnv = process.env.CAMERA_DSHOW_NAME?.trim();
+    if (fromEnv) {
+        log('DirectShow device (CAMERA_DSHOW_NAME):', fromEnv);
+        return fromEnv;
+    }
+
+    const first = detectFirstDshowVideoDevice(ffmpegBin);
+    if (first) {
+        log('DirectShow device (auto-detected):', first);
+        return first;
+    }
+
+    throw new Error(
+        'Could not auto-detect a DirectShow video device. Run "ffmpeg -f dshow -list_devices true -i dummy", ' +
+        'then set CAMERA_DSHOW_NAME to the exact quoted video device name.'
+    );
+}
+
+function ffmpegInputArgs(ffmpegBin) {
     const plat = process.platform;
     if (plat === 'win32') {
-        const name = process.env.CAMERA_DSHOW_NAME || 'Integrated Camera';
+        const name = resolveWindowsDshowDeviceName(ffmpegBin);
         return ['-f', 'dshow', '-rtbufsize', '100M', '-video_size', \`\${CAPTURE_WIDTH}x\${CAPTURE_HEIGHT}\`, '-framerate', '20', '-i', \`video=\${name}\`];
     }
     if (plat === 'darwin') {
@@ -568,7 +622,7 @@ function startFfmpegPipeline() {
     const bin = resolveFfmpegPath();
     const args = [
         '-hide_banner', '-loglevel', 'warning',
-        ...ffmpegInputArgs(),
+        ...ffmpegInputArgs(bin),
         '-vf', \`scale=\${CAPTURE_WIDTH}:\${CAPTURE_HEIGHT}:flags=fast_bilinear\`,
         '-pix_fmt', 'yuv420p',
         '-f', 'rawvideo', '-an', 'pipe:1',
@@ -586,12 +640,188 @@ function startFfmpegPipeline() {
             buf = buf.subarray(I420_FRAME_BYTES);
             const data = new Uint8ClampedArray(I420_FRAME_BYTES);
             data.set(slice);
+            latestFrame = { width: CAPTURE_WIDTH, height: CAPTURE_HEIGHT, data: new Uint8Array(data) };
             videoSource.onFrame({ width: CAPTURE_WIDTH, height: CAPTURE_HEIGHT, data });
         }
     });
     proc.stderr.on('data', (d) => log('ffmpeg:', d.toString().trim()));
     proc.on('error', (err) => log('ffmpeg error:', err.message));
+    proc.on('exit', (code, signal) => {
+        if (signal) {
+            log('ffmpeg stopped (signal:', signal + ')');
+            return;
+        }
+        if (code !== null && code !== 0) {
+            log('ffmpeg exited with error code', code);
+            log('On Windows, run: ffmpeg -f dshow -list_devices true -i dummy');
+            log('Then set: $env:CAMERA_DSHOW_NAME = "Exact Camera Name"');
+            process.exit(code);
+        }
+    });
     return { stream, proc };
+}
+
+function normalizeActionEntry(item) {
+    if (!item || typeof item !== 'object') return null;
+    const action = item.action || item;
+    const type = action?.type;
+    const rawValue = action?.value ?? action?.values ?? item.value ?? item.values;
+    const value = Array.isArray(rawValue) ? rawValue : rawValue != null ? [rawValue] : [];
+    const timeout = Number(item.timeout) > 0 ? Number(item.timeout) : 0;
+    const interval = Number(item.interval) > 0 ? Number(item.interval) : 0;
+    if (!type || !value.length) return null;
+    return { type: String(type).toUpperCase(), value, timeout, interval, raw: item };
+}
+
+function createPerKeyThrottle() {
+    const lastRuns = new Map();
+    return (key, minMs) => {
+        if (!minMs) return true;
+        const now = Date.now();
+        const last = lastRuns.get(key) ?? 0;
+        if (now - last < minMs) return false;
+        lastRuns.set(key, now);
+        return true;
+    };
+}
+
+function filterLocalDetections(detections) {
+    if (!Array.isArray(detections)) return [];
+    const lr = CONFIG.localRecognition || {};
+    let out = detections;
+    if (Array.isArray(lr.classes) && lr.classes.length) {
+        const classes = new Set(lr.classes.map((name) => String(name).toLowerCase()));
+        out = out.filter((item) => classes.has(String(item.class || item.name || item.categoryName || '').toLowerCase()));
+    }
+    const maxResults = Number(lr.maxResults) > 0 ? Number(lr.maxResults) : 10;
+    return out
+        .slice()
+        .sort((a, b) => (b.confidence ?? 0) - (a.confidence ?? 0))
+        .slice(0, maxResults);
+}
+
+function buildLocalRecognitionConfig() {
+    return {
+        ...CONFIG,
+        // Node recognizers live under lib/cloud and read serverRecognition options.
+        serverRecognition: CONFIG.localRecognition || {},
+    };
+}
+
+function getActionRequest(action, recognitionResults) {
+    const type = action?.type;
+    const value = Array.isArray(action?.value) ? action.value : [];
+    const idOrUrl = value[0];
+    const base = (process.env.V4_URL || CONFIG.signalingUrl || 'http://localhost:3001').replace(/\\/$/, '');
+    const payload = { streamId: process.argv[2]?.trim() || null, recognitionResults };
+
+    if (type === 'DB' && idOrUrl != null) {
+        return { url: base + '/api/db/' + encodeURIComponent(String(idOrUrl)), body: payload };
+    }
+    if (type === 'NOTIFY' && idOrUrl != null) {
+        return { url: base + '/api/notify/' + encodeURIComponent(String(idOrUrl)), body: payload };
+    }
+    if (type === 'API' && idOrUrl != null) {
+        return { url: String(idOrUrl), body: payload };
+    }
+    return { url: '', body: payload };
+}
+
+async function runActionEntries(entries, customModule, recognitionResults, throttle, label) {
+    for (const entry of entries) {
+        const minMs = entry.interval || entry.timeout || 0;
+        if (entry.type === 'CUSTOM') {
+            if (!customModule) continue;
+            for (const name of entry.value) {
+                if (!throttle(label + ':custom:' + name, minMs)) continue;
+                const fn = customModule[name];
+                if (typeof fn !== 'function') {
+                    log(label, 'custom action not found:', name);
+                    continue;
+                }
+                try { await Promise.resolve(fn(recognitionResults, entry.raw)); }
+                catch (err) { log(label, 'custom action failed:', name, err?.message || err); }
+            }
+            continue;
+        }
+
+        const key = label + ':' + entry.type + ':' + entry.value.join(',');
+        if (!throttle(key, minMs)) continue;
+        const { url, body } = getActionRequest({ type: entry.type, value: entry.value }, recognitionResults);
+        if (!url) {
+            log(label, 'unknown action type:', entry.type);
+            continue;
+        }
+        try {
+            log(label, 'requesting:', url);
+            await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body),
+            });
+        } catch (err) {
+            log(label, 'request failed:', err?.message || err);
+        }
+    }
+}
+
+function startLocalActionLoops() {
+    const timers = [];
+    const throttle = createPerKeyThrottle();
+    const recognitionActions = (Array.isArray(CONFIG.localRecognitionActions) ? CONFIG.localRecognitionActions : [])
+        .map(normalizeActionEntry)
+        .filter(Boolean);
+    const regularActions = (Array.isArray(CONFIG.localRegularActionFunctions) ? CONFIG.localRegularActionFunctions : [])
+        .map(normalizeActionEntry)
+        .filter(Boolean);
+
+    for (const entry of regularActions) {
+        const intervalMs = Math.max(50, entry.interval || entry.timeout || 1000);
+        const id = setInterval(() => {
+            const payload = latestRecognitionResults.length ? latestRecognitionResults : [{}];
+            void runActionEntries([entry], localRegularActionFunctions, payload, throttle, 'localRegularActionFunctions');
+        }, intervalMs);
+        timers.push(id);
+    }
+
+    let recognitionBusy = false;
+    if (CONFIG.localRecognition && localRecognize && i420FrameToJpegDataUrl) {
+        const intervalMs = Math.max(50, Number(CONFIG.localRecognition.interval) || 1000);
+        const id = setInterval(async () => {
+            if (recognitionBusy || !latestFrame) return;
+            recognitionBusy = true;
+            try {
+                const captureSize = CONFIG.localRecognition.maxCaptureSize || CONFIG.localRecognition.inputSize || 640;
+                const { dataUrl } = await i420FrameToJpegDataUrl(latestFrame, i420ToRgba, {
+                    maxWidth: captureSize,
+                    maxHeight: captureSize,
+                    jpegQuality: 85,
+                });
+                const raw = await localRecognize(dataUrl, buildLocalRecognitionConfig());
+                latestRecognitionResults = filterLocalDetections(raw);
+                if (latestRecognitionResults.length && recognitionActions.length) {
+                    await runActionEntries(
+                        recognitionActions,
+                        localRecognitionActions,
+                        latestRecognitionResults,
+                        throttle,
+                        'localRecognitionActions'
+                    );
+                }
+            } catch (err) {
+                log('local recognition failed:', err?.message || err);
+            } finally {
+                recognitionBusy = false;
+            }
+        }, intervalMs);
+        timers.push(id);
+    }
+
+    return {
+        stop() {
+            for (const id of timers) clearInterval(id);
+        },
+    };
 }
 
 export async function main() {
@@ -604,6 +834,7 @@ export async function main() {
 ${startupInvocation}
 
     const { stream, proc } = startFfmpegPipeline();
+    const localActionsHandle = startLocalActionLoops();
     const publisher = await createWebRtcPublisherNode({
         streamId,
         mediaStream: stream,
@@ -614,6 +845,7 @@ ${startupInvocation}
 
     process.once('SIGINT', async () => {
         await publisher.stop().catch(() => { /* ignore */ });
+        try { localActionsHandle.stop(); } catch { /* ignore */ }
         try { proc.kill('SIGTERM'); } catch { /* ignore */ }
         process.exit(0);
     });
@@ -630,11 +862,20 @@ main().catch((err) => { console.error(err); process.exit(1); });
  *   - ffmpeg-static — ditto (FFmpeg-based camera capture)
  *   - socket.io-client — always (both edge-main.js and server-pipeline.js dynamic-import it)
  */
-export function nodePackageSnippetContents({ configId, hasNodeEdge, hasServerPipeline } = {}) {
+export function nodePackageSnippetContents({ configId, hasNodeEdge, hasServerPipeline, hasLocalRecognition, localRecognitionModel } = {}) {
     const dependencies = { 'socket.io-client': '^4.8.3' };
     if (hasNodeEdge) {
         dependencies['@roamhq/wrtc'] = '^0.10.0';
         dependencies['ffmpeg-static'] = '^5.2.0';
+    }
+    if (hasNodeEdge && hasLocalRecognition) {
+        dependencies.sharp = '^0.33.5';
+        const model = String(localRecognitionModel || 'YOLO').toUpperCase();
+        if (model === 'MEDIAPIPE') {
+            dependencies.puppeteer = '^23.0.0';
+        } else {
+            dependencies['onnxruntime-node'] = '^1.20.0';
+        }
     }
     const scripts = {};
     if (hasNodeEdge) scripts.edge = 'node edge-main.js';
