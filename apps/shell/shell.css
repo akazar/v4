@@ -1,0 +1,200 @@
+/**
+ * Shared app chrome: top bar + left nav (same destinations as landing "All features").
+ * Loaded after ui-kit in app pages; uses --bg, --surface, --text from ui-kit when present.
+ */
+
+:root {
+  --v4-shell-chrome-h: 48px;
+  --v4-shell-nav-w: 280px;
+  --v4-shell-ease: 0.2s ease;
+}
+
+/* Offset page content so it sits below the fixed header */
+body.v4-app-shell {
+  padding-top: var(--v4-shell-chrome-h);
+  transition: padding-left var(--v4-shell-ease);
+}
+
+body.v4-app-shell.v4-app-shell--nav-open {
+  padding-left: var(--v4-shell-nav-w);
+}
+
+@media (max-width: 720px) {
+  body.v4-app-shell.v4-app-shell--nav-open {
+    padding-left: 0;
+  }
+}
+
+#v4-app-chrome {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--v4-shell-chrome-h);
+  z-index: 10001;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0 0.5rem 0 0.35rem;
+  background: var(--surface, #141414);
+  border-bottom: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.08));
+  box-shadow: var(--shadow-block-sm, 0 1px 0 rgba(0, 0, 0, 0.35));
+}
+
+#v4-app-chrome .v4-shell-menu-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: none;
+  background: transparent;
+  color: var(--text, #e8e8e8);
+  border-radius: var(--radius, 0);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+#v4-app-chrome .v4-shell-menu-btn:hover,
+#v4-app-chrome .v4-shell-menu-btn:focus-visible {
+  background: var(--surface-alt, #1a1a1a);
+  outline: none;
+  box-shadow: var(--uk-focus-ring, 0 0 0 2px rgba(120, 120, 120, 0.2));
+}
+
+#v4-app-chrome .v4-shell-menu-btn svg {
+  width: 22px;
+  height: 22px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+#v4-app-chrome .v4-shell-home-link {
+  color: var(--text, #e8e8e8);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+  letter-spacing: 0.02em;
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--radius, 0);
+}
+
+#v4-app-chrome .v4-shell-home-link:hover,
+#v4-app-chrome .v4-shell-home-link:focus-visible {
+  color: var(--text-muted, #888);
+  outline: none;
+  box-shadow: var(--uk-focus-ring, 0 0 0 2px rgba(120, 120, 120, 0.2));
+}
+
+#v4-app-nav {
+  position: fixed;
+  top: var(--v4-shell-chrome-h);
+  left: 0;
+  width: var(--v4-shell-nav-w);
+  max-width: 92vw;
+  height: calc(100vh - var(--v4-shell-chrome-h));
+  z-index: 10000;
+  background: var(--surface, #141414);
+  border-right: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.08));
+  overflow-y: auto;
+  transform: translateX(-100%);
+  transition: transform var(--v4-shell-ease);
+  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.35);
+  padding: 0.5rem 0 1rem;
+}
+
+body.v4-app-shell--nav-open #v4-app-nav {
+  transform: translateX(0);
+}
+
+#v4-app-nav .v4-app-nav-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+#v4-app-nav .v4-app-nav-list a {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.55rem 0.9rem;
+  color: var(--text, #e8e8e8);
+  text-decoration: none;
+  font-size: 0.9rem;
+  line-height: 1.3;
+  border-left: 3px solid transparent;
+}
+
+#v4-app-nav .v4-app-nav-list a:hover,
+#v4-app-nav .v4-app-nav-list a:focus-visible {
+  background: var(--surface-alt, #1a1a1a);
+  outline: none;
+  box-shadow: none;
+  border-left-color: var(--accent, #6b6b6b);
+}
+
+#v4-app-nav .v4-app-nav-list a.is-active {
+  background: var(--surface-alt, #1a1a1a);
+  border-left-color: var(--accent, #6b6b6b);
+  font-weight: 600;
+}
+
+#v4-app-nav .v4-app-nav-list .v4-app-nav-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  color: var(--text-muted, #888);
+}
+
+#v4-app-nav .v4-app-nav-list a.is-active .v4-app-nav-icon {
+  color: var(--text, #e8e8e8);
+}
+
+#v4-app-nav .v4-app-nav-list .v4-app-nav-icon svg {
+  width: 20px;
+  height: 20px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+#v4-app-scrim {
+  position: fixed;
+  inset: var(--v4-shell-chrome-h) 0 0 0;
+  z-index: 9999;
+  background: rgba(0, 0, 0, 0.45);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--v4-shell-ease);
+}
+
+body.v4-app-shell--nav-open #v4-app-scrim {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+@media (min-width: 721px) {
+  #v4-app-scrim {
+    display: none !important;
+  }
+}
+
+/* No full-page dimmer on narrow screens so a default-open drawer does not block the page (use hamburger / Esc). */
+@media (max-width: 720px) {
+  #v4-app-scrim {
+    display: none !important;
+  }
+}
+
+/* Landing (EN/UA) language switcher stays clickable above the chrome */
+body.v4-app-shell .lang-switcher {
+  z-index: 10002;
+}
