@@ -1,6 +1,9 @@
+import { DEFAULT_ICE_SERVERS } from '/lib/ice-servers.js';
+
 /**
  * Peer-to-peer WebRTC signaling and PeerConnection setup for the dashboard viewer.
  * @param {import('socket.io-client').Socket} socket
+ * @param {Array<RTCIceServer>} [params.iceServers]
  */
 export function registerP2pWebRtcEvents({
   socket,
@@ -10,6 +13,7 @@ export function registerP2pWebRtcEvents({
   ensureStreamCard,
   setStreamStatus,
   onDashboardRemoteStream,
+  iceServers = DEFAULT_ICE_SERVERS,
 }) {
   function createPeerConnection(streamId, streamerSocketId) {
     const state = ensureStreamCard(streamId);
@@ -18,9 +22,7 @@ export function registerP2pWebRtcEvents({
       state.pc.close();
     }
 
-    const pc = new RTCPeerConnection({
-      iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
-    });
+    const pc = new RTCPeerConnection({ iceServers });
 
     pc.onicecandidate = (event) => {
       if (event.candidate) {

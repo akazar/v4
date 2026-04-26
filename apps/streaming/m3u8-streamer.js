@@ -1,3 +1,6 @@
+import { fetchIceServersForPage } from '/lib/ice-servers.js';
+
+const iceServers = await fetchIceServersForPage();
 const socket = io();
 
 const params = new URLSearchParams(window.location.search);
@@ -41,9 +44,7 @@ function setStatus(text) {
 }
 
 function createPeerConnection(viewerSocketId) {
-  const pc = new RTCPeerConnection({
-    iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
-  });
+  const pc = new RTCPeerConnection({ iceServers });
 
   pc.onicecandidate = (event) => {
     if (event.candidate) {
@@ -94,9 +95,7 @@ function closeSfuPublisher() {
 async function publishSfuOffer() {
   if (!localStream || !isSfu) return;
   closeSfuPublisher();
-  sfuPublisherPc = new RTCPeerConnection({
-    iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
-  });
+  sfuPublisherPc = new RTCPeerConnection({ iceServers });
   sfuPublisherPc.onicecandidate = (event) => {
     if (event.candidate) {
       socket.emit("sfu-publisher-ice", {

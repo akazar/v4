@@ -51,6 +51,7 @@
  *
  * --- Environment reference ---
  *    STREAMING_SERVER_URL, STREAM_MODE, FFMPEG_PATH, M3U8_URL, SOURCE_URL, M3U8_URL_FILE, FFMPEG_HLS_REALTIME
+ *    ICE_SERVERS — optional JSON string (array of RTCIceServer objects); else public STUN
  *
  * Dependencies: @roamhq/wrtc, socket.io-client, FFmpeg.
  */
@@ -60,6 +61,8 @@ import { readFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import process from "node:process";
 import { io } from "socket.io-client";
+
+import { getIceServersForNode } from "../../../lib/ice-servers.js";
 
 const require = createRequire(import.meta.url);
 const wrtc = require("@roamhq/wrtc");
@@ -72,7 +75,7 @@ const {
 } = wrtc;
 const { RTCVideoSource } = nonstandard;
 
-const ICE_SERVERS = [{ urls: "stun:stun.l.google.com:19302" }];
+const ICE_SERVERS = getIceServersForNode();
 
 const streamIdArg = process.argv[2]?.trim();
 if (!streamIdArg) {

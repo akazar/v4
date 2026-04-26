@@ -1,6 +1,9 @@
+import { DEFAULT_ICE_SERVERS } from '/lib/ice-servers.js';
+
 /**
  * WebRTC server (SFU) streaming and server-side recognition events for the dashboard viewer.
  * @param {import('socket.io-client').Socket} socket
+ * @param {Array<RTCIceServer>} [params.iceServers]
  */
 export function registerServerWebRtcEvents({
   socket,
@@ -12,6 +15,7 @@ export function registerServerWebRtcEvents({
   ensureStreamCard,
   setStreamStatus,
   onDashboardRemoteStream,
+  iceServers = DEFAULT_ICE_SERVERS,
 }) {
   socket.on("sfu-server-recognition", (payload) => {
     const { streamId: sid, detections, videoWidth, videoHeight } = payload || {};
@@ -61,9 +65,7 @@ export function registerServerWebRtcEvents({
       state.sfuPc = null;
     }
 
-    const pc = new RTCPeerConnection({
-      iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
-    });
+    const pc = new RTCPeerConnection({ iceServers });
 
     pc.onicecandidate = (event) => {
       if (event.candidate) {

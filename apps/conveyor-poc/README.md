@@ -67,3 +67,7 @@ so bundles always reflect the current lib code.
   1. Ensure the config has `serverRecognition` + optional CUSTOM server actions.
   2. From the v4 repo root: `node server-pipeline.js <configId> demo` — action logs should
      flow for each detection event.
+
+## ICE (STUN / TURN)
+
+On the v4 server, set the environment variable **`ICE_SERVERS`** to a **JSON string** of an `iceServers` array (the same shape as the `iceServers` option of `RTCPeerConnection`), e.g. Metered, Twilio, or self-hosted TURN. The server exposes `GET /api/ice` (CORS enabled) with that list. The generated web `edge-main.js` fetches ICE from `CONFIG.signalingUrl` (your v4 origin) at runtime so TURN credentials are not baked into the repo. Node entrypoints (`node streamers`, `edge-main.js` for non-web) read **`ICE_SERVERS`** from the environment on the process that runs the publisher.

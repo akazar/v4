@@ -1,5 +1,7 @@
 import { createWebRtcPublisher } from '/lib/edge/webrtc-publisher.js';
+import { fetchIceServersForPage } from '/lib/ice-servers.js';
 
+const iceServers = await fetchIceServersForPage();
 const socket = io();
 
 const params = new URLSearchParams(window.location.search);
@@ -49,6 +51,7 @@ function startPublisher() {
     mediaStream: localStream,
     streamMode: isSfu ? "sfu" : "p2p",
     socket,
+    iceServers,
     onStatus: setStatus,
   });
 }

@@ -12,6 +12,8 @@ import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
+import { getIceServersForNode } from '../lib/ice-servers.js';
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -20,6 +22,20 @@ const __dirname = path.dirname(__filename);
  * @param {Express} app - Express application instance
  */
 export function setupFrontendHosting(app) {
+  // WebRTC ICE (STUN/TURN) for browsers and docs — from ICE_SERVERS env (JSON array string).
+  app.get('/api/ice', (req, res) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+    res.setHeader('Access-Control-Max-Age', '3600');
+    res.json({ iceServers: getIceServersForNode() });
+  });
+  app.options('/api/ice', (req, res) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    res.status(204).end();
+  });
+
   // Path definitions
   const v4Root = path.join(__dirname, '..');
   const appsPath = path.join(__dirname, '..', 'apps');

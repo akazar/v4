@@ -1,5 +1,7 @@
 import { captureAndRecognize } from './process.js';
+import { fetchIceServersForPage } from '../../lib/ice-servers.js';
 
+const iceServers = await fetchIceServersForPage();
 const socket = io();
 
 const params = new URLSearchParams(window.location.search);
@@ -94,11 +96,7 @@ function createPeerConnection(streamId, streamerSocketId) {
     state.pc.close();
   }
 
-  const pc = new RTCPeerConnection({
-    iceServers: [
-      { urls: "stun:stun.l.google.com:19302" }
-    ]
-  });
+  const pc = new RTCPeerConnection({ iceServers });
 
   pc.onicecandidate = (event) => {
     if (event.candidate) {

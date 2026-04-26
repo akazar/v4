@@ -31,6 +31,8 @@ import { createRequire } from "node:module";
 import sharp from "sharp";
 import { io } from "socket.io-client";
 
+import { getIceServersForNode } from "../../../lib/ice-servers.js";
+
 const require = createRequire(import.meta.url);
 const wrtc = require("@roamhq/wrtc");
 const {
@@ -42,7 +44,7 @@ const {
 } = wrtc;
 const { RTCVideoSource, rgbaToI420 } = nonstandard;
 
-const ICE_SERVERS = [{ urls: "stun:stun.l.google.com:19302" }];
+const ICE_SERVERS = getIceServersForNode();
 const CAPTURE_WIDTH = 640;
 const CAPTURE_HEIGHT = 360;
 const I420_FRAME_BYTES = (CAPTURE_WIDTH * CAPTURE_HEIGHT * 3) >> 1;

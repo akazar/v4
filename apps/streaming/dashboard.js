@@ -6,8 +6,11 @@ import {
   configHasServerRecognition
 } from './process.js';
 import { createScheduledActionsManager } from '/lib/scheduled-actions-manager.js';
+import { fetchIceServersForPage } from '/lib/ice-servers.js';
 import { registerP2pWebRtcEvents } from './dashboard-events/p2p-webrtc.js';
 import { registerServerWebRtcEvents } from './dashboard-events/server-webrtc.js';
+
+const iceServers = await fetchIceServersForPage();
 
 // Socket.IO client for signaling, SFU negotiation, and server recognition events.
 const socket = io();
@@ -449,6 +452,7 @@ registerP2pWebRtcEvents({
   ensureStreamCard,
   setStreamStatus,
   onDashboardRemoteStream,
+  iceServers,
 });
 
 registerServerWebRtcEvents({
@@ -461,6 +465,7 @@ registerServerWebRtcEvents({
   ensureStreamCard,
   setStreamStatus,
   onDashboardRemoteStream,
+  iceServers,
 });
 
 // Server: register this tab as a viewer for the requested stream ids (P2P signaling book-keeping).

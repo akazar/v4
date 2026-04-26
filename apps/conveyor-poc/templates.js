@@ -196,6 +196,7 @@ export function edgeMainWebContents(config, { assets, configId }) {
 import { startRecognitionPipeline } from './lib/edge/recognition-pipeline.js';
 import { getCameraStream, attachCameraStreamToVideo, waitForVideoAndPlay } from './lib/edge/capture.js';
 import { createWebRtcPublisher } from './lib/edge/webrtc-publisher.js';
+import { fetchIceServersFromBaseUrl, DEFAULT_ICE_SERVERS } from './lib/ice-servers.js';
 import { initSdk } from './sdk.js';
 import CONFIG from './config.js';
 ${customImports.join('\n')}
@@ -279,11 +280,19 @@ ${startupInvocation}
         // is missing — never fall back to \`location.origin\` because when the bundle is
         // hosted off-v4, the page origin is the static-file host, not the SFU server.
         const signalingUrl = CONFIG.signalingUrl || 'http://localhost:3001';
+        // ICE (STUN/TURN) from the v4 host — GET {signalingUrl}/api/ice (CORS) so TURN creds are not in the repo.
+        let iceServers = DEFAULT_ICE_SERVERS;
+        try {
+            iceServers = await fetchIceServersFromBaseUrl(signalingUrl);
+        } catch (e) {
+            console.warn('[edge-main] fetch ICE from signaling host failed, using default STUN', e);
+        }
         createWebRtcPublisher({
             streamId,
             mediaStream,
             streamMode: 'sfu',
             serverUrl: signalingUrl,
+            iceServers,
         });
     }
 
