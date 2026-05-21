@@ -122,77 +122,6 @@
             </section>
 
             <section class="modules">
-                <div class="module-card module-card-demo">
-                    <div class="module-header">
-                        <div class="module-header-title">
-                            <h2>Production Demo</h2>
-                            <span class="demo-badge">Flexible configuration</span>
-                        </div>
-                        <a href="/factory/web" class="cta-button cta-button-primary">Launch Demo</a>
-                    </div>
-                    <div class="module-content">
-                        <h3>Flexible Functionality Configuration — Web Version</h3>
-                        <p>
-                            A single-page production demo that runs the full vision pipeline from your browser using
-                            <code>config-factory.js</code>. Switch between YOLO and MediaPipe, control recognition and
-                            regular actions, and toggle the UI—all driven by one configuration file.
-                        </p>
-                        <h4>Capabilities:</h4>
-                        <ul>
-                            <li><strong>Config-driven:</strong> Behavior is defined by <code>config-factory.js</code> (classes, thresholds, model, actions)</li>
-                            <li><strong>Dual model:</strong> Choose YOLO or MediaPipe for local object detection</li>
-                            <li><strong>Camera stream:</strong> Live camera feed with bounding boxes and configurable recognition interval</li>
-                            <li><strong>Local actions:</strong> Recognition action functions and regular (periodic) action functions with throttling</li>
-                            <li><strong>Optional UI:</strong> Show/hide control buttons via <code>config.ui</code>; headless mode for automation</li>
-                        </ul>
-                        <h4>Use Cases:</h4>
-                        <ul>
-                            <li>Try the platform with the reference configuration</li>
-                            <li>Validate config changes before deploying to other modules</li>
-                            <li>Demo or testing of the flexible configuration web version</li>
-                        </ul>
-                        <p class="demo-note">Use the <a href="/config-creator">Config Generator</a> or the <a href="/config-creator-adv">advanced generator</a> to build a custom <code>config.js</code>, then replace <code>config-factory.js</code> or point the demo to your config for a tailored experience. Use the <a href="/config-manager">Config Manager</a> to list, view, and delete configs in <code>config/public</code>.</p>
-                    </div>
-                </div>
-                                
-                <div class="module-card">
-                    <div class="module-header">
-                        <h2>Multi-Stream WebRTC</h2>
-                        <a href="/streaming" class="cta-button">Launch Streaming</a>
-                    </div>
-                    <div class="module-content">
-                        <h3>WebRTC Streaming with Capture &amp; Recognition</h3>
-                        <p>
-                            The Streaming module lets you create multiple WebRTC video streams from device cameras or
-                            video URLs, view them together on a single page, and capture frames for object recognition
-                            using YOLO or MediaPipe — all in the browser via peer-to-peer connections.
-                        </p>
-                        <h4>Capabilities:</h4>
-                        <ul>
-                            <li><strong>Camera Streams:</strong> Open streamer pages that broadcast your camera feed via WebRTC</li>
-                            <li><strong>URL Streams:</strong> Stream from a video file URL (MP4, WebM) instead of a camera</li>
-                            <li><strong>Multi-Viewer:</strong> Watch multiple streams side by side on a single viewer page</li>
-                            <li><strong>Capture &amp; Recognize:</strong> Capture a frame from any live stream and run YOLO or MediaPipe detection with bounding boxes</li>
-                            <li><strong>Model Selection:</strong> Switch between YOLO and MediaPipe for captured frame recognition</li>
-                            <li><strong>QR Codes:</strong> Generate QR codes for streamer page URLs for quick mobile access</li>
-                        </ul>
-                        <h4>Use Cases:</h4>
-                        <ul>
-                            <li>Multi-camera monitoring with on-demand object detection</li>
-                            <li>Streaming a video file and analyzing specific frames</li>
-                            <li>Remote camera access from mobile devices via QR codes</li>
-                            <li>Comparing recognition results across different camera angles</li>
-                        </ul>
-                        <h4>Workflow:</h4>
-                        <ol>
-                            <li>Enter a stream ID (and optionally a video URL) on the home page, then open the streamer</li>
-                            <li>Start the camera or video on the streamer page</li>
-                            <li>Select active streams and open the viewer page</li>
-                            <li>Click Capture on any stream, choose a model, and view detection results</li>
-                        </ol>
-                    </div>
-                </div>
-
                 <div class="module-card">
                     <div class="module-header">
                         <h2>Config Manager</h2>
@@ -219,7 +148,21 @@
                         </ul>
                     </div>
                 </div>
-                
+
+                <div class="module-card">
+                    <div class="module-header">
+                        <h2>Config Generator (Advanced)</h2>
+                        <a href="/config-creator-adv" class="cta-button">Open Advanced Generator</a>
+                    </div>
+                    <div class="module-content">
+                        <h3>Extended workspace</h3>
+                        <p>
+                            The same <code>config.js</code> builder with a wider layout: filter form sections, live configuration preview,
+                            edge platform type, and pinned generate actions. Download and server save work like the standard generator.
+                        </p>
+                    </div>
+                </div>
+
                 <div class="module-card">
                     <div class="module-header">
                         <h2>Config Generator</h2>
@@ -246,98 +189,6 @@
                             <li>Experimenting with different detection classes and thresholds</li>
                             <li>Generating configs for different environments (dev, staging, production)</li>
                         </ul>
-                    </div>
-                </div>
-
-                <div class="module-card">
-                    <div class="module-header">
-                        <h2>Config Generator (Advanced)</h2>
-                        <a href="/config-creator-adv" class="cta-button">Open Advanced Generator</a>
-                    </div>
-                    <div class="module-content">
-                        <h3>Extended workspace</h3>
-                        <p>
-                            The same <code>config.js</code> builder with a wider layout: filter form sections, live configuration preview,
-                            edge platform type, and pinned generate actions. Download and server save work like the standard generator.
-                        </p>
-                    </div>
-                </div>
-
-                <div class="module-card">
-                    <div class="module-header">
-                        <h2>Camera Stream</h2>
-                        <a href="/camera-stream" class="cta-button">Launch Camera Stream</a>
-                    </div>
-                    <div class="module-content">
-                        <h3>Real-Time Object Recognition</h3>
-                        <p>
-                            The Camera Stream module provides live object detection from your device's camera feed. 
-                            It continuously processes video frames and displays detected objects with bounding boxes 
-                            overlaid on the video stream.
-                        </p>
-                        <h4>Capabilities:</h4>
-                        <ul>
-                            <li><strong>Live Camera Feed:</strong> Access and display your device's camera stream as a background</li>
-                            <li><strong>Continuous Recognition:</strong> Automatically detect objects at configurable intervals (default: 500ms)</li>
-                            <li><strong>Manual Recognition:</strong> Trigger recognition on-demand for specific frames</li>
-                            <li><strong>Real-time Bounding Boxes:</strong> Visual overlay showing detected objects with confidence scores</li>
-                            <li><strong>Recognition Actions:</strong> Execute custom functions when objects are detected</li>
-                            <li><strong>Regular Actions:</strong> Periodic actions that run independently of recognition cycles</li>
-                        </ul>
-                        <h4>Use Cases:</h4>
-                        <ul>
-                            <li>Security monitoring and surveillance</li>
-                            <li>People counting and tracking</li>
-                            <li>Real-time object presence detection</li>
-                            <li>Interactive applications requiring live visual feedback</li>
-                        </ul>
-                        <h4>Controls:</h4>
-                        <ul>
-                            <li><strong>Start Camera:</strong> Initialize and display the camera stream</li>
-                            <li><strong>Stop Camera:</strong> Stop the camera feed and release resources</li>
-                            <li><strong>Start Recognition:</strong> Begin continuous object detection</li>
-                            <li><strong>Stop Recognition:</strong> Pause detection while keeping camera active</li>
-                            <li><strong>Manual Recognition:</strong> Perform a single recognition pass on the current frame</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="module-card">
-                    <div class="module-header">
-                        <h2>Image Upload</h2>
-                        <a href="/image-upload" class="cta-button">Launch Image Upload</a>
-                    </div>
-                    <div class="module-content">
-                        <h3>Static Image Analysis</h3>
-                        <p>
-                            The Image Upload module allows you to analyze static images by uploading files from your 
-                            device or loading images from URLs. It performs object detection and displays the results 
-                            with bounding boxes, allowing you to download the annotated image.
-                        </p>
-                        <h4>Capabilities:</h4>
-                        <ul>
-                            <li><strong>File Upload:</strong> Select and process images from your local device (JPG, PNG formats)</li>
-                            <li><strong>URL Loading:</strong> Load images directly from web URLs for remote analysis</li>
-                            <li><strong>Single-Pass Recognition:</strong> Analyze images on-demand with manual trigger</li>
-                            <li><strong>Result Visualization:</strong> Display images with bounding boxes and confidence labels</li>
-                            <li><strong>Image Download:</strong> Save annotated images with detection results</li>
-                            <li><strong>Manual Recognition Actions:</strong> Execute custom functions based on detection results</li>
-                        </ul>
-                        <h4>Use Cases:</h4>
-                        <ul>
-                            <li>Batch image analysis and processing</li>
-                            <li>Content moderation and filtering</li>
-                            <li>Image annotation and labeling</li>
-                            <li>Quality control and object verification</li>
-                            <li>Research and data collection</li>
-                        </ul>
-                        <h4>Workflow:</h4>
-                        <ol>
-                            <li>Select an image file or enter an image URL</li>
-                            <li>Click "Recognize" to perform object detection</li>
-                            <li>View the results with bounding boxes overlaid</li>
-                            <li>Download the annotated image if needed</li>
-                        </ol>
                     </div>
                 </div>
 
@@ -408,30 +259,40 @@
 
                 <div class="module-card">
                     <div class="module-header">
-                        <h2>Compare</h2>
-                        <a href="/compare" class="cta-button">Launch Compare</a>
+                        <h2>Image Upload</h2>
+                        <a href="/image-upload" class="cta-button">Launch Image Upload</a>
                     </div>
                     <div class="module-content">
-                        <h3>Local vs Server Recognition &amp; Reasoning</h3>
+                        <h3>Static Image Analysis</h3>
                         <p>
-                            The Compare module lets you upload one image and run local object detection (YOLO or MediaPipe)
-                            alongside server-side recognition and server-side AI reasoning (ChatGPT or Gemini). View results
-                            side-by-side for the same image.
+                            The Image Upload module allows you to analyze static images by uploading files from your 
+                            device or loading images from URLs. It performs object detection and displays the results 
+                            with bounding boxes, allowing you to download the annotated image.
                         </p>
                         <h4>Capabilities:</h4>
                         <ul>
-                            <li><strong>Single Image:</strong> Upload one image; all panels use it</li>
-                            <li><strong>Local Recognition:</strong> Run YOLO or MediaPipe in the browser (left/right panels)</li>
-                            <li><strong>Server Recognition:</strong> Run detection via the server API and view bounding boxes</li>
-                            <li><strong>Server Reasoning:</strong> Send the image to ChatGPT or Gemini and view the text response</li>
-                            <li><strong>Side-by-Side:</strong> Compare local vs server detection and reasoning in one view</li>
+                            <li><strong>File Upload:</strong> Select and process images from your local device (JPG, PNG formats)</li>
+                            <li><strong>URL Loading:</strong> Load images directly from web URLs for remote analysis</li>
+                            <li><strong>Single-Pass Recognition:</strong> Analyze images on-demand with manual trigger</li>
+                            <li><strong>Result Visualization:</strong> Display images with bounding boxes and confidence labels</li>
+                            <li><strong>Image Download:</strong> Save annotated images with detection results</li>
+                            <li><strong>Manual Recognition Actions:</strong> Execute custom functions based on detection results</li>
                         </ul>
                         <h4>Use Cases:</h4>
                         <ul>
-                            <li>Compare local (YOLO/MediaPipe) vs server detection on the same image</li>
-                            <li>Run recognition and reasoning in one place without switching apps</li>
-                            <li>Evaluate model or API behavior with a single upload</li>
+                            <li>Batch image analysis and processing</li>
+                            <li>Content moderation and filtering</li>
+                            <li>Image annotation and labeling</li>
+                            <li>Quality control and object verification</li>
+                            <li>Research and data collection</li>
                         </ul>
+                        <h4>Workflow:</h4>
+                        <ol>
+                            <li>Select an image file or enter an image URL</li>
+                            <li>Click "Recognize" to perform object detection</li>
+                            <li>View the results with bounding boxes overlaid</li>
+                            <li>Download the annotated image if needed</li>
+                        </ol>
                     </div>
                 </div>
 
@@ -499,6 +360,146 @@
                         </ul>
                     </div>
                 </div>
+
+                <div class="module-card">
+                    <div class="module-header">
+                        <h2>Compare</h2>
+                        <a href="/compare" class="cta-button">Launch Compare</a>
+                    </div>
+                    <div class="module-content">
+                        <h3>Local vs Server Recognition &amp; Reasoning</h3>
+                        <p>
+                            The Compare module lets you upload one image and run local object detection (YOLO or MediaPipe)
+                            alongside server-side recognition and server-side AI reasoning (ChatGPT or Gemini). View results
+                            side-by-side for the same image.
+                        </p>
+                        <h4>Capabilities:</h4>
+                        <ul>
+                            <li><strong>Single Image:</strong> Upload one image; all panels use it</li>
+                            <li><strong>Local Recognition:</strong> Run YOLO or MediaPipe in the browser (left/right panels)</li>
+                            <li><strong>Server Recognition:</strong> Run detection via the server API and view bounding boxes</li>
+                            <li><strong>Server Reasoning:</strong> Send the image to ChatGPT or Gemini and view the text response</li>
+                            <li><strong>Side-by-Side:</strong> Compare local vs server detection and reasoning in one view</li>
+                        </ul>
+                        <h4>Use Cases:</h4>
+                        <ul>
+                            <li>Compare local (YOLO/MediaPipe) vs server detection on the same image</li>
+                            <li>Run recognition and reasoning in one place without switching apps</li>
+                            <li>Evaluate model or API behavior with a single upload</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="module-card module-card-demo">
+                    <div class="module-header">
+                        <div class="module-header-title">
+                            <h2>Production Demo</h2>
+                            <span class="demo-badge">Flexible configuration</span>
+                        </div>
+                        <a href="/factory/web" class="cta-button cta-button-primary">Launch Demo</a>
+                    </div>
+                    <div class="module-content">
+                        <h3>Flexible Functionality Configuration — Web Version</h3>
+                        <p>
+                            A single-page production demo that runs the full vision pipeline from your browser using
+                            <code>config-factory.js</code>. Switch between YOLO and MediaPipe, control recognition and
+                            regular actions, and toggle the UI—all driven by one configuration file.
+                        </p>
+                        <h4>Capabilities:</h4>
+                        <ul>
+                            <li><strong>Config-driven:</strong> Behavior is defined by <code>config-factory.js</code> (classes, thresholds, model, actions)</li>
+                            <li><strong>Dual model:</strong> Choose YOLO or MediaPipe for local object detection</li>
+                            <li><strong>Camera stream:</strong> Live camera feed with bounding boxes and configurable recognition interval</li>
+                            <li><strong>Local actions:</strong> Recognition action functions and regular (periodic) action functions with throttling</li>
+                            <li><strong>Optional UI:</strong> Show/hide control buttons via <code>config.ui</code>; headless mode for automation</li>
+                        </ul>
+                        <h4>Use Cases:</h4>
+                        <ul>
+                            <li>Try the platform with the reference configuration</li>
+                            <li>Validate config changes before deploying to other modules</li>
+                            <li>Demo or testing of the flexible configuration web version</li>
+                        </ul>
+                        <p class="demo-note">Use the <a href="/config-creator">Config Generator</a> or the <a href="/config-creator-adv">advanced generator</a> to build a custom <code>config.js</code>, then replace <code>config-factory.js</code> or point the demo to your config for a tailored experience. Use the <a href="/config-manager">Config Manager</a> to list, view, and delete configs in <code>config/public</code>.</p>
+                    </div>
+                </div>
+
+                <div class="module-card">
+                    <div class="module-header">
+                        <h2>Camera Stream</h2>
+                        <a href="/camera-stream" class="cta-button">Launch Camera Stream</a>
+                    </div>
+                    <div class="module-content">
+                        <h3>Real-Time Object Recognition</h3>
+                        <p>
+                            The Camera Stream module provides live object detection from your device's camera feed. 
+                            It continuously processes video frames and displays detected objects with bounding boxes 
+                            overlaid on the video stream.
+                        </p>
+                        <h4>Capabilities:</h4>
+                        <ul>
+                            <li><strong>Live Camera Feed:</strong> Access and display your device's camera stream as a background</li>
+                            <li><strong>Continuous Recognition:</strong> Automatically detect objects at configurable intervals (default: 500ms)</li>
+                            <li><strong>Manual Recognition:</strong> Trigger recognition on-demand for specific frames</li>
+                            <li><strong>Real-time Bounding Boxes:</strong> Visual overlay showing detected objects with confidence scores</li>
+                            <li><strong>Recognition Actions:</strong> Execute custom functions when objects are detected</li>
+                            <li><strong>Regular Actions:</strong> Periodic actions that run independently of recognition cycles</li>
+                        </ul>
+                        <h4>Use Cases:</h4>
+                        <ul>
+                            <li>Security monitoring and surveillance</li>
+                            <li>People counting and tracking</li>
+                            <li>Real-time object presence detection</li>
+                            <li>Interactive applications requiring live visual feedback</li>
+                        </ul>
+                        <h4>Controls:</h4>
+                        <ul>
+                            <li><strong>Start Camera:</strong> Initialize and display the camera stream</li>
+                            <li><strong>Stop Camera:</strong> Stop the camera feed and release resources</li>
+                            <li><strong>Start Recognition:</strong> Begin continuous object detection</li>
+                            <li><strong>Stop Recognition:</strong> Pause detection while keeping camera active</li>
+                            <li><strong>Manual Recognition:</strong> Perform a single recognition pass on the current frame</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="module-card">
+                    <div class="module-header">
+                        <h2>Multi-Stream WebRTC</h2>
+                        <a href="/streaming" class="cta-button">Launch Streaming</a>
+                    </div>
+                    <div class="module-content">
+                        <h3>WebRTC Streaming with Capture &amp; Recognition</h3>
+                        <p>
+                            The Streaming module lets you create multiple WebRTC video streams from device cameras or
+                            video URLs, view them together on a single page, and capture frames for object recognition
+                            using YOLO or MediaPipe — all in the browser via peer-to-peer connections.
+                        </p>
+                        <h4>Capabilities:</h4>
+                        <ul>
+                            <li><strong>Camera Streams:</strong> Open streamer pages that broadcast your camera feed via WebRTC</li>
+                            <li><strong>URL Streams:</strong> Stream from a video file URL (MP4, WebM) instead of a camera</li>
+                            <li><strong>Multi-Viewer:</strong> Watch multiple streams side by side on a single viewer page</li>
+                            <li><strong>Capture &amp; Recognize:</strong> Capture a frame from any live stream and run YOLO or MediaPipe detection with bounding boxes</li>
+                            <li><strong>Model Selection:</strong> Switch between YOLO and MediaPipe for captured frame recognition</li>
+                            <li><strong>QR Codes:</strong> Generate QR codes for streamer page URLs for quick mobile access</li>
+                        </ul>
+                        <h4>Use Cases:</h4>
+                        <ul>
+                            <li>Multi-camera monitoring with on-demand object detection</li>
+                            <li>Streaming a video file and analyzing specific frames</li>
+                            <li>Remote camera access from mobile devices via QR codes</li>
+                            <li>Comparing recognition results across different camera angles</li>
+                        </ul>
+                        <h4>Workflow:</h4>
+                        <ol>
+                            <li>Enter a stream ID (and optionally a video URL) on the home page, then open the streamer</li>
+                            <li>Start the camera or video on the streamer page</li>
+                            <li>Select active streams and open the viewer page</li>
+                            <li>Click Capture on any stream, choose a model, and view detection results</li>
+                        </ol>
+                    </div>
+                </div>
+            
             </section>
 
             <section class="technical">
@@ -529,6 +530,7 @@
         </footer>
     </div>
 
+    <script src="module-cards.js"></script>
     <script type="module" src="/shell/shell.js"></script>
 </body>
 </html>

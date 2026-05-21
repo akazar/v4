@@ -18,8 +18,8 @@ body {
 .config-creator-shell {
     display: flex;
     flex-direction: column;
-    height: 100vh;
-    max-height: 100vh;
+    height: 100%;
+    max-height: 100%;
     min-height: 0;
     width: 100%;
     box-sizing: border-box;
@@ -654,7 +654,6 @@ textarea.action-body:focus {
 .btn-preview {
     flex: 0 0 auto;
     padding: 0.85rem 1.25rem;
-    font-size: 1rem;
     font-weight: 600;
     color: var(--text);
     background: var(--bg);
@@ -675,7 +674,6 @@ textarea.action-body:focus {
 
 .btn-save {
     padding: 0.85rem 1.5rem;
-    font-size: 1rem;
     font-weight: 600;
     color: var(--text);
     background: var(--surface-alt);
@@ -697,7 +695,6 @@ textarea.action-body:focus {
 .btn-download {
     width: 100%;
     padding: 0.85rem 1.5rem;
-    font-size: 1rem;
     font-weight: 600;
     color: var(--text);
     background: var(--accent);

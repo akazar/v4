@@ -18,8 +18,8 @@ body {
 .config-creator-shell {
     display: flex;
     flex-direction: column;
-    height: 100vh;
-    max-height: 100vh;
+    height: 100%;
+    max-height: 100%;
     min-height: 0;
     width: 100%;
     box-sizing: border-box;
@@ -42,14 +42,28 @@ body {
     align-items: stretch;
 }
 
+.config-form-column {
+    display: flex;
+    flex-direction: column;
+    flex: 0 0 50%;
+    width: 50%;
+    max-width: 50%;
+    min-width: 0;
+    min-height: 0;
+    box-sizing: border-box;
+    border-right: 1px solid var(--border);
+}
+
 .config-filter-panel {
-    flex: 0 0 10%;
-    width: 10%;
-    max-width: 10%;
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
     min-width: 0;
     box-sizing: border-box;
-    padding: 1rem 0.5rem 1rem 0.65rem;
-    border-right: 1px solid var(--border);
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--border);
     background: var(--surface);
     overflow-x: hidden;
     overflow-y: auto;
@@ -57,7 +71,8 @@ body {
 }
 
 .config-filter-heading {
-    margin: 0 0 0.65rem;
+    margin: 0;
+    flex-shrink: 0;
     font-size: 0.7rem;
     font-weight: 600;
     text-transform: uppercase;
@@ -70,20 +85,28 @@ body {
     margin: 0;
     padding: 0;
     display: flex;
-    flex-direction: column;
-    gap: 0.35rem;
+    flex: 1 1 auto;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+}
+
+.config-filter-list li {
+    display: flex;
 }
 
 .config-filter-btn {
     display: block;
-    width: 100%;
+    width: auto;
+    flex: 1 1 auto;
+    min-width: 5.5rem;
     margin: 0;
-    padding: 0.45rem 0.4rem;
+    padding: 0.5rem 0.65rem;
     font: inherit;
-    font-size: 0.72rem;
+    font-size: 0.8rem;
     font-weight: 500;
     line-height: 1.25;
-    text-align: left;
+    text-align: center;
     color: var(--text-muted);
     background: var(--surface-alt);
     border: 1px solid var(--border);
@@ -110,14 +133,13 @@ body {
 .config-panel {
     display: flex;
     flex-direction: column;
-    flex: 0 0 40%;
-    width: 40%;
-    max-width: 40%;
+    flex: 1 1 0;
+    width: 100%;
+    max-width: none;
     min-width: 0;
     min-height: 0;
     box-sizing: border-box;
     overflow: hidden;
-    border-right: 1px solid var(--border);
 }
 
 .config-panel-scroll {
@@ -300,10 +322,6 @@ body {
 
 .field {
     margin-bottom: 1rem;
-}
-
-.field:last-child {
-    margin-bottom: 0;
 }
 
 .field label {
@@ -671,7 +689,6 @@ textarea.action-body:focus {
 .btn-import {
     flex: 0 0 auto;
     padding: 0.85rem 1.25rem;
-    font-size: 1rem;
     font-weight: 600;
     color: var(--text);
     background: var(--bg);
@@ -694,7 +711,6 @@ textarea.action-body:focus {
 
 .btn-save {
     padding: 0.85rem 1.5rem;
-    font-size: 1rem;
     font-weight: 600;
     color: var(--text);
     background: var(--surface-alt);
@@ -716,7 +732,6 @@ textarea.action-body:focus {
 .btn-download {
     width: 100%;
     padding: 0.85rem 1.5rem;
-    font-size: 1rem;
     font-weight: 600;
     color: var(--text);
     background: var(--accent);
@@ -740,39 +755,20 @@ textarea.action-body:focus {
         flex-direction: column;
     }
 
-    .config-filter-panel {
+    .config-form-column {
         flex: 0 0 auto;
         width: 100%;
         max-width: none;
         border-right: none;
         border-bottom: 1px solid var(--border);
-        padding: 0.75rem 1rem;
     }
 
-    .config-filter-heading {
-        margin-bottom: 0.5rem;
-    }
-
-    .config-filter-list {
-        flex-direction: row;
+    .config-filter-panel {
         flex-wrap: wrap;
-        gap: 0.45rem;
-    }
-
-    .config-filter-btn {
-        width: auto;
-        flex: 1 1 auto;
-        min-width: 5.5rem;
-        text-align: center;
-        font-size: 0.8rem;
-        padding: 0.5rem 0.65rem;
     }
 
     .config-panel {
         flex: 1 1 0;
-        width: 100%;
-        max-width: none;
-        border-right: none;
         border-bottom: 1px solid var(--border);
     }
 

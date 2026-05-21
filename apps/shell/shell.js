@@ -59,21 +59,20 @@ const ICON = {
 
 const NAV = [
   { href: '/', name: 'Home', icon: ICON.home },
-  { href: '/factory/web', name: 'Production demo', icon: ICON.factory },
-  { href: '/streaming', name: 'Streaming', icon: ICON.streaming },
   { href: '/config-manager', name: 'Config manager', icon: ICON.configManager },
-  { href: '/config-creator', name: 'Config generator', icon: ICON.configCreator },
-  { href: '/config-creator-adv', name: 'Config generator (Advanced)', icon: ICON.configCreatorAdv },
+  { href: '/config-creator-adv', name: 'Config generator', icon: ICON.configCreatorAdv },
   { href: '/conveyor-poc', name: 'Conveyor POC', icon: ICON.conveyor },
-  { href: '/camera-stream', name: 'Camera stream', icon: ICON.camera },
-  { href: '/image-upload', name: 'Image upload', icon: ICON.imageUpload },
   { href: '/model-training/dashboard', name: 'Models dashboard', icon: ICON.modelDash },
-  { href: '/model-training', name: 'Model training', icon: ICON.modelTrain },
   { href: '/annotate', name: 'Image annotator', icon: ICON.annotate },
-  { href: '/compare', name: 'Compare models', icon: ICON.compare },
-  { href: '/server-detection', name: 'Server detection', icon: ICON.serverDet },
+  { href: '/model-training', name: 'Model training', icon: ICON.modelTrain },
+  { href: '/image-upload', name: 'Image recognition', icon: ICON.imageUpload },
+  { href: '/server-detection', name: 'Server recognition', icon: ICON.serverDet },
   { href: '/server-reasoning', name: 'Server reasoning', icon: ICON.serverReason },
+  { href: '/compare', name: 'Compare models', icon: ICON.compare },
   { href: '/documentation/', name: 'Documentation', icon: ICON.docs },
+  { href: '/factory/web', name: 'Production demo', icon: ICON.factory },
+  { href: '/camera-stream', name: 'Camera stream', icon: ICON.camera },
+  { href: '/streaming', name: 'Streaming', icon: ICON.streaming },
 ];
 
 function normalizePath(p) {

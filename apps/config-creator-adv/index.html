@@ -16,16 +16,17 @@
             <p class="subtitle">Create <code>config.js</code> for Vision v4 from your inputs (structure aligned with <code>config/public/config-full.js</code>)</p>
         </header>
         <div class="config-creator-main">
-            <nav class="config-filter-panel" id="configFilterPanel" aria-label="Filter form sections">
-                <p class="config-filter-heading">Show</p>
-                <ul class="config-filter-list">
-                    <li><button type="button" class="config-filter-btn is-active" data-filter="all" aria-pressed="true">All</button></li>
-                    <li><button type="button" class="config-filter-btn" data-filter="general" aria-pressed="false">General</button></li>
-                    <li><button type="button" class="config-filter-btn" data-filter="local" aria-pressed="false">Local</button></li>
-                    <li><button type="button" class="config-filter-btn" data-filter="server" aria-pressed="false">Server</button></li>
-                </ul>
-            </nav>
-            <div class="config-panel">
+            <div class="config-form-column">
+                <nav class="config-filter-panel" id="configFilterPanel" aria-label="Filter form sections">
+                    <p class="config-filter-heading">Show</p>
+                    <ul class="config-filter-list">
+                        <li><button type="button" class="config-filter-btn is-active" data-filter="all" aria-pressed="true">All</button></li>
+                        <li><button type="button" class="config-filter-btn" data-filter="general" aria-pressed="false">General</button></li>
+                        <li><button type="button" class="config-filter-btn" data-filter="local" aria-pressed="false">Local</button></li>
+                        <li><button type="button" class="config-filter-btn" data-filter="server" aria-pressed="false">Server</button></li>
+                    </ul>
+                </nav>
+                <div class="config-panel">
                 <div class="config-panel-scroll">
                     <div class="config-panel-inner">
                         <form id="configForm" class="form">
@@ -347,6 +348,7 @@
                     <button type="submit" form="configForm" class="btn-download">Generate &amp; Download bundle (.zip)</button>
                     <button type="button" class="btn-save" id="btnGenerateAndSave">Generate and Save</button>
                     <label class="also-download-toggle"><input type="checkbox" id="alsoDownloadLocally"> Also download bundle (.zip)</label>
+                </div>
                 </div>
             </div>
             <aside class="info-panel" id="configCreatorInfoPanel" aria-label="Preview and details">

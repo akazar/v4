@@ -2,13 +2,16 @@ const CONFIG = {
     "id": "config",
     "name": "config",
     "description": "Default configuration",
+    "edgeType": "web",
     "ui": true,
+    "uiHtmlPath": "ui.html",
+    "uiCssPath": "ui.css",
+    "uiJsPath": "ui.js",
     "localRecognition": {
         "classes": [
             "person",
             "dog",
-            "car",
-            "chair"
+            "car"
         ],
         "maxResults": 10,
         "threshold": 0.5,
@@ -16,7 +19,7 @@ const CONFIG = {
         "model": "YOLO",
         "inputSize": 320,
         "maxCaptureSize": 320,
-        "interval": 2000
+        "interval": 1000
     },
     "boundingBoxStyles": {
         "strokeStyle": "#00FFAA",
@@ -30,29 +33,9 @@ const CONFIG = {
         "borderRadius": 4,
         "interval": 1000
     },
-    "localRegularActionFunctions": [
-        {
-            "action": {
-              "type": "DB",
-              "value": ["dbNULPId"]
-            },
-            "timeout": 10000
-          },
-          {
-            "action": {
-              "type": "API",
-              "value": ["https://lpnu.ua/"]
-            },
-            "timeout": 15000
-          },
-          {
-            "action": {
-              "type": "NOTIFY",
-              "value": ["telegramNULPId"]
-            },
-            "timeout": 21000
-          }
-    ],
+    "localStartupAction": "",
+    "localRecognitionActions": [],
+    "localRegularActionFunctions": [],
     "serverRecognition": {
         "classes": [
             "person",
@@ -62,14 +45,11 @@ const CONFIG = {
         "maxResults": 10,
         "threshold": 0.5,
         "iouThreshold": 0.45,
-        "model": "YOLO"
+        "model": "YOLO",
+        "interval": 1000
     },
-    "serverReasoning": {
-        "model": "openai",
-        "prompt": "Describe this image in detail. What objects, people, or scene do you see?"
-    },
-    "serverRecognitionActionFunctions": [],
-    "serverReasoningActionFunctions": [],
+    "serverStartupAction": "",
+    "serverRecognitionActions": [],
     "serverRegularActionFunctions": []
 };
 
