@@ -3,7 +3,7 @@
  * then show bounding boxes and allow download. Uses drawBoundingBoxes and action from lib.
  */
 
-import CONFIG from '../../config/config.js';
+import CONFIG from '../../db/configs/config.js';
 import { toDataUrl, dataUrlToCanvas } from '../../lib/edge/image-format.js';
 import { drawBoundingBoxes } from '../../lib/edge/bounding-boxes.js';
 import { action } from '../../lib/edge/actions.js';

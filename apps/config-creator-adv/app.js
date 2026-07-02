@@ -430,7 +430,7 @@
     function buildConfigJs() {
         const d = readFormConfig();
         return `/**
- * Single configuration object for the v4 app (structure like config/public/config-full.js)
+ * Single configuration object for the v4 app (structure like db/configs/public/config-full.js)
  */
 const CONFIG = ${buildConfigObjectLiteralBody(d)};
 

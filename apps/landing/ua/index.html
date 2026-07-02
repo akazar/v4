@@ -124,14 +124,14 @@
                     <div class="module-content">
                         <h3>Список, перегляд і видалення конфігурацій</h3>
                         <p>
-                            Перелік файлів у <code>config/public</code>, відкриття демо з обраним конфігом або видалення.
+                            Перелік файлів у <code>db/configs/public</code>, відкриття демо з обраним конфігом або видалення.
                             Завантаження через API конфігурацій.
                         </p>
                         <h4>Можливості:</h4>
                         <ul>
-                            <li><strong>Список:</strong> усі імена файлів у <code>config/public</code></li>
+                            <li><strong>Список:</strong> усі імена файлів у <code>db/configs/public</code></li>
                             <li><strong>Перегляд:</strong> демо <code>/factory</code> з конфігом за id</li>
-                            <li><strong>Видалення:</strong> файл з <code>config/public</code> через API</li>
+                            <li><strong>Видалення:</strong> файл з <code>db/configs/public</code> через API</li>
                         </ul>
                         <h4>Сценарії:</h4>
                         <ul>
@@ -199,12 +199,12 @@
                             зображення з файлами анотацій, розподіл train / validation / test, гіперпараметри,
                             запуск із графіками метрик (loss, mAP, precision/recall, learning rate, час).
                             <strong>Дашборд збережених моделей</strong> (<code>/model-training/dashboard</code>) — список checkpoint-ів у
-                            <code>apps/model-training/models-list</code> та видалення через API сервера v4.
+                            <code>db/models</code> та видалення через API сервера v4.
                         </p>
                         <h4>Можливості:</h4>
                         <ul>
                             <li><strong>UI навчання:</strong> базові моделі, датасет, спліти, гіперпараметри, метрики, експорт або збереження checkpoint</li>
-                            <li><strong>Дашборд:</strong> файли <code>.pt</code> / <code>.tflite</code> / <code>.safetensors</code> у <code>models-list</code>; видалення</li>
+                            <li><strong>Дашборд:</strong> файли <code>.pt</code> / <code>.tflite</code> / <code>.safetensors</code> у <code>db/models</code>; видалення</li>
                             <li><strong>Завантаження:</strong> зображення та анотації; співставлення за іменем файлу</li>
                             <li><strong>Спліти:</strong> train / val / test на рядок або авто-пресети</li>
                             <li><strong>Запуск:</strong> епохи з оновленням графіків</li>
@@ -405,7 +405,7 @@
                             <li>Перевірка змін конфігу перед розгортанням в інших модулях</li>
                             <li>Демо та тестування веб-версії з гнучкою конфігурацією</li>
                         </ul>
-                        <p class="demo-note">Через <a href="/config-creator">генератор конфігів</a> або <a href="/config-creator-adv">розширений генератор</a> зібрати <code>config.js</code>, замінити <code>config-factory.js</code> або вказати свій конфіг. <a href="/config-manager">Менеджер конфігів</a> — перегляд і видалення файлів у <code>config/public</code>.</p>
+                        <p class="demo-note">Через <a href="/config-creator">генератор конфігів</a> або <a href="/config-creator-adv">розширений генератор</a> зібрати <code>config.js</code>, замінити <code>config-factory.js</code> або вказати свій конфіг. <a href="/config-manager">Менеджер конфігів</a> — перегляд і видалення файлів у <code>db/configs/public</code>.</p>
                     </div>
                 </div>
 
@@ -494,7 +494,7 @@
                     </div>
                     <div class="tech-item">
                         <h3>Конфігурація</h3>
-                        <p>Централізована система: класи, пороги, інтервали, дії. <a href="/config-creator">Генератор конфігів</a> або <a href="/config-creator-adv">розширений генератор</a> для <code>config.js</code> у браузері; <a href="/config-manager">менеджер конфігів</a> для <code>config/public</code>.</p>
+                        <p>Централізована система: класи, пороги, інтервали, дії. <a href="/config-creator">Генератор конфігів</a> або <a href="/config-creator-adv">розширений генератор</a> для <code>config.js</code> у браузері; <a href="/config-manager">менеджер конфігів</a> для <code>db/configs/public</code>.</p>
                     </div>
                     <div class="tech-item">
                         <h3>Архітектура</h3>

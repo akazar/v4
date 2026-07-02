@@ -116,7 +116,7 @@ URL **`?streams=a,b`**; **Socket.IO** subscription; **video grid**; **capture** 
 
 **Query params:** **`streams`**, **`modes`** → **`streamModes` Map** (`p2p` vs `sfu`).
 
-**State:** **`streamState` Map** per **streamId** — video el, overlay canvas, peer connection or SFU logic, **config** (loads **`/config/public/config-default.js`** or discovered list).
+**State:** **`streamState` Map** per **streamId** — video el, overlay canvas, peer connection or SFU logic, **config** (loads **`/db/configs/public/config-default.js`** or discovered list).
 
 **Recognition:** **`shouldUseServerRecognitionForStream`** — SFU + config without **localRecognition** → server-driven detection path.
 

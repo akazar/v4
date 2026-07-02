@@ -37,7 +37,7 @@ Host the extracted folder behind any static server, then open \`ui.html\` in a b
 Pass \`?streamId=<your-stream-id>\` in the URL to publish a WebRTC stream.
 
 Examples:
-  - Hosted by the v4 server:  http://localhost:3001/config/public/assets/${configId}/ui.html?streamId=demo
+  - Hosted by the v4 server:  http://localhost:3001/db/configs/public/assets/${configId}/ui.html?streamId=demo
   - Hosted by any static server (e.g. \`npx serve\`, \`python -m http.server\`):
       cd ${configId}
       npx serve -p 8081
@@ -85,7 +85,7 @@ Edge type: **${config?.edgeType || 'web'}**.
 
 ## Files
 
-- \`config.js\` — the saved configuration (also available at \`config/public/${configId}.js\`).
+- \`config.js\` — the saved configuration (also available at \`db/configs/public/${configId}.js\`).
 - \`edge-main.js\` — entry point with \`main()\` for the edge device.
 - \`sdk.js\` — exposes \`window.vision\` (browser) / \`globalThis.vision\` (node) global with recognition helpers.
 ${isWeb ? '- `ui.html`, `ui.css`, `ui.js` — UI for the browser edge (default bundled if not uploaded in config-creator-adv).\n- `lib/` — bundled copy of the shared edge modules (recognition pipeline, capture, webrtc-publisher, bounding-boxes, etc.).\n- `lib/edge/recognition/yolo/models/yolo11n.onnx` — ~10 MB model, included when local YOLO recognition is configured.\n' : ''}- \`localRecognitionActions.js\` (and friends) — ES modules with named exports used for CUSTOM actions, if configured.
@@ -984,7 +984,7 @@ async function main() {
         ...(serverStartupAction || {}),
     };
 
-    const configPath = \`/config/public/\${configId}.js\`;
+    const configPath = \`/db/configs/public/\${configId}.js\`;
     await runServerPipelineForStream({
         streamId,
         configId,

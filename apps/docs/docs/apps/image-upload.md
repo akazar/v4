@@ -37,7 +37,7 @@ ONNX runtime is included for YOLO. The preview area shows either a placeholder h
 
 ### `apps/image-upload/script.js`
 
-**Imports:** **`CONFIG`** from **`config/config.js`**; **`imageToCanvas`** from **`lib/edge/source-to-canvas.js`**; **`recognize`**, **`recognizeWithYolo`**, **`getImageFromSource`**; **`drawBoundingBoxes`**; **`action`**.
+**Imports:** **`CONFIG`** from **`db/configs/config.js`**; **`imageToCanvas`** from **`lib/edge/source-to-canvas.js`**; **`recognize`**, **`recognizeWithYolo`**, **`getImageFromSource`**; **`drawBoundingBoxes`**; **`action`**.
 
 **DOM refs:** `#fileInput`, `#urlInput`, `#modelSelect`, `#recognizeBtn`, `#downloadBtn`, `#previewCanvas`, `#placeholder`.
 

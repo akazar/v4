@@ -2,7 +2,7 @@
 title: apps/factory/
 ---
 
-# Factory (`apps/factory/`)
+# Configs (`db/configs/`)
 
 ## Main idea
 
@@ -61,10 +61,10 @@ Behavior highlights:
 
 **`getConfigIdFromPath()`** — reads **`?id=`** from **`URLSearchParams`**, default **`'config'`**.
 
-**`main()`** — **`fetch('/api/configurations/' + encodeURIComponent(configId))`**, then **`res.json()`** as **`config`**, then **`initApp(config)`**. On failure, **alert** and return (no local fallback in script; server **`getConfiguration`** may still fall back to **`config/config.js`**).
+**`main()`** — **`fetch('/api/configurations/' + encodeURIComponent(configId))`**, then **`res.json()`** as **`config`**, then **`initApp(config)`**. On failure, **alert** and return (no local fallback in script; server **`getConfiguration`** may still fall back to **`db/configs/config.js`**).
 
 **`config-factory.js`** on disk is a **reference preset** for authors; the **running** factory page always consumes the **API-normalized** object.
 
 **Used by:** operators visiting **`/factory`**; **hosted** via **`server/hosting-server.js`**.
 
-**Uses:** **`config/config-factory.js`** or **configuration API**; all listed **`lib/edge/*`** modules.
+**Uses:** **`db/configs/config-factory.js`** or **configuration API**; all listed **`lib/edge/*`** modules.

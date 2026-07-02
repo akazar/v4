@@ -130,20 +130,20 @@
                     <div class="module-content">
                         <h3>List, View, and Delete Configurations</h3>
                         <p>
-                            The Config Manager lists all configuration files in <code>config/public</code> and lets you open
+                            The Config Manager lists all configuration files in <code>db/configs/public</code> and lets you open
                             the production demo with a chosen config or delete configs you no longer need. Configurations
                             are loaded from the server via the configurations API.
                         </p>
                         <h4>Capabilities:</h4>
                         <ul>
-                            <li><strong>List:</strong> See all configuration file names in <code>config/public</code></li>
+                            <li><strong>List:</strong> See all configuration file names in <code>db/configs/public</code></li>
                             <li><strong>View:</strong> Open the production demo (<code>/factory</code>) with a selected config by id</li>
-                            <li><strong>Delete:</strong> Remove a configuration file from <code>config/public</code> via the API</li>
+                            <li><strong>Delete:</strong> Remove a configuration file from <code>db/configs/public</code> via the API</li>
                         </ul>
                         <h4>Use Cases:</h4>
                         <ul>
                             <li>Browse and open different configs in the demo without changing the URL by hand</li>
-                            <li>Clean up unused or test configs from <code>config/public</code></li>
+                            <li>Clean up unused or test configs from <code>db/configs/public</code></li>
                             <li>Quick access to the factory demo with a specific configuration</li>
                         </ul>
                     </div>
@@ -209,12 +209,12 @@
                             set common hyperparameters, and run a <strong>simulated</strong> job that streams placeholder
                             metrics into live charts (loss, mAP, precision/recall, learning rate, and timing).
                             The <strong>saved models dashboard</strong> (<code>/model-training/dashboard</code>) lists checkpoint files under
-                            <code>apps/model-training/models-list</code> and lets you remove them from disk via the v4 server API.
+                            <code>db/models</code> and lets you remove them from disk via the v4 server API.
                         </p>
                         <h4>Capabilities:</h4>
                         <ul>
                             <li><strong>Training UI:</strong> Predefined base models, dataset uploads, splits, hyperparameters, simulated metrics, export or save empty checkpoint files</li>
-                            <li><strong>Models dashboard:</strong> List <code>.pt</code> / <code>.tflite</code> / <code>.safetensors</code> in <code>models-list</code>; delete with trash control</li>
+                            <li><strong>Models dashboard:</strong> List <code>.pt</code> / <code>.tflite</code> / <code>.safetensors</code> in <code>db/models</code>; delete with trash control</li>
                             <li><strong>Uploads:</strong> Multi-file images plus annotations; pairing by matching filename stems</li>
                             <li><strong>Splits:</strong> Per-row train / validation / test, with optional auto-split presets</li>
                             <li><strong>Simulated run:</strong> Timed epochs only — no GPU job — with updating charts</li>
@@ -419,7 +419,7 @@
                             <li>Validate config changes before deploying to other modules</li>
                             <li>Demo or testing of the flexible configuration web version</li>
                         </ul>
-                        <p class="demo-note">Use the <a href="/config-creator">Config Generator</a> or the <a href="/config-creator-adv">advanced generator</a> to build a custom <code>config.js</code>, then replace <code>config-factory.js</code> or point the demo to your config for a tailored experience. Use the <a href="/config-manager">Config Manager</a> to list, view, and delete configs in <code>config/public</code>.</p>
+                        <p class="demo-note">Use the <a href="/config-creator">Config Generator</a> or the <a href="/config-creator-adv">advanced generator</a> to build a custom <code>config.js</code>, then replace <code>config-factory.js</code> or point the demo to your config for a tailored experience. Use the <a href="/config-manager">Config Manager</a> to list, view, and delete configs in <code>db/configs/public</code>.</p>
                     </div>
                 </div>
 
@@ -511,7 +511,7 @@
                     </div>
                     <div class="tech-item">
                         <h3>Configuration</h3>
-                        <p>Centralized configuration system allows customization of detection classes, thresholds, intervals, and action functions. Use the <a href="/config-creator">Config Generator</a> or <a href="/config-creator-adv">advanced generator</a> to create or tweak <code>config.js</code> in the browser and the <a href="/config-manager">Config Manager</a> to list, view, and delete configs in <code>config/public</code>.</p>
+                        <p>Centralized configuration system allows customization of detection classes, thresholds, intervals, and action functions. Use the <a href="/config-creator">Config Generator</a> or <a href="/config-creator-adv">advanced generator</a> to create or tweak <code>config.js</code> in the browser and the <a href="/config-manager">Config Manager</a> to list, view, and delete configs in <code>db/configs/public</code>.</p>
                     </div>
                     <div class="tech-item">
                         <h3>Architecture</h3>

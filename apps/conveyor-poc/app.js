@@ -190,8 +190,8 @@ async function collectLibDependencies(entryRelPaths) {
 }
 
 /**
- * Write generated web-runnable files back to the server's `config/public/assets/<id>/`
- * folder, so the hosted URL `/config/public/assets/<id>/ui.html` can actually resolve
+ * Write generated web-runnable files back to the server's `db/configs/public/assets/<id>/`
+ * folder, so the hosted URL `/db/configs/public/assets/<id>/ui.html` can actually resolve
  * `sdk.js`, `edge-main.js`, and (when the user didn't upload a custom UI) the defaults.
  *
  * `uploads` is a partial map keyed by ASSET_FILE_NAMES keys in the server whitelist.
@@ -254,7 +254,7 @@ function renderHowToRun({ configId, edgeType, streamId, hasServerPipeline }) {
             <div class="howto-step">
                 <h3>3. Run the edge (web)</h3>
                 <p class="hint">Hosted by v4 (lib/ has been mirrored to the asset folder, so it works out of the box):</p>
-                <pre>http://localhost:3001/config/public/assets/${configId}/ui.html?streamId=${streamSuffix}</pre>
+                <pre>http://localhost:3001/db/configs/public/assets/${configId}/ui.html?streamId=${streamSuffix}</pre>
                 <p class="hint">Or host the extracted bundle on any static server and open <code>ui.html</code>:</p>
                 <pre>cd ${bundleName}
 npx serve -p 8081       # or: python -m http.server 8081
@@ -509,7 +509,7 @@ async function runPipeline() {
                 if (extraCount) parts.push(`${extraCount} lib/config file${extraCount === 1 ? '' : 's'}`);
                 if (copiedCount) parts.push(`${copiedCount} binary asset${copiedCount === 1 ? '' : 's'}`);
                 const tail = parts.length ? ` + ${parts.join(' + ')}` : '';
-                log(`Published ${count} runtime file${count === 1 ? '' : 's'}${tail} to /config/public/assets/${configId}/`, 'success');
+                log(`Published ${count} runtime file${count === 1 ? '' : 's'}${tail} to /db/configs/public/assets/${configId}/`, 'success');
             } else if (!result.skipped) {
                 log(`Warning: failed to publish runtime files to server: ${result.error}`, 'error');
             }

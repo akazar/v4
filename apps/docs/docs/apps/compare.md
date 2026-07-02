@@ -37,7 +37,7 @@ The page loads ONNX runtime for local YOLO paths. Each panel owns a **model sele
 
 ### `apps/compare/app.js`
 
-**Imports:** **`CONFIG`** from **`../../config/public/config-default.js`** (not `config/config.js`); **`drawBoundingBoxes`**; **`recognizeWithYolo`**; **`recognize`** as **`recognizeMediapipe`**.
+**Imports:** **`CONFIG`** from **`../../db/configs/public/config-default.js`** (not `db/configs/config.js`); **`drawBoundingBoxes`**; **`recognizeWithYolo`**; **`recognize`** as **`recognizeMediapipe`**.
 
 **Globals / state:** **`currentDataUrl`**, **`currentFile`** (Blob for YOLO), **`localRecognitionPromise`** — serialization mutex so **MediaPipe**/**YOLO** never overlap in browser.
 

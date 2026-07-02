@@ -6,7 +6,7 @@ title: Model training & dashboard
 
 ## Main idea
 
-The **model training** app is a **browser control room** for preparing (simulated) **detection or vision–language fine-tuning** jobs: name checkpoints, pick a base model, upload paired images/annotations, assign **train/val/test** splits, tune hyperparameters, run a **fake** epoch loop with live charts, then **export** or **save** placeholder weights. The **saved models dashboard** lists files dropped into `apps/model-training/models-list` and supports deletion via API.
+The **model training** app is a **browser control room** for preparing (simulated) **detection or vision–language fine-tuning** jobs: name checkpoints, pick a base model, upload paired images/annotations, assign **train/val/test** splits, tune hyperparameters, run a **fake** epoch loop with live charts, then **export** or **save** placeholder weights. The **saved models dashboard** lists files dropped into `db/models` and supports deletion via API.
 
 ## More detail
 
@@ -22,7 +22,7 @@ The **model training** app is a **browser control room** for preparing (simulate
 - **Section 4: Splits** — Auto-split buttons (**70/15/15**, **80/20/10**); **split summary** line; scrollable **dataset table** with columns: thumbnail, image name, annotation name, split selector per row.
 - **Section 5: Training settings** — Numeric/text inputs for epochs, batch size, learning rate, weight decay, seed.
 - **Section 6: Run (simulated)** — **Start training** / **Stop** buttons; **progress bar**; **status** line; **metrics log** preformatted text; **chart grid** (loss, mAP, precision/recall, learning rate, timing) each with canvas + legend.
-- **Section 7: Export & save** — **Export model** (download) and **Save model** (server writes into models-list); export status text.
+- **Section 7: Export & save** — **Export model** (download) and **Save model** (server writes into `db/models`); export status text.
 - **Success toast** — Ephemeral confirmation overlay.
 
 ## Visual elements — Saved models dashboard (`/model-training/dashboard`)
@@ -82,4 +82,4 @@ Declarative sections with **ids** consumed by scripts above; **`app.js`** is cla
 
 ### Server
 
-**`lib/cloud/model-training-server.js`** — persists under **`apps/model-training/models-list`**; lists allowed extensions.
+**`lib/cloud/model-training-server.js`** — persists under **`db/models`**; lists allowed extensions.

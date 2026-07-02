@@ -1,4 +1,4 @@
-import CONFIG from '../../config/config.js';
+import CONFIG from '../../db/configs/config.js';
 import { getCameraStream, attachCameraStreamToVideo, waitForVideoAndPlay } from '../../lib/edge/capture.js';
 import { toDataUrl } from '../../lib/edge/image-format.js';
 import { recognize } from '../../lib/edge/recognition/mediapipe/recognize-mediapipe.js';

@@ -16,7 +16,7 @@ When you start the main script, the process:
 
 1. Loads environment (including optional API keys from `.env`).
 2. Builds an Express application and an underlying HTTP server (needed for WebSocket upgrades).
-3. Registers **static hosting** so browsers can load HTML, CSS, and JS from `apps/`, the repository root (for shared `config/` and `lib/` imports), `apps/factory`, the shared UI kit, and the documentation site build at `/documentation/` when `apps/docs/build` exists.
+3. Registers **static hosting** so browsers can load HTML, CSS, and JS from `apps/`, the repository root (for shared `db/configs/` and `lib/` imports), `apps/factory`, the shared UI kit, and the documentation site build at `/documentation/` when `apps/docs/build` exists.
 4. Mounts **API routers** for cloud features: recognition, reasoning, notifications, database helpers, configuration listing/serving, annotate export, model-training uploads/list/delete, home-stream metadata, and Puppeteer-based captured-stream preview.
 5. Attaches the **streaming** subsystem on the same HTTP port (signaling and related realtime behavior).
 6. Listens on a configurable **port** (environment override or default).
@@ -30,7 +30,7 @@ The server exposes a simple **health** URL for uptime checks. Startup logs indic
 | Responsibility | What it enables |
 |----------------|-----------------|
 | **Static hosting** | Users open landing, streaming, training, compare, annotator, and other UIs in the browser without a separate frontend build step for those apps. |
-| **Shared asset root** | Sibling folders like `config/` and `lib/` can be fetched by browser modules using absolute paths, keeping one copy of scripts for many apps. |
+| **Shared asset root** | Sibling folders like `db/configs/` and `lib/` can be fetched by browser modules using absolute paths, keeping one copy of scripts for many apps. |
 | **Recognition API** | Browser apps such as server-detection and compare can offload detection to the server. |
 | **Reasoning API** | Server-reasoning and compare can obtain text answers about an image via configured providers. |
 | **Configuration API** | Config manager and debug-style clients can list, fetch, and manage JSON-backed configs. |
@@ -81,7 +81,7 @@ The server exposes a simple **health** URL for uptime checks. Startup logs indic
 
 - **`/`**, **`/ua`** → send **`apps/landing`** `index.html` (UA variant under `ua/`).
 - **`/documentation`** → **`301`** to **`/documentation/`**, then **`express.static(docsBuildPath)`** when **`index.html`** exists (otherwise startup logs a skip warning).
-- **`app.use(express.static(v4Root))`** — serves **`config/`**, **`lib/`**, repo root files at **URL root** so browser imports like **`/lib/edge/...`** work.
+- **`app.use(express.static(v4Root))`** — serves **`db/configs/`**, **`lib/`**, repo root files at **URL root** so browser imports like **`/lib/edge/...`** work.
 - **`app.use(express.static(appsPath))`** — sibling assets for apps.
 - **`/ui-kit`** — explicit static mount for **`apps/ui-kit`**.
 - **`/factory`** (+ **`/factory/:id`**) — **`apps/factory`** SPA shell.

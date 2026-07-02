@@ -36,7 +36,7 @@ The form is organized into **cards** (sections). Each section can be **included 
 2. **Tune recognition** — Choose classes and thresholds for local and/or server blocks.
 3. **Style overlays** — Adjust colors and typography for demo recordings or accessibility.
 4. **Add actions** — Use declarative presets or paste small function bodies for custom logging and integrations.
-5. **Export** — Download `config.js` for manual placement, or save through the server to `config/public` if configured.
+5. **Export** — Download `config.js` for manual placement, or save through the server to `db/configs/public` if configured.
 6. **Validate in factory** — Open the factory demo or camera stream with the new id.
 
 **Outcome:** Non-developers and developers alike can produce **consistent** configuration files without hand-editing large JavaScript objects.

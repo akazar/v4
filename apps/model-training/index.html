@@ -19,7 +19,7 @@
         Prepare detection or vision–language fine-tuning jobs: set the output checkpoint name, choose a base model,
         upload images and annotation files, assign splits, tune hyperparameters, and review live metrics.
         Open the <a href="/model-training/dashboard">saved models dashboard</a> to list or remove checkpoints in
-        <code>models-list</code>.
+        <code>db/models</code>.
       </p>
     </header>
 
@@ -176,7 +176,7 @@
       <h2 id="export-heading">7. Export &amp; save model</h2>
       <p class="panel-desc">
         After a full run, download the trained checkpoint to your machine, or save it under
-        <code>apps/model-training/models-list</code> on the host (serve this app with the v4 Node server so save works).
+        <code>db/models</code> on the host (serve this app with the v4 Node server so save works).
         The file name follows <strong>section 1</strong>: trained model name plus the extension that matches the base model type.
       </p>
       <div class="export-actions">

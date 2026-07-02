@@ -1,7 +1,7 @@
 /**
  * Config Manager: list configs from GET /api/configurations,
  * Delete via DELETE /api/configurations/:id,
- * Test opens /factory/?id=:id (apps/factory), View shows read-only file content from /config/public/
+ * Test opens /factory/?id=:id (apps/factory), View shows read-only file content from /db/configs/public/
  */
 
 const listEl = document.getElementById('configList');
@@ -35,7 +35,7 @@ async function loadList() {
         listEl.className = 'config-list';
         if (names.length === 0) {
             listEl.classList.add('empty');
-            listEl.innerHTML = '<li>No configurations in config/public</li>';
+            listEl.innerHTML = '<li>No configurations in db/configs/public</li>';
             setStatus('');
             return;
         }
@@ -91,7 +91,7 @@ function openViewPanel(fileName, text) {
 async function showConfigSource(fileName) {
     setStatus('Loading file…');
     try {
-        const res = await fetch('/config/public/' + encodeURIComponent(fileName), { cache: 'no-store' });
+        const res = await fetch('/db/configs/public/' + encodeURIComponent(fileName), { cache: 'no-store' });
         if (!res.ok) throw new Error(res.status === 404 ? 'File not found' : `HTTP ${res.status}`);
         const text = await res.text();
         setStatus('');

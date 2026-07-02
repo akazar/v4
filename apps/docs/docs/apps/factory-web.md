@@ -25,7 +25,7 @@ The page body is **empty in HTML** by design; scripts mount the experience. ONNX
 2. **Grant camera permission** — Browser prompts for camera access; approve to proceed.
 3. **Observe detections** — Boxes update on an interval defined by configuration.
 4. **Toggle UI state** — If controls are visible, use ON/OFF to pause or resume higher-level behaviors tied to UI events.
-5. **Iterate config** — Use Config Generator or edit `config/public` files, then reload with a new id.
+5. **Iterate config** — Use Config Generator or edit `db/configs/public` files, then reload with a new id.
 
 **Outcome:** Stakeholders see **one** reference implementation that mirrors how production configs shape behavior.
 
@@ -41,6 +41,6 @@ See **[factory — Code](../project/factory#code)** for **`apps/factory/script.j
 
 | Aspect | Factory | Camera stream |
 |--------|---------|----------------|
-| **Config source** | **GET `/api/configurations/:id`** (`?id=` query) | Static **`import '../../config/config.js'`** |
+| **Config source** | **GET `/api/configurations/:id`** (`?id=` query) | Static **`import '../../db/configs/config.js'`** |
 | **UI toggle** | **`injectTopButtons` + `ui:state`** | Explicit HTML buttons wired in `script.js` |
 | **Location** | `apps/factory` (served **`/factory`**) | `apps/camera-stream` |

@@ -21,7 +21,7 @@ All of these are served by the **main Node server** (see [Server](../project/ser
 | UI kit | `/ui-kit` | Shared CSS tokens and components |
 | Factory demo | `/factory` (static files under `apps/factory/`) | Config-driven full pipeline |
 | Config generator | `/config-creator` | Form-based builder for `config.js` |
-| Config manager | `/config-manager` | List / view / delete configs in `config/public` |
+| Config manager | `/config-manager` | List / view / delete configs in `db/configs/public` |
 | Camera stream | `/camera-stream` | Live camera with local detection controls |
 | Image upload | `/image-upload` | Static image detection in-browser |
 | Server detection | `/server-detection` | Image detection via server API |
@@ -59,23 +59,23 @@ Each app has a dedicated doc page with **visual elements** and **user workflows*
 
 ```text
 import … from '/lib/edge/…';
-import … from '../../config/config.js';
+import … from '../../db/configs/config.js';
 ```
 
 - **Leading `/`** resolves against origin (requires **`setupFrontendHosting`** exposing **`v4Root`**).
-- **Relative `../..`** resolves from **`apps/<app>/script.js`** into **`config/`**.
+- **Relative `../..`** resolves from **`apps/<app>/script.js`** into **`db/configs/`**.
 
 ### Per-app script entrypoints (representative)
 
 | App folder | Primary JS | Imports |
 |------------|------------|---------|
-| `camera-stream` | `script.js` | `config/config.js`, `lib/edge/*` |
+| `camera-stream` | `script.js` | `db/configs/config.js`, `lib/edge/*` |
 | `image-upload` | `script.js` | same |
 | `server-detection` | `script.js` | `config` + **`fetch /api/recognize`** |
 | `server-reasoning` | `script.js` | **`fetch /api/reasoning`** |
-| `compare` | `app.js` | `config/public/config-default.js`, local + server fetches |
+| `compare` | `app.js` | `db/configs/public/config-default.js`, local + server fetches |
 | `streaming` | `home.js`, `viewer.js`, `dashboard.js`, `streamer.js` | Socket.IO + `process.js` / dashboard events |
-| `config-manager` | `app.js` | **`/api/configurations`**, static **`/config/public/`** |
+| `config-manager` | `app.js` | **`/api/configurations`**, static **`/db/configs/public/`** |
 | `config-creator` | `app.js` | form → string → download / POST |
 | `model-training` | `app.js`, `dashboard.js` | **`/api/model-training/models-list`** |
 | `debug` | `script.js` | **`/api/configurations/:id`** only |

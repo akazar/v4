@@ -4,7 +4,7 @@
  * /ua (Ukrainian landing), /config-creator, /config-creator-adv, /config-manager, /camera-stream, /image-upload, /model-training,
  * /model-training/dashboard,
  * /server-detection,
- * /server-reasoning, /compare, /streaming, /annotate, /debug, and /documentation (docs build). Serves the v4 root for shared lib/ and config/.
+ * /server-reasoning, /compare, /streaming, /annotate, /debug, and /documentation (docs build). Serves the v4 root for shared lib/ and db/configs/.
  */
 
 import { existsSync } from 'fs';
@@ -126,7 +126,7 @@ export function setupFrontendHosting(app) {
     );
   }
 
-  // v4 root (config/, lib/, etc.) at / for module imports from all apps
+  // v4 root (db/configs/, lib/, etc.) at / for module imports from all apps
   // This must come before apps static to ensure module imports work
   app.use(express.static(v4Root));
 
@@ -135,6 +135,13 @@ export function setupFrontendHosting(app) {
 
   // Shared stylesheet (explicit mount so /ui-kit/ui-kit.css always resolves)
   app.use('/ui-kit', express.static(uiKitPath));
+
+  // Legacy config URLs (configs moved to db/configs/)
+  app.get(/^\/config\/public(\/.*)?$/, (req, res) => {
+    const rest = req.path.slice('/config/public'.length) || '';
+    const qs = req.url.includes('?') ? req.url.slice(req.url.indexOf('?')) : '';
+    res.redirect(301, `/db/configs/public${rest}${qs}`);
+  });
 
   // Production demo: flexible configuration web version at /factory
   app.get(/^\/factory\/web(\/.*)?$/, (req, res) => {

@@ -101,7 +101,7 @@ Query **`?streams=`**; Socket.IO; сітка; **capture** з **`HTMLVideoElement
 
 **Query:** **`streams`**, **`modes`** → **`streamModes`** (p2p чи sfu).
 
-**Стан:** **`streamState`** Map на **streamId**; завантаження **`/config/public/config-default.js`** або списку конфігів.
+**Стан:** **`streamState`** Map на **streamId**; завантаження **`/db/configs/public/config-default.js`** або списку конфігів.
 
 **`shouldUseServerRecognitionForStream`** — SFU без **localRecognition** → серверний шлях детекції.
 

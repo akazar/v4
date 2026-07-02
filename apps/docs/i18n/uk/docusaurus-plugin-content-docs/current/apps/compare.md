@@ -35,7 +35,7 @@ title: Compare
 
 ### `apps/compare/app.js`
 
-**Імпорти:** **`CONFIG`** з **`config/public/config-default.js`**; **`drawBoundingBoxes`**; **`recognizeWithYolo`**; **`recognize`** як **`recognizeMediapipe`**.
+**Імпорти:** **`CONFIG`** з **`db/configs/public/config-default.js`**; **`drawBoundingBoxes`**; **`recognizeWithYolo`**; **`recognize`** як **`recognizeMediapipe`**.
 
 **Стан:** **`currentDataUrl`**, **`currentFile`** (Blob для YOLO), **`localRecognitionPromise`** — черга, щоб MediaPipe і YOLO не перетинались у браузері.
 

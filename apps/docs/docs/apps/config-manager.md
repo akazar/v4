@@ -6,7 +6,7 @@ title: Config manager
 
 ## Main idea
 
-The **Config Manager** is an **operator console** for files in **`config/public`**: it lists available configuration profiles, shows raw contents in a viewer, and supports **deletion** through the server API.
+The **Config Manager** is an **operator console** for files in **`db/configs/public`**: it lists available configuration profiles, shows raw contents in a viewer, and supports **deletion** through the server API.
 
 ## More detail
 
@@ -14,7 +14,7 @@ The page assumes the **main Vision v4 server** is running so `/api/configuration
 
 ## Visual elements
 
-- **Header** — Title and subtitle referencing `config/public`.
+- **Header** — Title and subtitle referencing `db/configs/public`.
 - **Status region** — Live region for success/error messages (loads, deletes).
 - **Configuration list** — Bulleted or row list of config files with actions (open in factory, view source, delete—exact buttons depend on client but the DOM provides list + panel pattern).
 - **View panel (modal/sheet)** — When opened:
@@ -29,7 +29,7 @@ The page assumes the **main Vision v4 server** is running so `/api/configuration
 4. **Launch demo** — Open the factory or other consumer using the chosen config id (via provided link or manual URL).
 5. **Delete** — Remove obsolete test configs after confirming; status confirms completion.
 
-**Outcome:** The filesystem under `config/public` stays **discoverable** and **maintainable** without SSH access.
+**Outcome:** The filesystem under `db/configs/public` stays **discoverable** and **maintainable** without SSH access.
 
 ## Code
 
@@ -44,14 +44,14 @@ The page assumes the **main Vision v4 server** is running so `/api/configuration
 | `fileNameToId(fileName)` | function | Strips **`.js`** for API id. |
 | `loadList()` | `async function` | **`GET /api/configurations`** → JSON array → renders **View / Test / Delete** buttons with **`data-*`** attrs. |
 | `escapeHtml` / `escapeAttr` | functions | XSS-safe text insertion. |
-| `showConfigSource(fileName)` | `async` | **`GET /config/public/<file>`** as **text** (not JS module) for preview. |
+| `showConfigSource(fileName)` | `async` | **`GET /db/configs/public/<file>`** as **text** (not JS module) for preview. |
 | `openViewPanel` / `closeViewPanel` | functions | Toggles **`hidden`**, **ARIA**, focus. |
 | Delete handler | event delegation | **`DELETE /api/configurations/:id`**. |
 | **Test** handler | — | Opens **`/factory/?id=:id`** (see file for exact string). |
 
 **Lifecycle:** `loadList()` on DOM ready; click listeners on list container + close button.
 
-**Uses:** **`lib/cloud/configuration-server.js`** routes; static **`/config/public`** for **View** raw source.
+**Uses:** **`lib/cloud/configuration-server.js`** routes; static **`/db/configs/public`** for **View** raw source.
 
 ### `apps/config-manager/index.html`
 

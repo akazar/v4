@@ -66,7 +66,7 @@ title: .env і .gitignore
 | Символ | Роль |
 |--------|------|
 | `loadEnvFile(filePath)` | **Синхронно** читає `.env`, парсить `KEY=value`, знімає лапки, пише в **`process.env[key]`** лише якщо ключ ще не заданий. |
-| `envPathV4` | шлях до `.env` біля кореня v4 (поруч із `config/`). |
+| `envPathV4` | шлях до `.env` біля кореня v4 (поруч із `db/configs/`). |
 | `envPathRoot` | на рівень вище (legacy / monorepo). |
 | `loadedV4` / `loadedRoot` | якщо хоч один успішний — лог **`.env file loaded`**. |
 | Fallback | **`require('dotenv').config`** на тих самих шляхах у `try/catch`. |

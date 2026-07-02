@@ -56,7 +56,7 @@ setupConfigurationServer(app);
 // Save COCO exports from VIA annotator to apps/annotate/annotation-list
 setupAnnotateExportServer(app);
 
-// Simulated trained weights to apps/model-training/models-list
+// Simulated trained weights to db/models
 setupModelTrainingServer(app);
 
 // Home stream metadata API (for Node streamers to resolve sourceUrl by streamId)

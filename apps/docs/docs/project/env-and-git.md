@@ -66,7 +66,7 @@ The ignore file excludes:
 | Symbol | Role |
 |--------|------|
 | `loadEnvFile(filePath)` | **Sync** reads a `.env` file, parses `KEY=value`, trims quotes, assigns **`process.env[key]`** only if not already set. |
-| `envPathV4` | `…/v4/.env` (repo root next to `config/`). |
+| `envPathV4` | `…/v4/.env` (repo root next to `db/configs/`). |
 | `envPathRoot` | One level above (legacy / monorepo parent). |
 | `loadedV4` / `loadedRoot` | Booleans; if either succeeds, logs **`.env file loaded`**. |
 | Fallback | Tries **`require('dotenv').config`** on the same paths (inside `try/catch` for resilience in ESM context). |

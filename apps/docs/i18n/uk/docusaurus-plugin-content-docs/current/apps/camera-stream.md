@@ -33,7 +33,7 @@ title: Camera stream
 
 ### `apps/camera-stream/script.js`
 
-**Імпорти:** **`CONFIG`** з **`../../config/config.js`**; **`lib/edge/capture`**, **`image-format`**, **`recognition/*`**, **`bounding-boxes`**, **`actions`**.
+**Імпорти:** **`CONFIG`** з **`../../db/configs/config.js`**; **`lib/edge/capture`**, **`image-format`**, **`recognition/*`**, **`bounding-boxes`**, **`actions`**.
 
 **Стан:** `cameraStream`, `videoElement`, інтервали, `recognitionResults`.
 

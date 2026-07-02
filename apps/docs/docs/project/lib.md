@@ -61,12 +61,12 @@ Focused on **server** and **hybrid** flows:
 
 | Module | Export | Role |
 |--------|--------|------|
-| `recognition-server.js` | `setupRecognitionServer(app)` | **`POST /api/recognize`** — body **`image`**, optional **`mime`**, **`config`**; loads **`config/config.js`** default; dispatches YOLO/MediaPipe **server** recognizers; **`serverRecognitionActions`**, **`setLastRecognitionResults`**. |
+| `recognition-server.js` | `setupRecognitionServer(app)` | **`POST /api/recognize`** — body **`image`**, optional **`mime`**, **`config`**; loads **`db/configs/config.js`** default; dispatches YOLO/MediaPipe **server** recognizers; **`serverRecognitionActions`**, **`setLastRecognitionResults`**. |
 | `reasoning-server.js` | `setupReasoningServer(app)` | **`POST /api/reasoning`** — **`model`**, **`prompt`**, **`imageBase64`**; **`parseModelSelector`**; **OpenAI** / **Gemini** lazy clients from env; **`setLastReasoningResult`**. |
-| `configuration-server.js` | `setupConfigurationServer(app)` | **`GET /api/configurations`**, **`GET/POST/DELETE …/:id`**; reads **`config/public`**; **`getConfiguration(id)`** dynamic `import`; **`configObjectToJsSource`**. |
+| `configuration-server.js` | `setupConfigurationServer(app)` | **`GET /api/configurations`**, **`GET/POST/DELETE …/:id`**; reads **`db/configs/public`**; **`getConfiguration(id)`** dynamic `import`; **`configObjectToJsSource`**. |
 | `streaming-server/streaming-server.js` | `setupStreamingServer(server)` | Socket.IO signaling, registry (**`lib/cloud/streaming-server/*.js`** family). |
 | `action-servers/api-server.js` | `setupApiServer(app)` | CORS, JSON, **`/health`**, **`/api/describe`**, **`.env` loader**; pulls **`serverReasoningActionFunctions`** from **`config.js`**. |
-| `model-training-server.js` | `setupModelTrainingServer(app)` | List/save/delete under **`apps/model-training/models-list`**. |
+| `model-training-server.js` | `setupModelTrainingServer(app)` | List/save/delete under **`db/models`**. |
 | `annotate-export-server.js` | `setupAnnotateExportServer(app)` | Receives COCO/VIA exports into **`apps/annotate/annotation-list`**. |
 | `captured-stream-server.js` | `setupCapturedStreamServer(app)` | Puppeteer-based capture endpoints for streaming workflow. |
 | `shared-state.js` | getters/setters | Last reasoning / recognition results for action orchestrators. |

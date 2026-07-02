@@ -25,7 +25,7 @@ title: Веб-демо Factory
 2. Дозволити доступ до камери.
 3. Спостерігати оновлення рамок за інтервалом з конфігу.
 4. За наявності керування — ON/OFF для паузи/відновлення поведінки.
-5. Змінити конфіг у Generator або в `config/public`, перезавантажити з новим id.
+5. Змінити конфіг у Generator або в `db/configs/public`, перезавантажити з новим id.
 
 **Результат:** один еталонний приклад того, як конфіг керує поведінкою «як у проді».
 
@@ -41,6 +41,6 @@ CDN **`ort.min.js`**, модуль **`script.js`**. Без інлайн-UI — �
 
 | Аспект | Factory | Camera stream |
 |--------|---------|----------------|
-| **Джерело конфігу** | **GET `/api/configurations/:id`** (query **`id`**) | Статичний **`import '../../config/config.js'`** |
+| **Джерело конфігу** | **GET `/api/configurations/:id`** (query **`id`**) | Статичний **`import '../../db/configs/config.js'`** |
 | **UI** | **`injectTopButtons` + `ui:state`** | Явні кнопки в HTML і `script.js` |
 | **Розташування** | `apps/factory`, URL **`/factory`** | `apps/camera-stream` |

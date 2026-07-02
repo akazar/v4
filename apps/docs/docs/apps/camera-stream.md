@@ -40,7 +40,7 @@ The page loads ONNX runtime for YOLO. Controls sit in a top content strip so the
 
 **Imports**
 
-- **`CONFIG`** default from **`../../config/config.js`** (static, not API).
+- **`CONFIG`** default from **`../../db/configs/config.js`** (static, not API).
 - **`lib/edge/capture.js`**, **`image-format.js`**, **`recognition/*`**, **`bounding-boxes.js`**, **`actions.js`**.
 
 **State:** `cameraStream`, `videoElement`, `recognitionInterval`, `regularActionIntervals`, `recognitionResults`.

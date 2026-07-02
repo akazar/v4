@@ -52,7 +52,7 @@ function shouldUseServerRecognitionForStream(streamId, cfg) {
 }
 
 // Default config and dynamic config list handling.
-const DEFAULT_CONFIG_PATH = '/config/public/config-default.js';
+const DEFAULT_CONFIG_PATH = '/db/configs/public/config-default.js';
 
 const configCache = new Map();
 let discoveredConfigPaths = null;
@@ -60,7 +60,7 @@ const localScheduledActionsManager = createScheduledActionsManager({
   actionsProperty: 'localRecognitionActions',
   fallbackActionProperties: [],
   loadConfig: async (configName) => {
-    const cfgPath = `/config/public/${configName}.js`;
+    const cfgPath = `/db/configs/public/${configName}.js`;
     return loadConfig(cfgPath);
   },
 });
@@ -89,13 +89,13 @@ function configNameFromPath(path) {
   return file.replace(/\.(js|json)$/i, '');
 }
 
-// Loads selectable config URLs by querying server-side directory listing for config/public.
+// Loads selectable config URLs by querying server-side directory listing for db/configs/public.
 async function getConfigPaths() {
   if (discoveredConfigPaths) {
     return discoveredConfigPaths;
   }
 
-  // Ask the server for actual files present in config/public.
+  // Ask the server for actual files present in db/configs/public.
   try {
     const res = await fetch('/api/configurations', { cache: 'no-store' });
     if (res.ok) {
@@ -103,7 +103,7 @@ async function getConfigPaths() {
       if (Array.isArray(data) && data.length > 0) {
         discoveredConfigPaths = data
           .filter((name) => typeof name === 'string' && name.endsWith('.js'))
-          .map((name) => `/config/public/${name}`);
+          .map((name) => `/db/configs/public/${name}`);
         // Ensure default is present.
         if (!discoveredConfigPaths.includes(DEFAULT_CONFIG_PATH)) {
           discoveredConfigPaths.unshift(DEFAULT_CONFIG_PATH);

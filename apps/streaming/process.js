@@ -1,4 +1,4 @@
-import CONFIG from '/config/public/config-default.js';
+import CONFIG from '/db/configs/public/config-default.js';
 import { drawBoundingBoxes } from '/lib/edge/bounding-boxes.js';
 import { recognizeWithYolo } from '/lib/edge/recognition/yolo/recognize-yolo.js';
 import { recognize as recognizeMediapipe } from '/lib/edge/recognition/mediapipe/recognize-mediapipe.js';

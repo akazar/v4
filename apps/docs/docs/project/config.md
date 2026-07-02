@@ -2,11 +2,11 @@
 title: config/
 ---
 
-# Configuration (`config/`)
+# Configuration (`db/configs/`)
 
 ## Main idea
 
-**`config/`** stores **JavaScript configuration objects** that describe how recognition should behave (models, thresholds, classes), how boxes should look, and what **actions** should run when objects are detected or when reasoning produces text. Presets live under **`config/public/`** for discovery via the configuration API and tools like the Config Manager.
+**`db/configs/`** stores **JavaScript configuration objects** that describe how recognition should behave (models, thresholds, classes), how boxes should look, and what **actions** should run when objects are detected or when reasoning produces text. Presets live under **`db/configs/public/`** for discovery via the configuration API and tools like the Config Manager.
 
 ## More detail
 
@@ -16,7 +16,7 @@ title: config/
 - **`config-factory.js`** ties to the **factory** demo: a single bundle that showcases “fully configurable” behavior in the browser.
 - **`config-default.js`** and **`config-old.js`** represent baseline or legacy snapshots for comparison or migration.
 
-### Public presets (`config/public/`)
+### Public presets (`db/configs/public/`)
 
 Many files (e.g. color-themed or scenario-themed names) are **ready-made profiles**: different class subsets, action presets, mobile-oriented settings, dashboard-oriented settings, YOLO- or MediaPipe-forward choices, etc. The **Config Manager** lists these for open/delete actions, and the **Config Generator** aligns its output with the “full” schema.
 
@@ -30,13 +30,13 @@ Many files (e.g. color-themed or scenario-themed names) are **ready-made profile
 | **Bounding box styling** | Colors, fonts, padding, and shadow for labels so demos match brand or accessibility needs. |
 | **Action hooks** | Declarative actions (notify, HTTP, DB) or embedded functions for custom logging and integrations—wired differently on client vs server per section. |
 | **UI flag** | Some demos respect a boolean to show or hide on-screen controls for headless vs interactive use. |
-| **Discoverability** | Files in `config/public/` participate in server listing so operators can pick a profile without editing the filesystem on the host. |
+| **Discoverability** | Files in `db/configs/public/` participate in server listing so operators can pick a profile without editing the filesystem on the host. |
 
-**Operational pattern:** Authors use **Config Generator** to draft a file, optionally save into `config/public`, then open **Factory** or **Config Manager** to run or audit that profile.
+**Operational pattern:** Authors use **Config Generator** to draft a file, optionally save into `db/configs/public`, then open **Factory** or **Config Manager** to run or audit that profile.
 
 ## Code
 
-### `config/config.js`
+### `db/configs/config.js`
 
 | Symbol | Role |
 |--------|------|
@@ -46,30 +46,30 @@ Many files (e.g. color-themed or scenario-themed names) are **ready-made profile
 **Used by:**
 
 - **`apps/camera-stream/script.js`**, **`apps/image-upload/script.js`**, **`apps/server-detection/script.js`**, **`apps/server-reasoning/script.js`** — static import of default config.
-- **`lib/cloud/recognition-server.js`**, **`lib/cloud/action-servers/api-server.js`** — server-side **`import`** of **`config/config.js`** for defaults and action function lists.
+- **`lib/cloud/recognition-server.js`**, **`lib/cloud/action-servers/api-server.js`** — server-side **`import`** of **`db/configs/config.js`** for defaults and action function lists.
 
-### `config/config-factory.js`
+### `db/configs/config-factory.js`
 
 Same **`CONFIG`** shape as **`config.js`** but tuned for **`apps/factory`** (e.g. **`name: 'config-factory'`**). **Used by** **`apps/factory/script.js`** when not loading remotely.
 
-### `config/config-default.js` / `config-old.js`
+### `db/configs/config-default.js` / `config-old.js`
 
-Snapshots for **compare** (`apps/compare/app.js` imports **`config/public/config-default.js`**) or historical reference.
+Snapshots for **compare** (`apps/compare/app.js` imports **`db/configs/public/config-default.js`**) or historical reference.
 
-### `config/public/*.js` (presets)
+### `db/configs/public/*.js` (presets)
 
 Each file typically **`export default CONFIG`** (or **`export { CONFIG }`**) with themed values. **Naming:** filesystem name **without `.js`** becomes **`id`** for API routes.
 
 **Consumed by:**
 
-- **`lib/cloud/configuration-server.js`** — **`getConfiguration(id)`** builds a module URL under **`config/public`** from **`id`** (with **`.js`** appended server-side) and **`import()`**s it; falls back to **`config/config.js`**.
-- **Browser** — static fetch **`/config/public/<file>.js`** as text (Config Manager **View**).
+- **`lib/cloud/configuration-server.js`** — **`getConfiguration(id)`** builds a module URL under **`db/configs/public`** from **`id`** (with **`.js`** appended server-side) and **`import()`**s it; falls back to **`db/configs/config.js`**.
+- **Browser** — static fetch **`/db/configs/public/<file>.js`** as text (Config Manager **View**).
 
 ### `lib/cloud/configuration-server.js` (API wiring)
 
 | Symbol | Parameters | Logic |
 |--------|------------|--------|
-| **`CONFIG_PUBLIC_DIR`** | — | Absolute path to **`config/public`**. |
+| **`CONFIG_PUBLIC_DIR`** | — | Absolute path to **`db/configs/public`**. |
 | **`isSafeConfigName(name)`** | string | Allows **alphanumeric, `_`, `-`**, rejects dotfiles. |
 | **`getConfiguration(id)`** | route param **without `.js`** | Tries public import; else **`config.js`**. |
 | **`configObjectToJsSource(config)`** | plain object | **`JSON.stringify`** + wraps as **`const CONFIG = …; export default CONFIG`**. |

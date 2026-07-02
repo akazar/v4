@@ -21,7 +21,7 @@ title: Огляд застосунків
 | UI kit | `/ui-kit` | Спільні CSS-токени та компоненти |
 | Демо factory | `/factory` (файли в `apps/factory/`) | Повний конфіг-керований конвеєр |
 | Config generator | `/config-creator` | Форма для збірки `config.js` |
-| Config manager | `/config-manager` | Список / перегляд / видалення `config/public` |
+| Config manager | `/config-manager` | Список / перегляд / видалення `db/configs/public` |
 | Camera stream | `/camera-stream` | Жива камера, локальне розпізнавання |
 | Image upload | `/image-upload` | Статичне зображення в браузері |
 | Server detection | `/server-detection` | Детекція через API сервера |
@@ -59,23 +59,23 @@ title: Огляд застосунків
 
 ```text
 import … from '/lib/edge/…';
-import … from '../../config/config.js';
+import … from '../../db/configs/config.js';
 ```
 
 - **Початковий `/`** — відносно origin (потрібен **`v4Root`** у хостингу).
-- **Відносні `../..`** — від **`apps/<app>/script.js`** до **`config/`**.
+- **Відносні `../..`** — від **`apps/<app>/script.js`** до **`db/configs/`**.
 
 ### Точки входу скриптів (приклади)
 
 | Тека апу | Основний JS | Імпорти |
 |----------|-------------|---------|
-| `camera-stream` | `script.js` | `config/config.js`, `lib/edge/*` |
+| `camera-stream` | `script.js` | `db/configs/config.js`, `lib/edge/*` |
 | `image-upload` | `script.js` | те саме |
 | `server-detection` | `script.js` | config + **`fetch /api/recognize`** |
 | `server-reasoning` | `script.js` | **`fetch /api/reasoning`** |
-| `compare` | `app.js` | `config/public/config-default.js`, локально + сервер |
+| `compare` | `app.js` | `db/configs/public/config-default.js`, локально + сервер |
 | `streaming` | `home.js`, `viewer.js`, `dashboard.js`, `streamer.js` | Socket.IO, `process.js` / події dashboard |
-| `config-manager` | `app.js` | **`/api/configurations`**, **`/config/public/`** |
+| `config-manager` | `app.js` | **`/api/configurations`**, **`/db/configs/public/`** |
 | `config-creator` | `app.js` | форма → рядок → завантаження / POST |
 | `model-training` | `app.js`, `dashboard.js` | **`/api/model-training/models-list`** |
 | `debug` | `script.js` | лише **`/api/configurations/:id`** |

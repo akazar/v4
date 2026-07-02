@@ -63,10 +63,10 @@ title: lib/
 |--------|---------|------|
 | `recognition-server.js` | `setupRecognitionServer(app)` | **`POST /api/recognize`**, тіло **`image`**, опційно **`mime`**, **`config`** |
 | `reasoning-server.js` | `setupReasoningServer(app)` | **`POST /api/reasoning`**, **`model`**, **`prompt`**, **`imageBase64`** |
-| `configuration-server.js` | `setupConfigurationServer(app)` | CRUD-стиль для **`config/public`** |
+| `configuration-server.js` | `setupConfigurationServer(app)` | CRUD-стиль для **`db/configs/public`** |
 | `streaming-server/streaming-server.js` | `setupStreamingServer(server)` | Socket.IO, реєстр, сімейство **`streaming-server/*.js`** |
 | `action-servers/api-server.js` | `setupApiServer(app)` | CORS, JSON, **`/health`**, **`.env`**, **`/api/describe`** |
-| `model-training-server.js` | `setupModelTrainingServer(app)` | Файли в **`apps/model-training/models-list`** |
+| `model-training-server.js` | `setupModelTrainingServer(app)` | Файли в **`db/models`** |
 | `annotate-export-server.js` | `setupAnnotateExportServer(app)` | Експорт у **`apps/annotate/annotation-list`** |
 | `captured-stream-server.js` | `setupCapturedStreamServer(app)` | Puppeteer для стримінгу |
 | `shared-state.js` | getters/setters | Останні результати для оркестраторів дій |

@@ -2,7 +2,7 @@
 title: apps/factory/
 ---
 
-# Factory (`apps/factory/`)
+# Configs (`db/configs/`)
 
 ## Головна ідея
 
@@ -48,7 +48,7 @@ title: apps/factory/
 
 **`getConfigIdFromPath()`** — **`?id=`** з **`URLSearchParams`**, за замовчуванням **`'config'`**.
 
-**`main()`** — **`fetch('/api/configurations/' + encodeURIComponent(configId))`**, **`res.json()`** → **`initApp`**. Помилка — **alert** (на сервері **`getConfiguration`** може впасти назад на **`config/config.js`**).
+**`main()`** — **`fetch('/api/configurations/' + encodeURIComponent(configId))`**, **`res.json()`** → **`initApp`**. Помилка — **alert** (на сервері **`getConfiguration`** може впасти назад на **`db/configs/config.js`**).
 
 **`config-factory.js`** на диску — довідковий пресет; **жива** сторінка factory завжди отримує об’єкт через API.
 

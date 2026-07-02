@@ -1,7 +1,7 @@
 # Conveyor POC
 
 `/conveyor-poc` is a web UI that generates deployable artifacts from a saved configuration
-in `config/public/<id>.js` + its uploaded assets in `config/public/assets/<id>/`.
+in `db/configs/public/<id>.js` + its uploaded assets in `db/configs/public/assets/<id>/`.
 
 ## What it produces
 
@@ -30,13 +30,13 @@ so bundles always reflect the current lib code.
 
 1. Open [config-creator-adv](/config-creator-adv), build a config, optionally upload UI HTML/CSS/JS
    and custom action JS files, then click **Generate and Save**. Files land in
-   `config/public/<id>.js` and `config/public/assets/<id>/*`.
+   `db/configs/public/<id>.js` and `db/configs/public/assets/<id>/*`.
 2. Open [conveyor-poc](/conveyor-poc), pick the saved config, and click **Run pipeline** to
    download `<configId>.zip`.
 3. Unzip the bundle — everything you need lives under `<configId>/`.
 4. Create a stream in the [Streaming dashboard](/streaming) (SFU mode).
 5. Run the edge:
-   - **Web**: open `http://localhost:3001/config/public/assets/<configId>/ui.html?streamId=<id>`
+   - **Web**: open `http://localhost:3001/db/configs/public/assets/<configId>/ui.html?streamId=<id>`
      (the conveyor-poc run publishes `edge-main.js`, `sdk.js`, `config.js` back to that folder).
    - **Node**: `cd <configId> && npm install && node edge-main.js <id>`.
 6. Run the server pipeline if the config uses server recognition/actions:
@@ -55,7 +55,7 @@ so bundles always reflect the current lib code.
 - **Web edge**
   1. Create a config in config-creator-adv with `edgeType: web`, enable `localRecognition`,
      `boundingBoxStyles`, and (optionally) upload a `uiJs` file.
-  2. Generate the bundle in conveyor-poc and serve it (or host via the `config/public/assets/<id>/`
+  2. Generate the bundle in conveyor-poc and serve it (or host via the `db/configs/public/assets/<id>/`
      static path).
   3. Open `ui.html?streamId=demo` — the camera should show, recognition should run, bounding
      boxes should render, and the stream should appear in the dashboard viewer.
