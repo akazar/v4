@@ -2,7 +2,7 @@
 title: Factory web demo
 ---
 
-# Factory web demo (`apps/factory/web` → `/factory`)
+# Factory web demo (`apps/factory` → `/factory`)
 
 ## Main idea
 
@@ -31,9 +31,9 @@ The page body is **empty in HTML** by design; scripts mount the experience. ONNX
 
 ## Code
 
-See **[factory — Code](../project/factory#code)** for **`apps/factory/web/script.js`** (fetch **`/api/configurations/:id`**, **`initApp`**, **`injectTopButtons`**, **`startRecognitionLoop`**).
+See **[factory — Code](../project/factory#code)** for **`apps/factory/script.js`** (fetch **`/api/configurations/:id`**, **`initApp`**, **`injectTopButtons`**, **`startRecognitionLoop`**).
 
-### `apps/factory/web/index.html` (recap)
+### `apps/factory/index.html` (recap)
 
 **Scripts:** CDN **`ort.min.js`**, module **`script.js`**. **No inline UI** — identical bootstrap pattern to **`apps/debug`**.
 
@@ -43,4 +43,4 @@ See **[factory — Code](../project/factory#code)** for **`apps/factory/web/scri
 |--------|---------|----------------|
 | **Config source** | **GET `/api/configurations/:id`** (`?id=` query) | Static **`import '../../config/config.js'`** |
 | **UI toggle** | **`injectTopButtons` + `ui:state`** | Explicit HTML buttons wired in `script.js` |
-| **Location** | `apps/factory/web` (served **`/factory`**) | `apps/camera-stream` |
+| **Location** | `apps/factory` (served **`/factory`**) | `apps/camera-stream` |

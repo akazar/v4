@@ -1,7 +1,7 @@
 /**
  * Config Manager: list configs from GET /api/configurations,
  * Delete via DELETE /api/configurations/:id,
- * Test opens /factory/web/?id=:id (apps/factory/web), View shows read-only file content from /config/public/
+ * Test opens /factory/?id=:id (apps/factory), View shows read-only file content from /config/public/
  */
 
 const listEl = document.getElementById('configList');
@@ -114,7 +114,7 @@ async function handleListClick(e) {
 
     if (testBtn) {
         const id = testBtn.getAttribute('data-id');
-        if (id) window.open('/factory/web/?id=' + encodeURIComponent(id), '_blank', 'noopener');
+        if (id) window.open('/factory/?id=' + encodeURIComponent(id), '_blank', 'noopener');
         return;
     }
 

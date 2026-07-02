@@ -33,7 +33,7 @@ title: Debug (конфіг-керований shell)
 
 **Імпорти:** **`capture`**, **`source-to-canvas`**, **`bounding-boxes`**, **`actions`**; **`injectTopButtons`** імпортований, але **не використовується** в поточному **`initApp`**.
 
-**`startRecognitionLoop`** — як у **`apps/factory/web/script.js`**: динамічний **`import()`**, guard **`recognitionRunning`**, **`videoToReusableCanvas`**, **`scaleDetectionsToVideo`**. Гілки з **`boundingBoxes`** / **`localRecognitionActions`** часто закоментовані — **`console.log`**.
+**`startRecognitionLoop`** — як у **`apps/factory/script.js`**: динамічний **`import()`**, guard **`recognitionRunning`**, **`videoToReusableCanvas`**, **`scaleDetectionsToVideo`**. Гілки з **`boundingBoxes`** / **`localRecognitionActions`** часто закоментовані — **`console.log`**.
 
 **`initApp`** — після **`initCameraBackground`** одразу **`startRecognitionLoop`** (без **`ui:state`**).
 

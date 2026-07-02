@@ -40,7 +40,7 @@ title: Лендінг (EN і UA)
 - **Head** — viewport; стилі **`/ui-kit/ui-kit.css`**, **`styles.css`**.
 - **Body** — **`<nav class="lang-switcher">`**, **`.hero`** з **`<details class="features-accordion">`** і **`.features-cards-grid`** посилань, **`<main>`** з **`.intro`**, **`.features`**, **`.modules`** (**.module-card**, **.cta-button**), **`.footer`**.
 
-**Без JavaScript** — лише HTML + CSS; шляхи захардкоджені (`/streaming`, `/factory/web` тощо).
+**Без JavaScript** — лише HTML + CSS; шляхи захардкоджені (`/streaming`, `/factory` тощо).
 
 ### `apps/landing/ua/index.html`
 

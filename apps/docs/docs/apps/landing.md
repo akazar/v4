@@ -14,7 +14,7 @@ The **landing** app is the **marketing and navigation hub** for Vision v4. The E
 
 - **Language switcher** — Shows the current locale (`EN`) and a link to the Ukrainian page.
 - **Hero** — Product title, subtitle, and an **“All features”** disclosure control that expands a grid of shortcut cards.
-- **Feature mini-cards** — Icon + label links to: production demo (`/factory/web` target as linked), streaming, config manager, config generator, camera stream, image upload, models dashboard, model training, annotator, compare, server detection, server reasoning.
+- **Feature mini-cards** — Icon + label links to: production demo (`/factory` target as linked), streaming, config manager, config generator, camera stream, image upload, models dashboard, model training, annotator, compare, server detection, server reasoning.
 - **System overview** — Prose sections describing real-time detection, batch images, server detection/reasoning, customization, actions, and training workspace.
 - **Module cards** — Deep descriptions with **capabilities**, **use cases**, and sometimes **workflows** for: production demo, multi-stream WebRTC, config manager, config generator, camera stream, image upload, model training (+ dashboard), VIA annotator, compare, server detection, server reasoning.
 - **Technical grid** — Short blurbs on model, configuration approach, architecture, API integration.
@@ -40,7 +40,7 @@ Mirrors the English structure with localized copy and the same navigational purp
 - **Head** — `meta` viewport; **styles:** **`/ui-kit/ui-kit.css`**, **`styles.css`**.
 - **Body structure** — **`<nav class="lang-switcher">`**: current `EN`, link to **`/ua/`**. **`.container`** → **`.hero`** (`h1`, **`.subtitle`**, **`<details class="features-accordion">`** with **`.features-cards-grid`** of **`<a class="feature-mini-card" href="…">`**). **`<main class="content">`**: **`.intro`**, **`.features`**, **`.modules`** (repeated **`.module-card`** blocks with **`.module-header`**, **`.cta-button`**, lists). **`.footer`**.
 
-**No application JavaScript** — purely **static HTML + CSS**; links are hardcoded paths (`/streaming`, `/factory/web`, etc.).
+**No application JavaScript** — purely **static HTML + CSS**; links are hardcoded paths (`/streaming`, `/factory`, etc.).
 
 ### `apps/landing/ua/index.html`
 

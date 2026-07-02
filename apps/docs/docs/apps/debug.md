@@ -33,7 +33,7 @@ Unlike `/camera-stream`, there is **no button row** in markup; the page is essen
 
 **Imports:** **`capture`**, **`source-to-canvas`**, **`bounding-boxes`**, **`actions`**; **`injectTopButtons`** from **`ui.js`** is **imported but unused** in the current **`initApp`** (dead import unless you wire it later).
 
-**`startRecognitionLoop(config)`** — same overall pattern as **`apps/factory/web/script.js`** (dynamic YOLO/MediaPipe **`import()`**, **`recognitionRunning`** guard, **`videoToReusableCanvas`**, **`scaleDetectionsToVideo`**). Many branches that call **`boundingBoxes`** / **`localRecognitionActions`** are **commented out** in-repo — rely on **`console.log`** for inspection.
+**`startRecognitionLoop(config)`** — same overall pattern as **`apps/factory/script.js`** (dynamic YOLO/MediaPipe **`import()`**, **`recognitionRunning`** guard, **`videoToReusableCanvas`**, **`scaleDetectionsToVideo`**). Many branches that call **`boundingBoxes`** / **`localRecognitionActions`** are **commented out** in-repo — rely on **`console.log`** for inspection.
 
 **`initApp(config)`** — on DOM ready calls **`initCameraBackground()`**, then **always** **`startRecognitionLoop(config)`** (no **`ui:state`** gating).
 
@@ -41,4 +41,4 @@ Unlike `/camera-stream`, there is **no button row** in markup; the page is essen
 
 **`index.html`** — only **`ort.min.js`** + **`type=module` script**; no UI chrome.
 
-**Contrast:** **`apps/factory/web/script.js`** uses **`injectTopButtons`** and **`ui:state`** to start/stop recognition; **debug** runs the loop immediately after camera start.
+**Contrast:** **`apps/factory/script.js`** uses **`injectTopButtons`** and **`ui:state`** to start/stop recognition; **debug** runs the loop immediately after camera start.

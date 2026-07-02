@@ -6,7 +6,7 @@ title: apps/factory/
 
 ## Main idea
 
-**`apps/factory/`** holds the **production-style web demo** that exercises the full **config-driven** vision pipeline in a single browser experience. The static bundle under **`apps/factory/web/`** is served at **`/factory`** (and deep links like `/factory/:id` still serve the same shell so client routers can read the id).
+**`apps/factory/`** holds the **production-style web demo** that exercises the full **config-driven** vision pipeline in a single browser experience. The static bundle under **`apps/factory/`** is served at **`/factory`** (and deep links like `/factory/:id` still serve the same shell so client routers can read the id).
 
 ## More detail
 
@@ -31,20 +31,20 @@ Behavior highlights:
 
 ## Code
 
-### `apps/factory/web/index.html`
+### `apps/factory/index.html`
 
 - **Head** — loads **`/ui-kit/ui-kit.css`** (or relative) and **`styles.css`** if present; **body** minimal.
 - **Scripts** — **`onnxruntime-web`** CDN **`ort.min.js`**, then **`type="module"`** → **`script.js`**.
 
-### `apps/factory/web/script.js`
+### `apps/factory/script.js`
 
 **Imports (edge):**
 
-- **`../../../lib/edge/capture.js`** — **`getCameraStream`**, **`attachCameraStreamToVideo`**, **`waitForVideoAndPlay`**.
-- **`../../../lib/edge/source-to-canvas.js`** — **`videoToReusableCanvas`**, **`scaleDetectionsToVideo`**.
-- **`../../../lib/edge/bounding-boxes.js`** — **`boundingBoxes`**, **`clearBoundingBoxes`**.
-- **`../../../lib/edge/actions.js`** — **`action`**, **`localRecognitionActions`**, **`localRecognitionActionsFromConfig`**.
-- **`../../../lib/edge/ui.js`** — **`injectTopButtons`**.
+- **`../../lib/edge/capture.js`** — **`getCameraStream`**, **`attachCameraStreamToVideo`**, **`waitForVideoAndPlay`**.
+- **`../../lib/edge/source-to-canvas.js`** — **`videoToReusableCanvas`**, **`scaleDetectionsToVideo`**.
+- **`../../lib/edge/bounding-boxes.js`** — **`boundingBoxes`**, **`clearBoundingBoxes`**.
+- **`../../lib/edge/actions.js`** — **`action`**, **`localRecognitionActions`**, **`localRecognitionActionsFromConfig`**.
+- **`../../lib/edge/ui.js`** — **`injectTopButtons`**.
 
 **Module-level state variables:** **`cameraStream`**, **`videoElement`**, **`recognitionInterval`**, **`boundingBoxInterval`**, **`regularActionIntervals`**, **`recognitionResults`**, **`recognitionRunning`**, **`recognitionCanvas`** — same lifecycle pattern as **`apps/camera-stream`**.
 

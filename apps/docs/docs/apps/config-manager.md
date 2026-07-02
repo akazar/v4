@@ -47,7 +47,7 @@ The page assumes the **main Vision v4 server** is running so `/api/configuration
 | `showConfigSource(fileName)` | `async` | **`GET /config/public/<file>`** as **text** (not JS module) for preview. |
 | `openViewPanel` / `closeViewPanel` | functions | Toggles **`hidden`**, **ARIA**, focus. |
 | Delete handler | event delegation | **`DELETE /api/configurations/:id`**. |
-| **Test** handler | — | Opens **`/factory/web/?id=:id`** (see file for exact string). |
+| **Test** handler | — | Opens **`/factory/?id=:id`** (see file for exact string). |
 
 **Lifecycle:** `loadList()` on DOM ready; click listeners on list container + close button.
 

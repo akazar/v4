@@ -6,7 +6,7 @@ title: apps/factory/
 
 ## Головна ідея
 
-**`apps/factory/`** містить **веб-демо у стилі продакшену**, яке проганяє повний **конфіг-керований** vision-конвеєр в одному браузерному досвіді. Статичний бандл у **`apps/factory/web/`** віддається за **`/factory`** (глибокі посилання наприклад `/factory/:id` теж віддають той самий shell, щоб клієнт прочитав id).
+**`apps/factory/`** містить **веб-демо у стилі продакшену**, яке проганяє повний **конфіг-керований** vision-конвеєр в одному браузерному досвіді. Статичний бандл у **`apps/factory/`** віддається за **`/factory`** (глибокі посилання наприклад `/factory/:id` теж віддають той самий shell, щоб клієнт прочитав id).
 
 ## Детальніше
 
@@ -31,12 +31,12 @@ title: apps/factory/
 
 ## Code
 
-### `apps/factory/web/index.html`
+### `apps/factory/index.html`
 
 - **Head** — **`/ui-kit/ui-kit.css`**, **`styles.css`** за потреби; **body** мінімальний.
 - **Scripts** — CDN **`ort.min.js`**, потім **`type="module"`** → **`script.js`**.
 
-### `apps/factory/web/script.js`
+### `apps/factory/script.js`
 
 **Імпорти (edge):** **`capture`**, **`source-to-canvas`**, **`bounding-boxes`**, **`actions`**, **`ui` → `injectTopButtons`**.
 

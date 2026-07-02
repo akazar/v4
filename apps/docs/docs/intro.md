@@ -15,7 +15,7 @@ This site describes **what each part of the repository does** and how the **user
 - A **Node server** (`server/`) hosts static web apps under `apps/`, serves REST endpoints for recognition, reasoning, configuration, notifications, database helpers, streaming metadata, annotation export, and model-training file operations, and runs **Socket.IO** for WebRTC signaling and streaming features.
 - **`lib/`** holds shared logic: **edge** (browser-oriented capture, detection overlays, actions) and **cloud** (server pipelines, streaming, orchestration).
 - **`config/`** holds JavaScript configuration objects that drive recognition models, intervals, styling, and declarative or scripted actions for local and server pipelines.
-- **`apps/factory/web/`** is the **production-style demo** mounted at `/factory`, driven by factory-oriented config.
+- **`apps/factory/`** is the **production-style demo** mounted at `/factory`, driven by factory-oriented config.
 - **`apps/`** contains every browser UI: landing pages, streaming home/viewer/streamer/dashboard, annotator, training UI, compare tool, and more.
 
 ## Where to read next

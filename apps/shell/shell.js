@@ -93,7 +93,7 @@ const NAV_GROUPS = [
   {
     title: 'Demo',
     items: [
-      { href: '/factory/web', name: 'Production demo', icon: ICON.factory },
+      { href: '/factory', name: 'Production demo', icon: ICON.factory },
       { href: '/camera-stream', name: 'Camera stream', icon: ICON.camera },
       { href: '/streaming', name: 'Streaming', icon: ICON.streaming },
     ],

@@ -48,7 +48,7 @@ export function setupFrontendHosting(app) {
   const serverDetectionPath = path.join(__dirname, '..', 'apps', 'server-detection');
   const serverReasoningPath = path.join(__dirname, '..', 'apps', 'server-reasoning');
   const comparePath = path.join(__dirname, '..', 'apps', 'compare');
-  const factoryWebPath = path.join(__dirname, '..', 'apps', 'factory', 'web');
+  const factoryPath = path.join(__dirname, '..', 'apps', 'factory');
   const debugPath = path.join(__dirname, '..', 'apps', 'debug');
   const streamingPath = path.join(__dirname, '..', 'apps', 'streaming');
   const annotatePath = path.join(__dirname, '..', 'apps', 'annotate');
@@ -137,15 +137,20 @@ export function setupFrontendHosting(app) {
   app.use('/ui-kit', express.static(uiKitPath));
 
   // Production demo: flexible configuration web version at /factory
-  app.use('/factory', express.static(factoryWebPath));
+  app.get(/^\/factory\/web(\/.*)?$/, (req, res) => {
+    const rest = req.path.slice('/factory/web'.length) || '';
+    const qs = req.url.includes('?') ? req.url.slice(req.url.indexOf('?')) : '';
+    res.redirect(301, `/factory${rest}${qs}`);
+  });
+  app.use('/factory', express.static(factoryPath));
   app.get('/factory', (req, res) => {
-    res.sendFile(path.join(factoryWebPath, 'index.html'));
+    res.sendFile(path.join(factoryPath, 'index.html'));
   });
   app.get('/factory/', (req, res) => {
-    res.sendFile(path.join(factoryWebPath, 'index.html'));
+    res.sendFile(path.join(factoryPath, 'index.html'));
   });
   app.get('/factory/:id', (req, res) => {
-    res.sendFile(path.join(factoryWebPath, 'index.html'));
+    res.sendFile(path.join(factoryPath, 'index.html'));
   });
 
   // Config generator at /config-creator
