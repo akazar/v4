@@ -13,7 +13,7 @@ The root **`package.json`** and **`package-lock.json`** define the **Node.js app
 - **`package.json`** names the project, declares ECMAScript modules, lists engines (Node 18+), and pins **direct** dependencies such as Express, Socket.IO, Sharp, ONNX Runtime, Puppeteer, OpenAI and Google GenAI clients, dotenv, and WebRTC-related packages used by streaming features.
 - **`package-lock.json`** records the **exact dependency tree** (including transitive packages) so that `npm install` yields consistent versions across machines and CI.
 
-The **`apps/docs/package.json`** (under this documentation site) is **separate**: it only builds the Docusaurus site and does not affect the main Vision v4 server at the repository root.
+The **`apps/docs/package.json`** (under this documentation site) is **separate**: it only builds the static documentation site and does not affect the main Vision v4 server at the repository root.
 
 ## Functional details
 
@@ -48,7 +48,7 @@ The **`apps/docs/package.json`** (under this documentation site) is **separate**
 | `scripts.start` | Runs **`node server/main.js`** — the production entry for HTTP + Socket.IO. |
 | `scripts.recognize:yolo` | Runs **`lib/cloud/recognition/yolo/recognize-yolo.mjs`** directly for CLI/server-side YOLO experiments. |
 | `scripts.recognize:mediapipe` | Runs **`lib/cloud/recognition/mediapipe/recognize-mediapipe.js`** for CLI MediaPipe. |
-| `scripts.docs:*` | Delegate to **`apps/docs`** (`npm run … --prefix apps/docs`) for Docusaurus. |
+| `scripts.docs:*` | Delegate to **`apps/docs`** (`npm run … --prefix apps/docs`) for the documentation site. |
 | `engines.node` | Declares **>= 18** for the main app (docs app separately requires Node 20 in its own `package.json`). |
 | `dependencies` | **Direct** packages only; versions use semver ranges (`^`). Consumers of these APIs: **`server/main.js`**, **`lib/cloud/**`**, **`server/hosting-server.js`**, streaming modules, etc. |
 
@@ -71,11 +71,11 @@ The **`apps/docs/package.json`** (under this documentation site) is **separate**
 | Field | Role |
 |-------|------|
 | `private: true` | Prevents accidental publish of the docs site as an npm package. |
-| `scripts` | **`docusaurus start` / `build` / `serve`** etc. |
-| `dependencies` | **React 19**, **@docusaurus/core**, **preset-classic**, MDX, prism. |
+| `scripts` | **`npm start` / `build` / `serve`** etc. for local dev and static output. |
+| `dependencies` | **React 19**, MDX, prism, and other docs-site packages. |
 
 **Cross-use:** Isolated from Vision v4 runtime; only the **`docs:*`** scripts in the **root** `package.json` bridge to this tree.
 
 ### `apps/docs/package-lock.json`
 
-Same structural role as the root lockfile but for **Docusaurus-only** dependencies. Keep both lockfiles committed if you want reproducible doc builds.
+Same structural role as the root lockfile but for **docs-site-only** dependencies. Keep both lockfiles committed if you want reproducible doc builds.

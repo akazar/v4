@@ -54,27 +54,19 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
-      image: 'img/docusaurus-social-card.jpg',
+      image: 'img/logo.svg',
       colorMode: {
+        defaultMode: 'dark',
         respectPrefersColorScheme: true,
       },
       navbar: {
         title: 'Vision v4 docs',
-        logo: {
-          alt: 'Vision v4',
-          src: 'img/logo.svg',
-        },
         items: [
           {
             type: 'docSidebar',
             sidebarId: 'docsSidebar',
             position: 'left',
             label: 'Documentation',
-          },
-          {
-            href: 'https://docusaurus.io/',
-            label: 'Docusaurus',
-            position: 'right',
           },
         ],
       },
@@ -90,21 +82,12 @@ const config = {
               },
             ],
           },
-          {
-            title: 'Built with',
-            items: [
-              {
-                label: 'Docusaurus',
-                href: 'https://docusaurus.io/',
-              },
-            ],
-          },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} Vision v4. Built with Docusaurus.`,
+        copyright: `Copyright © ${new Date().getFullYear()} Vision v4.`,
       },
       prism: {
         theme: prismThemes.github,
-        darkTheme: prismThemes.dracula,
+        darkTheme: prismThemes.vsDark,
       },
     }),
 };

@@ -1,41 +1,55 @@
-# Website
+# Vision v4 documentation site
 
-This website is built using [Docusaurus](https://docusaurus.io/), a modern static website generator.
+Static documentation for the Vision v4 repository, built from Markdown under `docs/` and served at `/documentation/` after a production build.
 
 ## Installation
 
-```bash
-yarn
-```
-
-## Local Development
+From the repository root:
 
 ```bash
-yarn start
+npm install --prefix apps/docs
 ```
 
-This command starts a local development server and opens up a browser window. Most changes are reflected live without having to restart the server.
+Or from this directory:
+
+```bash
+npm install
+```
+
+## Local development
+
+From the repository root:
+
+```bash
+npm run docs:dev
+```
+
+Or from this directory:
+
+```bash
+npm start
+```
+
+This starts a local dev server with hot reload for content and theme changes.
 
 ## Build
 
-```bash
-yarn build
-```
-
-This command generates static content into the `build` directory and can be served using any static contents hosting service.
-
-## Deployment
-
-Using SSH:
+From the repository root:
 
 ```bash
-USE_SSH=true yarn deploy
+npm run docs:build
 ```
 
-Not using SSH:
+Or from this directory:
 
 ```bash
-GIT_USER=<Your GitHub username> yarn deploy
+npm run build
 ```
 
-If you are using GitHub pages for hosting, this command is a convenient way to build the website and push to the `gh-pages` branch.
+Output is written to `apps/docs/build/`. The main Vision server serves that folder at `/documentation/` when it exists.
+
+## Preview production build
+
+```bash
+npm run serve
+```

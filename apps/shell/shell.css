@@ -116,6 +116,74 @@ body.v4-app-shell--nav-open #v4-app-nav {
   padding: 0;
 }
 
+#v4-app-nav .v4-app-nav-separator {
+  height: 1px;
+  margin: 0.5rem 0.9rem;
+  background: var(--border-subtle, rgba(255, 255, 255, 0.08));
+  list-style: none;
+}
+
+#v4-app-nav .v4-app-nav-group {
+  list-style: none;
+}
+
+#v4-app-nav .v4-app-nav-group-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.45rem 0.9rem 0.2rem;
+  border: none;
+  background: transparent;
+  color: var(--text, #e8e8e8);
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  text-align: left;
+}
+
+#v4-app-nav .v4-app-nav-group-toggle:hover,
+#v4-app-nav .v4-app-nav-group-toggle:focus-visible {
+  background: var(--surface-alt, #1a1a1a);
+  outline: none;
+}
+
+#v4-app-nav .v4-app-nav-group-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  color: var(--text-muted, #888);
+  transition: transform var(--v4-shell-ease);
+}
+
+#v4-app-nav .v4-app-nav-group-toggle[aria-expanded='false'] .v4-app-nav-group-arrow {
+  transform: rotate(-90deg);
+}
+
+#v4-app-nav .v4-app-nav-group-arrow svg {
+  width: 16px;
+  height: 16px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+#v4-app-nav .v4-app-nav-group-items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+#v4-app-nav .v4-app-nav-group-items.is-collapsed {
+  display: none;
+}
+
 #v4-app-nav .v4-app-nav-list a {
   display: flex;
   align-items: center;

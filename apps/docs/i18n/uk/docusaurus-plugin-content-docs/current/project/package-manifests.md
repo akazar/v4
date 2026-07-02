@@ -13,7 +13,7 @@ title: package.json і package-lock.json
 - **`package.json`** іменує проєкт, оголошує ES-модулі, задає engines (Node 18+) і фіксує **прямі** залежності: Express, Socket.IO, Sharp, ONNX Runtime, Puppeteer, клієнти OpenAI і Google GenAI, dotenv, пакунки для WebRTC у стримінгу.
 - **`package-lock.json`** зберігає **точне дерево залежностей** (у т.ч. транзитивні), щоб `npm install` дав однакові версії на машинах і в CI.
 
-**`apps/docs/package.json`** (цей сайт документації) **окремий**: лише збирає Docusaurus і не впливає на основний сервер Vision v4 у корені репозиторію.
+**`apps/docs/package.json`** (цей сайт документації) **окремий**: лише збирає статичний сайт документації і не впливає на основний сервер Vision v4 у корені репозиторію.
 
 ## Функціональні деталі
 
@@ -71,11 +71,11 @@ title: package.json і package-lock.json
 | Поле | Роль |
 |------|------|
 | `private: true` | Забороняє випадковий `npm publish` сайту документації. |
-| `scripts` | **`docusaurus start` / `build` / `serve`** тощо. |
-| `dependencies` | **React 19**, **@docusaurus/core**, preset-classic, MDX, prism. |
+| `scripts` | **`npm start` / `build` / `serve`** тощо для локальної розробки та статичної збірки. |
+| `dependencies` | **React 19**, MDX, prism та інші пакунки сайту документації. |
 
 **Зв’язок:** ізольовано від runtime Vision; міст **`docs:*`** у **кореневому** `package.json`.
 
 ### `apps/docs/package-lock.json`
 
-Та сама роль, що й кореневий lockfile, але лише для залежностей **Docusaurus**. Обидва lockfile варто комітити для відтворюваних збірок документації.
+Та сама роль, що й кореневий lockfile, але лише для залежностей **сайту документації**. Обидва lockfile варто комітити для відтворюваних збірок документації.

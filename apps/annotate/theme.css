@@ -272,6 +272,8 @@ body {
 /* Image / video viewport */
 #view_container {
   background: var(--bg);
+  margin-left: 30px;
+  margin-right: 30px;
 }
 
 #view_container > .view_metadata_container {

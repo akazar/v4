@@ -40,7 +40,7 @@ Focused on **server** and **hybrid** flows:
 | **Cloud** | Compare and server-detection UIs get server-side boxes; reasoning UIs get text; streaming home can resolve stream metadata; config manager lists files; training UI can persist placeholder weights. |
 | **Cross-cutting** | The same conceptual “detection result” shape can move between client and server panels so compare views stay aligned. |
 
-**Documentation note:** `lib/API.md` in the repo is a **developer reference** for edge functions. This Docusaurus site stays at the **capability** level per your request.
+**Documentation note:** `lib/API.md` in the repo is a **developer reference** for edge functions. This documentation site stays at the **capability** level per your request.
 
 ## Code
 

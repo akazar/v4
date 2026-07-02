@@ -16,7 +16,7 @@ When you start the main script, the process:
 
 1. Loads environment (including optional API keys from `.env`).
 2. Builds an Express application and an underlying HTTP server (needed for WebSocket upgrades).
-3. Registers **static hosting** so browsers can load HTML, CSS, and JS from `apps/`, the repository root (for shared `config/` and `lib/` imports), `factory/web`, the shared UI kit, and the Docusaurus output at `/documentation/` when `apps/docs/build` exists.
+3. Registers **static hosting** so browsers can load HTML, CSS, and JS from `apps/`, the repository root (for shared `config/` and `lib/` imports), `factory/web`, the shared UI kit, and the documentation site build at `/documentation/` when `apps/docs/build` exists.
 4. Mounts **API routers** for cloud features: recognition, reasoning, notifications, database helpers, configuration listing/serving, annotate export, model-training uploads/list/delete, home-stream metadata, and Puppeteer-based captured-stream preview.
 5. Attaches the **streaming** subsystem on the same HTTP port (signaling and related realtime behavior).
 6. Listens on a configurable **port** (environment override or default).

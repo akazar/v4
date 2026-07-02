@@ -31,8 +31,6 @@ title: Вступ
 | Демо factory | [factory](./project/factory) |
 | Усі браузерні застосунки | [Огляд застосунків](./apps/overview) |
 
-Документацію згенеровано за допомогою [Docusaurus](https://docusaurus.io/).
-
 ## Code
 
 ### Точка входу процесу

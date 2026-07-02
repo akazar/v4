@@ -55,24 +55,52 @@ const ICON = {
   docs: S(
     '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><path d="M8 7h8M8 11h6"/>'
   ),
+  chevron: S('<path d="M6 9l6 6 6-6"/>'),
 };
 
-const NAV = [
-  { href: '/', name: 'Home', icon: ICON.home },
-  { href: '/config-manager', name: 'Config manager', icon: ICON.configManager },
-  { href: '/config-creator-adv', name: 'Config generator', icon: ICON.configCreatorAdv },
-  { href: '/conveyor-poc', name: 'Conveyor POC', icon: ICON.conveyor },
-  { href: '/model-training/dashboard', name: 'Models dashboard', icon: ICON.modelDash },
-  { href: '/annotate', name: 'Image annotator', icon: ICON.annotate },
-  { href: '/model-training', name: 'Model training', icon: ICON.modelTrain },
-  { href: '/image-upload', name: 'Image recognition', icon: ICON.imageUpload },
-  { href: '/server-detection', name: 'Server recognition', icon: ICON.serverDet },
-  { href: '/server-reasoning', name: 'Server reasoning', icon: ICON.serverReason },
-  { href: '/compare', name: 'Compare models', icon: ICON.compare },
-  { href: '/documentation/', name: 'Documentation', icon: ICON.docs },
-  { href: '/factory/web', name: 'Production demo', icon: ICON.factory },
-  { href: '/camera-stream', name: 'Camera stream', icon: ICON.camera },
-  { href: '/streaming', name: 'Streaming', icon: ICON.streaming },
+const NAV_GROUPS = [
+  {
+    items: [{ href: '/', name: 'Home', icon: ICON.home }],
+  },
+  {
+    title: 'Training',
+    items: [
+      { href: '/annotate', name: 'Image annotator', icon: ICON.annotate },
+      { href: '/model-training', name: 'Model training', icon: ICON.modelTrain },
+      { href: '/model-training/dashboard', name: 'Models dashboard', icon: ICON.modelDash },
+    ],
+  },
+  {
+    title: 'Configuration',
+    items: [
+      { href: '/config-creator-adv', name: 'Config generator', icon: ICON.configCreatorAdv },
+      { href: '/config-manager', name: 'Config manager', icon: ICON.configManager },
+    ],
+  },
+  {
+    title: 'Generation',
+    items: [{ href: '/conveyor-poc', name: 'Conveyor POC', icon: ICON.conveyor }],
+  },
+  {
+    title: 'Testing',
+    items: [
+      { href: '/image-upload', name: 'Image recognition', icon: ICON.imageUpload },
+      { href: '/server-detection', name: 'Server recognition', icon: ICON.serverDet },
+      { href: '/server-reasoning', name: 'Server reasoning', icon: ICON.serverReason },
+      { href: '/compare', name: 'Compare models', icon: ICON.compare },
+    ],
+  },
+  {
+    title: 'Demo',
+    items: [
+      { href: '/factory/web', name: 'Production demo', icon: ICON.factory },
+      { href: '/camera-stream', name: 'Camera stream', icon: ICON.camera },
+      { href: '/streaming', name: 'Streaming', icon: ICON.streaming },
+    ],
+  },
+  {
+    items: [{ href: '/documentation/', name: 'Documentation', icon: ICON.docs }],
+  },
 ];
 
 function normalizePath(p) {
@@ -123,6 +151,22 @@ function toggleNav() {
   else openNav();
 }
 
+function createNavLink(item, path) {
+  const li = document.createElement('li');
+  const a = document.createElement('a');
+  a.href = item.href;
+  a.innerHTML = `<span class="v4-app-nav-icon">${item.icon}</span><span class="v4-app-nav-label">${item.name}</span>`;
+  if (isActivePath(path, item.href)) {
+    a.classList.add('is-active');
+    a.setAttribute('aria-current', 'page');
+  }
+  a.addEventListener('click', () => {
+    if (window.matchMedia('(max-width: 720px)').matches) closeNav();
+  });
+  li.appendChild(a);
+  return li;
+}
+
 function init() {
   if (document.documentElement.dataset.v4AppShell === 'off') return;
 
@@ -148,20 +192,40 @@ function init() {
   const list = document.createElement('ul');
   list.className = 'v4-app-nav-list';
 
-  for (const item of NAV) {
-    const li = document.createElement('li');
-    const a = document.createElement('a');
-    a.href = item.href;
-    a.innerHTML = `<span class="v4-app-nav-icon">${item.icon}</span><span class="v4-app-nav-label">${item.name}</span>`;
-    if (isActivePath(path, item.href)) {
-      a.classList.add('is-active');
-      a.setAttribute('aria-current', 'page');
+  for (let gi = 0; gi < NAV_GROUPS.length; gi++) {
+    const group = NAV_GROUPS[gi];
+    if (gi > 0) {
+      const sep = document.createElement('li');
+      sep.className = 'v4-app-nav-separator';
+      sep.setAttribute('role', 'separator');
+      list.appendChild(sep);
     }
-    a.addEventListener('click', () => {
-      if (window.matchMedia('(max-width: 720px)').matches) closeNav();
-    });
-    li.appendChild(a);
-    list.appendChild(li);
+
+    const groupLi = document.createElement('li');
+    groupLi.className = 'v4-app-nav-group';
+
+    const itemsUl = document.createElement('ul');
+    itemsUl.className = 'v4-app-nav-group-items';
+
+    if (group.title) {
+      const toggle = document.createElement('button');
+      toggle.type = 'button';
+      toggle.className = 'v4-app-nav-group-toggle';
+      toggle.setAttribute('aria-expanded', 'true');
+      toggle.innerHTML = `<span class="v4-app-nav-group-label">${group.title}</span><span class="v4-app-nav-group-arrow">${ICON.chevron}</span>`;
+      toggle.addEventListener('click', () => {
+        const expanded = toggle.getAttribute('aria-expanded') === 'true';
+        toggle.setAttribute('aria-expanded', String(!expanded));
+        itemsUl.classList.toggle('is-collapsed', expanded);
+      });
+      groupLi.appendChild(toggle);
+    }
+
+    for (const item of group.items) {
+      itemsUl.appendChild(createNavLink(item, path));
+    }
+    groupLi.appendChild(itemsUl);
+    list.appendChild(groupLi);
   }
   nav.appendChild(list);
 

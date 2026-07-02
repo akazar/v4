@@ -26,7 +26,7 @@ The folder can be **large** and is **regenerated** by running `npm install` at t
 |--------|------|
 | **Install** | Populated by `npm install` using the lockfile for deterministic versions. |
 | **Runtime** | Node resolves `import` / `require` from these packages when the server or scripts run. |
-| **Docs app** | The Docusaurus site under `apps/docs` has its **own** `node_modules` after you install there; it is independent of the root tree. |
+| **Docs app** | The documentation site under `apps/docs` has its **own** `node_modules` after you install there; it is independent of the root tree. |
 | **Clean slate** | Deleting `node_modules` and reinstalling fixes many corruption or version drift issues. |
 
 **Why document it:** New contributors should treat `node_modules` as a **binary artifact**: never edit it manually, never commit it, and expect it to differ between machines only by npm version or lockfile changes.
@@ -49,7 +49,7 @@ The folder can be **large** and is **regenerated** by running `npm install` at t
 
 - **`server/main.js`** — `express`, `http`.
 - **`lib/cloud/**`** — `openai`, `@google/genai`, `socket.io`, `puppeteer`, `sharp`, `onnxruntime-node`, `node-fetch`, etc., depending on module.
-- **`apps/docs`** — separate tree: **`@docusaurus/*`**, **`react`**, resolved from **`apps/docs/node_modules`**.
+- **`apps/docs`** — separate tree: **React**, **MDX**, and other docs-site packages resolved from **`apps/docs/node_modules`**.
 
 ### Variables and artifacts
 

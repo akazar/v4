@@ -49,7 +49,7 @@ title: node_modules
 
 - **`server/main.js`** — `express`, `http`.
 - **`lib/cloud/**`** — залежно від модуля: `openai`, `@google/genai`, `socket.io`, `puppeteer`, …
-- **`apps/docs`** — окреме дерево: `@docusaurus/*`, `react` з **`apps/docs/node_modules`**.
+- **`apps/docs`** — окреме дерево: **React**, **MDX** та інші пакунки сайту документації з **`apps/docs/node_modules`**.
 
 ### Змінні та артефакти
 

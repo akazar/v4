@@ -1,30 +1,142 @@
 /**
- * Any CSS included here will be global. The classic template
- * bundles Infima by default. Infima is a CSS framework designed to
- * work well for content-centric websites.
+ * Vision v4 docs — Infima overrides aligned with apps/ui-kit/ui-kit.css
  */
 
-/* You can override the default Infima variables here. */
 :root {
-  --ifm-color-primary: #2e8555;
-  --ifm-color-primary-dark: #29784c;
-  --ifm-color-primary-darker: #277148;
-  --ifm-color-primary-darkest: #205d3b;
-  --ifm-color-primary-light: #33925d;
-  --ifm-color-primary-lighter: #359962;
-  --ifm-color-primary-lightest: #3cad6e;
+  /* ui-kit design tokens */
+  --bg: #0a0a0a;
+  --surface: #141414;
+  --surface-alt: #1a1a1a;
+  --text: #e8e8e8;
+  --text-muted: #888888;
+  --accent: #6b6b6b;
+  --accent-hover: #8a8a8a;
+  --danger: #c44;
+  --link: #a8c0dc;
+  --link-hover: #c5d8f0;
+  --radius: 0;
+  --border-subtle: rgba(255, 255, 255, 0.07);
+  --shadow-block:
+    0 0 0 1px rgba(255, 255, 255, 0.07),
+    0 2px 10px rgba(255, 255, 255, 0.04),
+    0 8px 28px rgba(255, 255, 255, 0.03);
+  --uk-focus-ring: 0 0 0 2px rgba(120, 120, 120, 0.2);
+
+  --ifm-font-family-base: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --ifm-font-family-monospace: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --ifm-global-radius: var(--radius);
   --ifm-code-font-size: 95%;
-  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
+
+  /* Grey accent (light mode) */
+  --ifm-color-primary: #6b6b6b;
+  --ifm-color-primary-dark: #5a5a5a;
+  --ifm-color-primary-darker: #525252;
+  --ifm-color-primary-darkest: #404040;
+  --ifm-color-primary-light: #7a7a7a;
+  --ifm-color-primary-lighter: #8a8a8a;
+  --ifm-color-primary-lightest: #9a9a9a;
+
+  --ifm-link-color: #5a6f88;
+  --ifm-link-hover-color: #3d5268;
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.06);
 }
 
-/* For readability concerns, you should choose a lighter palette in dark mode. */
 [data-theme='dark'] {
-  --ifm-color-primary: #25c2a0;
-  --ifm-color-primary-dark: #21af90;
-  --ifm-color-primary-darker: #1fa588;
-  --ifm-color-primary-darkest: #1a8870;
-  --ifm-color-primary-light: #29d5b0;
-  --ifm-color-primary-lighter: #32d8b4;
-  --ifm-color-primary-lightest: #4fddbf;
-  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+  --ifm-color-primary: var(--accent);
+  --ifm-color-primary-dark: #5a5a5a;
+  --ifm-color-primary-darker: #525252;
+  --ifm-color-primary-darkest: #404040;
+  --ifm-color-primary-light: #7a7a7a;
+  --ifm-color-primary-lighter: var(--accent-hover);
+  --ifm-color-primary-lightest: #9a9a9a;
+
+  --ifm-background-color: var(--bg);
+  --ifm-background-surface-color: var(--surface);
+  --ifm-font-color-base: var(--text);
+  --ifm-font-color-secondary: var(--text-muted);
+  --ifm-font-color-secondary-inverse: var(--text-muted);
+
+  --ifm-link-color: var(--link);
+  --ifm-link-hover-color: var(--link-hover);
+
+  --ifm-navbar-background-color: var(--surface);
+  --ifm-navbar-link-color: var(--text);
+  --ifm-navbar-link-hover-color: var(--text);
+  --ifm-navbar-shadow: var(--shadow-block);
+
+  --ifm-footer-background-color: var(--bg);
+  --ifm-footer-color: var(--text-muted);
+  --ifm-footer-link-color: var(--text-muted);
+  --ifm-footer-link-hover-color: var(--text);
+  --ifm-footer-title-color: var(--text);
+
+  --ifm-menu-color: var(--text-muted);
+  --ifm-menu-color-active: var(--text);
+  --ifm-menu-color-background-active: var(--surface-alt);
+  --ifm-menu-color-background-hover: var(--surface-alt);
+
+  --ifm-toc-border-color: var(--border-subtle);
+  --ifm-table-border-color: var(--border-subtle);
+  --ifm-hr-border-color: var(--border-subtle);
+  --ifm-color-emphasis-200: rgba(255, 255, 255, 0.06);
+  --ifm-color-emphasis-300: var(--border-subtle);
+  --ifm-color-emphasis-500: var(--text-muted);
+  --ifm-color-emphasis-700: var(--text);
+  --ifm-color-emphasis-800: var(--text);
+
+  --ifm-code-background: var(--surface-alt);
+  --ifm-pre-background: var(--surface-alt);
+  --ifm-border-color: var(--border-subtle);
+
+  --ifm-button-background-color: var(--surface-alt);
+  --ifm-button-border-color: var(--border-subtle);
+  --ifm-button-color: var(--text);
+
+  --ifm-card-background-color: var(--surface);
+  --ifm-dropdown-background-color: var(--surface);
+  --ifm-dropdown-hover-background-color: var(--surface-alt);
+
+  --ifm-scrollbar-track-background-color: var(--bg);
+  --ifm-scrollbar-thumb-background-color: var(--accent);
+  --ifm-scrollbar-thumb-hover-background-color: var(--accent-hover);
+
+  --docusaurus-highlighted-code-line-bg: rgba(255, 255, 255, 0.06);
+}
+
+/* Sidebar & doc chrome */
+[data-theme='dark'] .theme-doc-sidebar-container {
+  background: var(--surface);
+  border-right: 1px solid var(--border-subtle);
+}
+
+[data-theme='dark'] .navbar {
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+[data-theme='dark'] .footer {
+  border-top: 1px solid var(--border-subtle);
+}
+
+[data-theme='dark'] .menu__link--active:not(.menu__link--sublist) {
+  background: var(--surface-alt);
+}
+
+[data-theme='dark'] a:focus-visible,
+[data-theme='dark'] button:focus-visible {
+  outline: none;
+  box-shadow: var(--uk-focus-ring);
+}
+
+[data-theme='dark'] .markdown h1,
+[data-theme='dark'] .markdown h2,
+[data-theme='dark'] .markdown h3 {
+  color: var(--text);
+}
+
+[data-theme='dark'] .markdown code {
+  border: 1px solid var(--border-subtle);
+}
+
+[data-theme='dark'] .table-of-contents__link--active {
+  color: var(--link-hover);
 }

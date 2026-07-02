@@ -4,7 +4,7 @@
  * /ua (Ukrainian landing), /config-creator, /config-creator-adv, /config-manager, /camera-stream, /image-upload, /model-training,
  * /model-training/dashboard,
  * /server-detection,
- * /server-reasoning, /compare, /streaming, /annotate, /debug, and /documentation (Docusaurus build). Serves the v4 root for shared lib/ and config/.
+ * /server-reasoning, /compare, /streaming, /annotate, /debug, and /documentation (docs build). Serves the v4 root for shared lib/ and config/.
  */
 
 import { existsSync } from 'fs';
@@ -57,6 +57,27 @@ export function setupFrontendHosting(app) {
   const uiKitPath = path.join(appsPath, 'ui-kit');
   const docsBuildPath = path.join(__dirname, '..', 'apps', 'docs', 'build');
 
+  /**
+   * Resolve a pre-rendered docs HTML file for client-router paths (e.g. /documentation/docs/intro).
+   * Docusaurus emits docs/intro/index.html; express.static does not serve that without a trailing slash.
+   */
+  function resolveDocsHtml(relPath) {
+    const rel = relPath.replace(/^\/+/, '').replace(/\/+$/, '');
+    if (!rel) {
+      return path.join(docsBuildPath, 'index.html');
+    }
+    const candidates = [
+      path.join(docsBuildPath, rel, 'index.html'),
+      path.join(docsBuildPath, `${rel}.html`),
+    ];
+    for (const file of candidates) {
+      if (existsSync(file)) {
+        return file;
+      }
+    }
+    return null;
+  }
+
   // Landing page at root (EN) and Ukrainian at /ua
   app.get('/', (req, res) => {
     res.sendFile(path.join(landingPath, 'index.html'));
@@ -69,19 +90,35 @@ export function setupFrontendHosting(app) {
   });
   app.use(express.static(landingPath));
 
-  // Docusaurus docs (production build). Dev / hot reload: npm run docs:dev from repo root.
-  // Serve /documentation/ explicitly: express.static's default trailing-slash redirects would
-  // 301 /documentation/ → /documentation/ and cause ERR_TOO_MANY_REDIRECTS.
+  // Documentation site (production build). Dev / hot reload: npm run docs:dev from repo root.
   if (existsSync(path.join(docsBuildPath, 'index.html'))) {
-    app.get('/documentation/', (req, res) => {
-      res.sendFile(path.join(docsBuildPath, 'index.html'));
+    // Short paths without the /documentation prefix (e.g. /docs/intro from bookmarks).
+    app.get(/^\/docs(\/.*)?$/, (req, res) => {
+      const target =
+        req.path === '/docs' ? '/documentation/docs/intro' : `/documentation${req.path}`;
+      res.redirect(301, target);
     });
+
     app.get('/documentation', (req, res) => {
       res.redirect(301, '/documentation/');
     });
+    app.get('/documentation/', (req, res) => {
+      res.sendFile(path.join(docsBuildPath, 'index.html'));
+    });
+
     app.use(
       '/documentation',
-      express.static(docsBuildPath, { redirect: false })
+      express.static(docsBuildPath, { redirect: false }),
+      (req, res, next) => {
+        if (req.method !== 'GET' && req.method !== 'HEAD') {
+          return next();
+        }
+        const file = resolveDocsHtml(req.path);
+        if (file) {
+          return res.sendFile(file);
+        }
+        next();
+      }
     );
   } else {
     console.warn(

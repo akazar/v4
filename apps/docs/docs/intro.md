@@ -31,8 +31,6 @@ This site describes **what each part of the repository does** and how the **user
 | Factory demo bundle | [factory](./project/factory) |
 | All browser apps | [Applications overview](./apps/overview) |
 
-Documentation is generated with [Docusaurus](https://docusaurus.io/).
-
 ## Code
 
 ### Process entry
@@ -52,4 +50,4 @@ Category docs under **[Repository roots](./project/package-manifests)**, **[Back
 
 ### Docs site only
 
-**`apps/docs/`** (this Docusaurus project) is **not** imported at runtime; it has its own **`package.json`** / lockfile. After **`npm run docs:build`** at the repo root, the Vision server serves the static build at **`/documentation/`** on the same host and port as **`npm start`**. For authoring with hot reload, use **`npm run docs:dev`**.
+**`apps/docs/`** (this documentation site) is **not** imported at runtime; it has its own **`package.json`** / lockfile. After **`npm run docs:build`** at the repo root, the Vision server serves the static build at **`/documentation/`** on the same host and port as **`npm start`**. For authoring with hot reload, use **`npm run docs:dev`**.
