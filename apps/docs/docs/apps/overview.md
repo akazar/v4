@@ -19,7 +19,7 @@ All of these are served by the **main Node server** (see [Server](../project/ser
 | Landing (EN) | `/` | Product overview and links to all modules |
 | Landing (UA) | `/ua` | Ukrainian landing variant |
 | UI kit | `/ui-kit` | Shared CSS tokens and components |
-| Factory demo | `/factory` (static files under `factory/web/`) | Config-driven full pipeline |
+| Factory demo | `/factory` (static files under `apps/factory/web/`) | Config-driven full pipeline |
 | Config generator | `/config-creator` | Form-based builder for `config.js` |
 | Config manager | `/config-manager` | List / view / delete configs in `config/public` |
 | Camera stream | `/camera-stream` | Live camera with local detection controls |
@@ -52,7 +52,7 @@ Each app has a dedicated doc page with **visual elements** and **user workflows*
 | `/apps/...` (implicit) | `express.static(appsPath)` | per-folder assets |
 | `/lib/...` | `v4Root` | **`lib/**/*.js`** ES modules |
 | `/config/...` | `v4Root` | **`config/**/*.js`** |
-| `/factory` | `factory/web/` | factory SPA |
+| `/factory` | `apps/factory/web/` | factory SPA |
 | … | (see server doc) | … |
 
 ### Import convention in browser apps

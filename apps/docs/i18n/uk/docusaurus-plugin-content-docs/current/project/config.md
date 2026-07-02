@@ -47,7 +47,7 @@ title: config/
 
 ### `config/config-factory.js`
 
-Та сама форма **`CONFIG`**, налаштована під factory (наприклад **`name: 'config-factory'`**). Зручно як шаблон для авторів; **factory/web/script.js** у рантаймі зазвичай отримує JSON з **`/api/configurations/:id`**.
+Та сама форма **`CONFIG`**, налаштована під factory (наприклад **`name: 'config-factory'`**). Зручно як шаблон для авторів; **apps/factory/web/script.js** у рантаймі зазвичай отримує JSON з **`/api/configurations/:id`**.
 
 ### `config/config-default.js` / `config-old.js`
 

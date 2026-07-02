@@ -2,7 +2,7 @@
 title: Веб-демо Factory
 ---
 
-# Веб-демо Factory (`factory/web` → `/factory`)
+# Веб-демо Factory (`apps/factory/web` → `/factory`)
 
 ## Головна ідея
 
@@ -31,9 +31,9 @@ title: Веб-демо Factory
 
 ## Code
 
-Див. **[factory — Code](../project/factory#code)** для **`factory/web/script.js`**: **`fetch /api/configurations/:id`**, **`initApp`**, **`injectTopButtons`**, **`startRecognitionLoop`**.
+Див. **[factory — Code](../project/factory#code)** для **`apps/factory/web/script.js`**: **`fetch /api/configurations/:id`**, **`initApp`**, **`injectTopButtons`**, **`startRecognitionLoop`**.
 
-### `factory/web/index.html` (коротко)
+### `apps/factory/web/index.html` (коротко)
 
 CDN **`ort.min.js`**, модуль **`script.js`**. Без інлайн-UI — той самий підхід, що й **`apps/debug`**.
 
@@ -43,4 +43,4 @@ CDN **`ort.min.js`**, модуль **`script.js`**. Без інлайн-UI — �
 |--------|---------|----------------|
 | **Джерело конфігу** | **GET `/api/configurations/:id`** (query **`id`**) | Статичний **`import '../../config/config.js'`** |
 | **UI** | **`injectTopButtons` + `ui:state`** | Явні кнопки в HTML і `script.js` |
-| **Розташування** | `factory/web`, URL **`/factory`** | `apps/camera-stream` |
+| **Розташування** | `apps/factory/web`, URL **`/factory`** | `apps/camera-stream` |

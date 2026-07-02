@@ -1,12 +1,12 @@
 ---
-title: factory/
+title: apps/factory/
 ---
 
-# Factory (`factory/`)
+# Factory (`apps/factory/`)
 
 ## Головна ідея
 
-**`factory/`** містить **веб-демо у стилі продакшену**, яке проганяє повний **конфіг-керований** vision-конвеєр в одному браузерному досвіді. Статичний бандл у **`factory/web/`** віддається за **`/factory`** (глибокі посилання наприклад `/factory/:id` теж віддають той самий shell, щоб клієнт прочитав id).
+**`apps/factory/`** містить **веб-демо у стилі продакшену**, яке проганяє повний **конфіг-керований** vision-конвеєр в одному браузерному досвіді. Статичний бандл у **`apps/factory/web/`** віддається за **`/factory`** (глибокі посилання наприклад `/factory/:id` теж віддають той самий shell, щоб клієнт прочитав id).
 
 ## Детальніше
 
@@ -27,16 +27,16 @@ title: factory/
 | **Деплой** | Статика + спільний `lib/`, той самий Node-сервер і origin, без окремого бандлера для shell. |
 | **Глибокі посилання** | Сегменти шляху або query дозволяють закладки з обраним id конфігу. |
 
-**Стосунок з `apps/`:** за змістом близько до camera/streaming, але **живе в `factory/`** як «вітрина» з лендінгу та документації.
+**Стосунок з іншими застосунками:** за змістом близько до camera/streaming; **`apps/factory/`** — «вітрина» з лендінгу та документації.
 
 ## Code
 
-### `factory/web/index.html`
+### `apps/factory/web/index.html`
 
 - **Head** — **`/ui-kit/ui-kit.css`**, **`styles.css`** за потреби; **body** мінімальний.
 - **Scripts** — CDN **`ort.min.js`**, потім **`type="module"`** → **`script.js`**.
 
-### `factory/web/script.js`
+### `apps/factory/web/script.js`
 
 **Імпорти (edge):** **`capture`**, **`source-to-canvas`**, **`bounding-boxes`**, **`actions`**, **`ui` → `injectTopButtons`**.
 

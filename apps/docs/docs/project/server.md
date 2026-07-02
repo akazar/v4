@@ -16,7 +16,7 @@ When you start the main script, the process:
 
 1. Loads environment (including optional API keys from `.env`).
 2. Builds an Express application and an underlying HTTP server (needed for WebSocket upgrades).
-3. Registers **static hosting** so browsers can load HTML, CSS, and JS from `apps/`, the repository root (for shared `config/` and `lib/` imports), `factory/web`, the shared UI kit, and the documentation site build at `/documentation/` when `apps/docs/build` exists.
+3. Registers **static hosting** so browsers can load HTML, CSS, and JS from `apps/`, the repository root (for shared `config/` and `lib/` imports), `apps/factory/web`, the shared UI kit, and the documentation site build at `/documentation/` when `apps/docs/build` exists.
 4. Mounts **API routers** for cloud features: recognition, reasoning, notifications, database helpers, configuration listing/serving, annotate export, model-training uploads/list/delete, home-stream metadata, and Puppeteer-based captured-stream preview.
 5. Attaches the **streaming** subsystem on the same HTTP port (signaling and related realtime behavior).
 6. Listens on a configurable **port** (environment override or default).
@@ -84,9 +84,9 @@ The server exposes a simple **health** URL for uptime checks. Startup logs indic
 - **`app.use(express.static(v4Root))`** — serves **`config/`**, **`lib/`**, repo root files at **URL root** so browser imports like **`/lib/edge/...`** work.
 - **`app.use(express.static(appsPath))`** — sibling assets for apps.
 - **`/ui-kit`** — explicit static mount for **`apps/ui-kit`**.
-- **`/factory`** (+ **`/factory/:id`**) — **`factory/web`** SPA shell.
+- **`/factory`** (+ **`/factory/:id`**) — **`apps/factory/web`** SPA shell.
 - Per-app prefixes **`/config-creator`**, **`/config-manager`**, **`/camera-stream`**, **`/image-upload`**, **`/model-training`**, **`/model-training/dashboard`**, **`/server-detection`**, **`/server-reasoning`**, **`/compare`**, **`/debug`**, **`/streaming`**, **`/annotate`** — each pairs **`static`** middleware with **`sendFile(index.html)`** for clean URLs.
 
-**Used by:** all **`apps/**`** pages loaded in the browser; **`factory/web`**; browser module imports from **`/lib`** and **`/config`**.
+**Used by:** all **`apps/**`** pages loaded in the browser; **`apps/factory/web`**; browser module imports from **`/lib`** and **`/config`**.
 
 **Uses:** **`express`**, **`path`**, **`fileURLToPath`** for `__dirname` in ESM.

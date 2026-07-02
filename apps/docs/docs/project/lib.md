@@ -48,7 +48,7 @@ Focused on **server** and **hybrid** flows:
 
 | Module (path) | Main exports (symbols) | Parameters / behavior summary | Used by |
 |---------------|------------------------|------------------------------|---------|
-| `capture.js` | `getCameraStream`, `attachCameraStreamToVideo`, `waitForVideoAndPlay` | **constraints** optional for `getUserMedia`; **`doc`**, **`cameraStream`** for attach; **video** for play **Promise** | `apps/camera-stream/script.js`, `factory/web/script.js`, `apps/debug/script.js` |
+| `capture.js` | `getCameraStream`, `attachCameraStreamToVideo`, `waitForVideoAndPlay` | **constraints** optional for `getUserMedia`; **`doc`**, **`cameraStream`** for attach; **video** for play **Promise** | `apps/camera-stream/script.js`, `apps/factory/web/script.js`, `apps/debug/script.js` |
 | `image-format.js` | `toDataUrl`, `dataUrlToCanvas` | **source** → JPEG data URL; **dataUrl** → **Canvas** | Image upload, server-detection/reasoning clients |
 | `source-to-canvas.js` | `imageToCanvas`, `videoToReusableCanvas` (and related) | Normalize **video**/blob to **canvas** with size limits | Camera stream, factory, debug |
 | `bounding-boxes.js` | `boundingBoxes`, `clearBoundingBoxes`, `drawBoundingBoxes` | **recognitionResults**, **video**/canvas, **styles**; low-level **ctx**, **boxes** | All live-overlay UIs |

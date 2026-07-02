@@ -19,7 +19,7 @@ title: Огляд застосунків
 | Лендінг (EN) | `/` | Огляд продукту та посилання на модулі |
 | Лендінг (UA) | `/ua` | Український варіант лендінгу |
 | UI kit | `/ui-kit` | Спільні CSS-токени та компоненти |
-| Демо factory | `/factory` (файли в `factory/web/`) | Повний конфіг-керований конвеєр |
+| Демо factory | `/factory` (файли в `apps/factory/web/`) | Повний конфіг-керований конвеєр |
 | Config generator | `/config-creator` | Форма для збірки `config.js` |
 | Config manager | `/config-manager` | Список / перегляд / видалення `config/public` |
 | Camera stream | `/camera-stream` | Жива камера, локальне розпізнавання |
@@ -52,7 +52,7 @@ title: Огляд застосунків
 | (неявно) `apps/...` | `express.static(appsPath)` | активи по теках |
 | `/lib/...` | `v4Root` | **`lib/**/*.js`** як ES modules |
 | `/config/...` | `v4Root` | **`config/**/*.js`** |
-| `/factory` | `factory/web/` | SPA factory |
+| `/factory` | `apps/factory/web/` | SPA factory |
 | … | див. документ «Сервер» | … |
 
 ### Узгодженість import у браузері

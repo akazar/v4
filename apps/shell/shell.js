@@ -99,7 +99,7 @@ const NAV_GROUPS = [
     ],
   },
   {
-    items: [{ href: '/documentation/', name: 'Documentation', icon: ICON.docs }],
+    items: [{ href: '/documentation/docs/intro', name: 'Documentation', icon: ICON.docs }],
   },
 ];
 

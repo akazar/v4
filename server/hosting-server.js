@@ -48,7 +48,7 @@ export function setupFrontendHosting(app) {
   const serverDetectionPath = path.join(__dirname, '..', 'apps', 'server-detection');
   const serverReasoningPath = path.join(__dirname, '..', 'apps', 'server-reasoning');
   const comparePath = path.join(__dirname, '..', 'apps', 'compare');
-  const factoryWebPath = path.join(__dirname, '..', 'factory', 'web');
+  const factoryWebPath = path.join(__dirname, '..', 'apps', 'factory', 'web');
   const debugPath = path.join(__dirname, '..', 'apps', 'debug');
   const streamingPath = path.join(__dirname, '..', 'apps', 'streaming');
   const annotatePath = path.join(__dirname, '..', 'apps', 'annotate');

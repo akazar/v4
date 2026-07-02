@@ -50,7 +50,7 @@ Many files (e.g. color-themed or scenario-themed names) are **ready-made profile
 
 ### `config/config-factory.js`
 
-Same **`CONFIG`** shape as **`config.js`** but tuned for **`factory/web`** (e.g. **`name: 'config-factory'`**). **Used by** **`factory/web/script.js`** when not loading remotely.
+Same **`CONFIG`** shape as **`config.js`** but tuned for **`apps/factory/web`** (e.g. **`name: 'config-factory'`**). **Used by** **`apps/factory/web/script.js`** when not loading remotely.
 
 ### `config/config-default.js` / `config-old.js`
 

@@ -1,7 +1,7 @@
-import { getCameraStream, attachCameraStreamToVideo, waitForVideoAndPlay } from '../../lib/edge/capture.js';
-import { clearBoundingBoxes } from '../../lib/edge/bounding-boxes.js';
-import { injectTopButtons } from '../../lib/edge/ui.js';
-import { startRecognitionPipeline } from '../../lib/edge/recognition-pipeline.js';
+import { getCameraStream, attachCameraStreamToVideo, waitForVideoAndPlay } from '../../../lib/edge/capture.js';
+import { clearBoundingBoxes } from '../../../lib/edge/bounding-boxes.js';
+import { injectTopButtons } from '../../../lib/edge/ui.js';
+import { startRecognitionPipeline } from '../../../lib/edge/recognition-pipeline.js';
 
 let cameraStream = null;
 let videoElement = null;

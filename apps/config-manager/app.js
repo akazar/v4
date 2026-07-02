@@ -1,7 +1,7 @@
 /**
  * Config Manager: list configs from GET /api/configurations,
  * Delete via DELETE /api/configurations/:id,
- * Test opens /factory/web/?id=:id, View shows read-only file content from /config/public/
+ * Test opens /factory/web/?id=:id (apps/factory/web), View shows read-only file content from /config/public/
  */
 
 const listEl = document.getElementById('configList');
