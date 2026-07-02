@@ -70,4 +70,4 @@ IIFE; **`annotateCollectSidecarImage`** повертає Promise з полями
 
 ### Сервер
 
-**`lib/cloud/annotate-export-server.js`** — прийом експортів у **`apps/annotate/annotation-list`**; список і delete для панелі.
+**`server/services/annotate-export-service.js`** — прийом експортів у **`apps/annotate/annotation-list`**; список і delete для панелі.

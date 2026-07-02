@@ -32,6 +32,6 @@ UI kit — **не** окремий застосунок з власним сце
 
 **Параметри:** немає (не скрипт). **Селектори** — спільні класи (наприклад `.btn`).
 
-**Хостинг:** **`express.static`** на **`/ui-kit`** → **`apps/ui-kit`** у **`hosting-server.js`**.
+**Хостинг:** **`express.static`** на **`/ui-kit`** → **`apps/ui-kit`** у **`hosting-service.js`**.
 
 **Хто підключає:** `apps/landing`, `camera-stream`, `config-creator`, `streaming` тощо — пошук **`ui-kit.css`** у `apps/**`.

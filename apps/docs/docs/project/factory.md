@@ -65,6 +65,6 @@ Behavior highlights:
 
 **`config-factory.js`** on disk is a **reference preset** for authors; the **running** factory page always consumes the **API-normalized** object.
 
-**Used by:** operators visiting **`/factory`**; **hosted** via **`server/hosting-server.js`**.
+**Used by:** operators visiting **`/factory`**; **hosted** via **`server/services/hosting-service.js`**.
 
 **Uses:** **`db/configs/config-factory.js`** or **configuration API**; all listed **`lib/edge/*`** modules.

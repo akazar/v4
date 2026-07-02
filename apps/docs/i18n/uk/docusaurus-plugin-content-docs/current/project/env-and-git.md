@@ -58,10 +58,10 @@ title: .env і .gitignore
 **Споживачі (через `process.env`):**
 
 - **`server/main.js`** — **`PORT`** (за замовчуванням 3001); наявність **`OPENAI_API_KEY`** (у лог лише маска).
-- **`lib/cloud/reasoning-server.js`** — відкладене читання **`OPENAI_API_KEY`**, **`GEMINI_API_KEY`** для клієнтів OpenAI / Google GenAI.
+- **`server/services/reasoning-service.js`** — відкладене читання **`OPENAI_API_KEY`**, **`GEMINI_API_KEY`** для клієнтів OpenAI / Google GenAI.
 - **Інші cloud-модулі** — будь-який виклик `process.env.*` після ініціалізації.
 
-### Завантаження — `lib/cloud/action-servers/api-server.js`
+### Завантаження — `server/services/action-services/api-service.js`
 
 | Символ | Роль |
 |--------|------|
@@ -71,6 +71,6 @@ title: .env і .gitignore
 | `loadedV4` / `loadedRoot` | якщо хоч один успішний — лог **`.env file loaded`**. |
 | Fallback | **`require('dotenv').config`** на тих самих шляхах у `try/catch`. |
 
-**Ланцюжок:** `setupApiServer(app)` викликається з **`server/main.js`** поряд з іншим налаштуванням; середовище має бути завантажене до обробки запитів **`setupReasoningServer`**.
+**Ланцюжок:** `setupApiService(app)` викликається з **`server/main.js`** поряд з іншим налаштуванням; середовище має бути завантажене до обробки запитів **`setupReasoningService`**.
 
 **Залежності:** **`.gitignore`** не дає закомітити `.env`; **`package.json`** містить **`dotenv`** для fallback.

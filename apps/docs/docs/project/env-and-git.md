@@ -58,10 +58,10 @@ The ignore file excludes:
 **Consumers (via `process.env`):**
 
 - **`server/main.js`** — reads **`PORT`** (defaults `3001`); logs presence of **`OPENAI_API_KEY`** (masked preview only).
-- **`lib/cloud/reasoning-server.js`** — lazy-reads **`OPENAI_API_KEY`**, **`GEMINI_API_KEY`** when building `OpenAI` / `GoogleGenAI` clients.
+- **`server/services/reasoning-service.js`** — lazy-reads **`OPENAI_API_KEY`**, **`GEMINI_API_KEY`** when building `OpenAI` / `GoogleGenAI` clients.
 - **Other cloud modules** — any feature that calls `process.env.*` after bootstrap.
 
-### Loading logic — `lib/cloud/action-servers/api-server.js`
+### Loading logic — `server/services/action-services/api-service.js`
 
 | Symbol | Role |
 |--------|------|
@@ -71,6 +71,6 @@ The ignore file excludes:
 | `loadedV4` / `loadedRoot` | Booleans; if either succeeds, logs **`.env file loaded`**. |
 | Fallback | Tries **`require('dotenv').config`** on the same paths (inside `try/catch` for resilience in ESM context). |
 
-**Call chain:** `setupApiServer(app)` is invoked from **`server/main.js`** **after** `express()` creation but alongside other setup; env must be loaded before **`setupReasoningServer`** handles requests.
+**Call chain:** `setupApiService(app)` is invoked from **`server/main.js`** **after** `express()` creation but alongside other setup; env must be loaded before **`setupReasoningService`** handles requests.
 
 **Cross-dependencies:** **`.gitignore`** ensures `.env` never commits; **`package.json`** lists **`dotenv`** as a dependency used in the fallback path.

@@ -44,7 +44,7 @@ function jpegToDataUrl(screenshotResult) {
 /**
  * @param {import('express').Express} app
  */
-export function setupCapturedStreamServer(app) {
+export function setupCapturedStreamService(app) {
   const sessions = new Map();
 
   async function destroySession(sessionId) {

@@ -55,27 +55,27 @@ The server exposes a simple **health** URL for uptime checks. Startup logs indic
 
 **Imports / setup order (logic):**
 
-1. **`setupFrontendHosting(app)`** — static files and HTML routes (`server/hosting-server.js`).
-2. **`setupApiServer(app)`** — CORS, JSON, **`/health`**, **`/api/describe`**, loads **`.env`** via **`api-server.js`** helper.
-3. **`setupRecognitionServer(app)`** — **`POST /api/recognize`** (`lib/cloud/recognition-server.js`).
-4. **`setupReasoningServer(app)`** — **`POST /api/reasoning`** (`lib/cloud/reasoning-server.js`).
-5. **`setupNotificationServer`**, **`setupDbServer`**, **`setupConfigurationServer`** — action/notify/db/config APIs.
-6. **`setupAnnotateExportServer`**, **`setupModelTrainingServer`**, **`setupStreamingHomeMetaServer`** — feature-specific REST.
-7. **`setupStreamingServer(server)`** — Socket.IO on **`server`**, not `app` alone.
-8. **`setupCapturedStreamServer(app)`** — Puppeteer capture preview routes.
+1. **`setupHostingService(app)`** — static files and HTML routes (`server/services/hosting-service.js`).
+2. **`setupApiService(app)`** — CORS, JSON, **`/health`**, **`/api/describe`**, loads **`.env`** via **`api-service.js`** helper.
+3. **`setupRecognitionService(app)`** — **`POST /api/recognize`** (`server/services/recognition-service.js`).
+4. **`setupReasoningService(app)`** — **`POST /api/reasoning`** (`server/services/reasoning-service.js`).
+5. **`setupNotificationService`**, **`setupDbService`**, **`setupConfigurationService`** — action/notify/db/config APIs.
+6. **`setupAnnotateExportService`**, **`setupModelTrainingService`**, **`setupStreamingHomeMetaService`** — feature-specific REST.
+7. **`setupStreamingService(server)`** — Socket.IO on **`server`**, not `app` alone.
+8. **`setupCapturedStreamService(app)`** — Puppeteer capture preview routes.
 9. **`server.listen(PORT, …)`** — binds HTTP.
 
 **Used by:** `npm start` → **`package.json` `scripts.start`**.
 
-**Uses:** every **`lib/cloud/*`** setup listed above; **`./hosting-server.js`**.
+**Uses:** every **`server/services/*`** setup listed above.
 
-### `server/hosting-server.js`
+### `server/services/hosting-service.js`
 
 | Export | Parameters | Returns | Role |
 |--------|------------|---------|------|
-| **`setupFrontendHosting`** | `app` (Express) | `void` | Registers **`app.get`** routes and **`express.static`** mounts. |
+| **`setupHostingService`** | `app` (Express) | `void` | Registers **`app.get`** routes and **`express.static`** mounts. |
 
-**Path `const` variables:** `v4Root`, `appsPath`, `landingPath`, `configCreatorPath`, `configManagerPath`, `cameraStreamPath`, `imageUploadPath`, `serverDetectionPath`, `serverReasoningPath`, `comparePath`, `factoryPath`, `debugPath`, `streamingPath`, `annotatePath`, `modelTrainingPath`, `uiKitPath`, `docsBuildPath` (`apps/docs/build`) — all **`path.join(__dirname, '..', …)`** from **`server/`** so files resolve under repo root.
+**Path `const` variables:** `v4Root`, `appsPath`, `landingPath`, … — **`path.join(__dirname, '..', '..', …)`** from **`server/services/`** so files resolve under repo root.
 
 **General logic:**
 

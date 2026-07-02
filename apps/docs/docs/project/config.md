@@ -46,7 +46,7 @@ Many files (e.g. color-themed or scenario-themed names) are **ready-made profile
 **Used by:**
 
 - **`apps/camera-stream/script.js`**, **`apps/image-upload/script.js`**, **`apps/server-detection/script.js`**, **`apps/server-reasoning/script.js`** — static import of default config.
-- **`lib/cloud/recognition-server.js`**, **`lib/cloud/action-servers/api-server.js`** — server-side **`import`** of **`db/configs/config.js`** for defaults and action function lists.
+- **`server/services/recognition-service.js`**, **`server/services/action-services/api-service.js`** — server-side **`import`** of **`db/configs/config.js`** for defaults and action function lists.
 
 ### `db/configs/config-factory.js`
 
@@ -62,10 +62,10 @@ Each file typically **`export default CONFIG`** (or **`export { CONFIG }`**) wit
 
 **Consumed by:**
 
-- **`lib/cloud/configuration-server.js`** — **`getConfiguration(id)`** builds a module URL under **`db/configs/public`** from **`id`** (with **`.js`** appended server-side) and **`import()`**s it; falls back to **`db/configs/config.js`**.
+- **`server/services/configuration-service.js`** — **`getConfiguration(id)`** builds a module URL under **`db/configs/public`** from **`id`** (with **`.js`** appended server-side) and **`import()`**s it; falls back to **`db/configs/config.js`**.
 - **Browser** — static fetch **`/db/configs/public/<file>.js`** as text (Config Manager **View**).
 
-### `lib/cloud/configuration-server.js` (API wiring)
+### `server/services/configuration-service.js` (API wiring)
 
 | Symbol | Parameters | Logic |
 |--------|------------|--------|
@@ -73,6 +73,6 @@ Each file typically **`export default CONFIG`** (or **`export { CONFIG }`**) wit
 | **`isSafeConfigName(name)`** | string | Allows **alphanumeric, `_`, `-`**, rejects dotfiles. |
 | **`getConfiguration(id)`** | route param **without `.js`** | Tries public import; else **`config.js`**. |
 | **`configObjectToJsSource(config)`** | plain object | **`JSON.stringify`** + wraps as **`const CONFIG = …; export default CONFIG`**. |
-| **`setupConfigurationServer(app)`** | Express **`app`** | Registers **GET list**, **GET one**, **POST save**, **DELETE** (see file for exact paths / validation). |
+| **`setupConfigurationService(app)`** | Express **`app`** | Registers **GET list**, **GET one**, **POST save**, **DELETE** (see file for exact paths / validation). |
 
 **Cross-dependencies:** **`apps/config-manager/app.js`**, **`apps/debug/script.js`** (`fetch /api/configurations/:id`), **`apps/config-creator/app.js`** (**POST** save).

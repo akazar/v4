@@ -51,4 +51,4 @@ title: Compare
 
 **Сторінка:** `index.html` + CDN **`ort.min.js`**.
 
-**Зв’язок:** **`recognition-server.js`**, **`reasoning-server.js`**, edge-recognizers.
+**Зв’язок:** **`recognition-service.js`**, **`reasoning-service.js`**, edge-recognizers.

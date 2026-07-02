@@ -45,6 +45,6 @@ title: Server reasoning
 
 **`runReasoning`** — **`toDataUrl`** → **`imageBase64`**, **`POST …/api/reasoning`** з полями **`model`**, **`prompt`**, **`imageBase64`**; **`data.reasoning`**; помилка, якщо **`res.ok`** хибне.
 
-**Сервер:** **`lib/cloud/reasoning-server.js`**, **`GEMINI_API_KEY`**, **`OPENAI_API_KEY`**, **`parseModelSelector`**.
+**Сервер:** **`server/services/reasoning-service.js`**, **`GEMINI_API_KEY`**, **`OPENAI_API_KEY`**, **`parseModelSelector`**.
 
 **DOM:** `#fileInput`, `#urlInput`, `#promptInput`, `#modelSelect`, `#reasoningBtn`, `#reasoningResultText`.

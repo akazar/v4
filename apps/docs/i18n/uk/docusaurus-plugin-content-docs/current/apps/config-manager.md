@@ -49,7 +49,7 @@ title: Config manager
 
 **Життєвий цикл:** `loadList()` при готовності DOM; слухачі кліків.
 
-**Залежності:** **`configuration-server.js`**; статика **`/db/configs/public`** для перегляду.
+**Залежності:** **`configuration-service.js`**; статика **`/db/configs/public`** для перегляду.
 
 ### `apps/config-manager/index.html`
 

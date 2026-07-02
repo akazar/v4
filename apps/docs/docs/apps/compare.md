@@ -53,4 +53,4 @@ The page loads ONNX runtime for local YOLO paths. Each panel owns a **model sele
 
 **Used by:** `index.html` + **`ort.min.js`** CDN.
 
-**Cross-use:** **`lib/cloud/recognition-server.js`**, **`reasoning-server.js`**; **edge** recognizers for local panels.
+**Cross-use:** **`server/services/recognition-service.js`**, **`reasoning-service.js`**; **edge** recognizers for local panels.

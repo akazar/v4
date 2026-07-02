@@ -499,7 +499,7 @@ export function edgeMainNodeContents(config, { configId, assets }) {
         ? `const localStartupAction = await import(new URL('./localStartupAction.js', import.meta.url).href);`
         : `const localStartupAction = null;`;
     const localRecognitionImports = hasLocalRecognition
-        ? `const { i420FrameToJpegDataUrl } = await import(libUrl('lib/cloud/streaming-server/i420-jpeg.js'));
+        ? `const { i420FrameToJpegDataUrl } = await import(libUrl('lib/cloud/streaming-service/i420-jpeg.js'));
 const { recognize: localRecognize } = await import(libUrl('${localRecognizerPath}'));`
         : `const i420FrameToJpegDataUrl = null;
 const localRecognize = null;`;

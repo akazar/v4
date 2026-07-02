@@ -642,7 +642,7 @@ export { CONFIG };
     }
 
     /**
-     * File-input id -> server-side asset key (matches ASSET_FILE_NAMES in lib/cloud/configuration-server.js).
+     * File-input id -> server-side asset key (matches ASSET_FILE_NAMES in server/services/configuration-service.js).
      * Used by POST /api/configurations/:id/assets so conveyor-poc can retrieve them later.
      */
     const ASSET_UPLOADS = [

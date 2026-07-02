@@ -48,7 +48,7 @@ so bundles always reflect the current lib code.
 - `lib/edge/recognition-pipeline.js` — recognition loop, bounding boxes, local actions.
 - `lib/edge/webrtc-publisher.js` / `.node.js` — browser + Node publishers (SFU / P2P).
 - `lib/cloud/pipeline/server-pipeline.js` — server-side orchestrator (also used in-process by
-  `lib/cloud/streaming-server/sfu-server-recognition.js`).
+  `lib/cloud/streaming-service/sfu-server-recognition.js`).
 
 ## Manual smoke tests
 

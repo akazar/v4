@@ -51,7 +51,7 @@ The page assumes the **main Vision v4 server** is running so `/api/configuration
 
 **Lifecycle:** `loadList()` on DOM ready; click listeners on list container + close button.
 
-**Uses:** **`lib/cloud/configuration-server.js`** routes; static **`/db/configs/public`** for **View** raw source.
+**Uses:** **`server/services/configuration-service.js`** routes; static **`/db/configs/public`** for **View** raw source.
 
 ### `apps/config-manager/index.html`
 

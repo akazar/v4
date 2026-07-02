@@ -2,16 +2,16 @@ import { Server } from 'socket.io';
 import {
   getMergedStreamIds,
   registerP2PStreamKeysGetter,
-} from './streaming-registry.js';
-import { setupStreamingWebRTCServer } from './streaming-webrtc-server.js';
+} from '../../lib/cloud/streaming-service/streaming-registry.js';
+import { setupStreamingWebRTCService } from '../../lib/cloud/streaming-service/streaming-webrtc-service.js';
 
 /**
- * Sets up the WebRTC streaming signaling server using Socket.IO (peer-to-peer path).
- * Also wires the optional SFU / server-relay WebRTC path via setupStreamingWebRTCServer.
+ * Sets up the WebRTC streaming signaling service using Socket.IO (peer-to-peer path).
+ * Also wires the optional SFU / server-relay WebRTC path via setupStreamingWebRTCService.
  * @param {import('http').Server} httpServer - Node HTTP server instance
  * @returns {import('socket.io').Server}
  */
-export function setupStreamingServer(httpServer) {
+export function setupStreamingService(httpServer) {
   // Allow cross-origin connections so conveyor-poc bundles hosted from a different origin
   // (e.g. `npx serve` on :8081, file://, another machine on the LAN) can reach the SFU
   // signaling endpoint. Without this, the polling handshake fails and the publisher
@@ -167,7 +167,7 @@ export function setupStreamingServer(httpServer) {
     });
   });
 
-  setupStreamingWebRTCServer(io, {
+  setupStreamingWebRTCService(io, {
     getViewerSet: (streamId) => streamViewers.get(streamId),
     emitAvailableStreams,
   });

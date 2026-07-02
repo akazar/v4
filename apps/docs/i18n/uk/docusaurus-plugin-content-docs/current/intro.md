@@ -42,7 +42,7 @@ title: Вступ
 
 ### Підключення модулів у браузері
 
-Статичний **`express.static(v4Root)`** у **`server/hosting-server.js`** віддає **`/lib/…`** і **`/config/…`**, тож **`import '/lib/edge/…'`** і відносні **`../../config/…`** працюють без бандлера.
+Статичний **`express.static(v4Root)`** у **`server/services/hosting-service.js`** віддає **`/lib/…`** і **`/config/…`**, тож **`import '/lib/edge/…'`** і відносні **`../../config/…`** працюють без бандлера.
 
 ### Структура документації
 

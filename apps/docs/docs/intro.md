@@ -42,7 +42,7 @@ This site describes **what each part of the repository does** and how the **user
 
 ### Browser module resolution
 
-Static **`express.static(v4Root)`** in **`server/hosting-server.js`** exposes **`/lib/…`** and **`/config/…`** so every **`import '/lib/edge/…'`** **and** relative **`../../config/…`** resolves in the browser without bundling.
+Static **`express.static(v4Root)`** in **`server/services/hosting-service.js`** exposes **`/lib/…`** and **`/config/…`** so every **`import '/lib/edge/…'`** **and** relative **`../../config/…`** resolves in the browser without bundling.
 
 ### Doc layout
 

@@ -111,7 +111,7 @@ Query **`?streams=`**; Socket.IO; сітка; **capture** з **`HTMLVideoElement
 
 ### Сервер
 
-**`lib/cloud/streaming-server/streaming-server.js`** — Socket.IO, кімнати, інтеграція з **`sfu-server-recognition.js`**.
+**`server/services/streaming-service.js`** — Socket.IO, кімнати, інтеграція з **`sfu-server-recognition.js`**.
 
 ### Node-стрімери (опційно)
 

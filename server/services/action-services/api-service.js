@@ -1,5 +1,5 @@
 /**
- * api-server.js — Core server logic and API for the v4 app.
+ * api-service.js — Core service logic and API for the v4 app.
  * Loads config.js and .env, sets CORS and JSON body parsing, exposes /health and
  * /api/describe (OpenAI image description). Runs reasoning and regular action
  * functions from config (serverReasoningActionFunctions, serverRegularActionFunctions).
@@ -10,14 +10,14 @@ import fetch from 'node-fetch';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath, pathToFileURL } from 'url';
-import { serverAction } from './actions-runner.js';
-import { setupNotificationServer } from './notification-server.js';
+import { serverAction } from '../../../lib/cloud/action-services/actions-runner.js';
+import { setupNotificationService } from './notification-service.js';
 import {
   getLastReasoningResult,
   setLastReasoningResult,
   getLastRecognitionResults,
   setLastRecognitionResults,
-} from '../shared-state.js';
+} from '../../../lib/cloud/shared-state.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -26,7 +26,7 @@ const __dirname = path.dirname(__filename);
 let REASONING_SERVER_ACTION_FUNCTIONS = [];
 let REGULAR_SERVER_ACTION_FUNCTIONS = [];
 try {
-  const configPath = path.join(__dirname, '..', '..', '..', 'config', 'config.js');
+  const configPath = path.join(__dirname, '..', '..', '..', 'db', 'configs', 'config.js');
   const configModule = await import(pathToFileURL(configPath).href);
   const CONFIG = configModule.default ?? configModule.CONFIG;
   REASONING_SERVER_ACTION_FUNCTIONS = CONFIG?.serverReasoningActionFunctions ?? [];
@@ -79,7 +79,7 @@ if (loadedV4 || loadedRoot) {
  * Sets up server logic (API endpoints, middleware) for the Express app
  * @param {Express} app - Express application instance
  */
-export function setupApiServer(app) {
+export function setupApiService(app) {
   // CORS
   app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
@@ -91,7 +91,7 @@ export function setupApiServer(app) {
 
   app.use(express.json({ limit: '50mb' }));
 
-  setupNotificationServer(app);
+  setupNotificationService(app);
 
   // Health check
   app.get('/health', (req, res) => {

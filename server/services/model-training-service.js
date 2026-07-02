@@ -52,7 +52,7 @@ function resolveModelFile(filename) {
   return { absFile, withExt: base };
 }
 
-export function setupModelTrainingServer(app) {
+export function setupModelTrainingService(app) {
   app.get('/api/model-training/models-list', async (req, res) => {
     try {
       await fs.mkdir(MODELS_LIST_DIR, { recursive: true });

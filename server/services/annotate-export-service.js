@@ -59,7 +59,7 @@ function resolveAnnotationFile(userFilename) {
   return { absFile, withExt: name };
 }
 
-export function setupAnnotateExportServer(app) {
+export function setupAnnotateExportService(app) {
   app.get('/api/annotate/annotation-list', async (req, res) => {
     try {
       await fs.mkdir(ANNOTATION_LIST_DIR, { recursive: true });

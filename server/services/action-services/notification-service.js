@@ -1,10 +1,10 @@
-import { sendNotification } from '../utils/notification.js';
+import { sendNotification } from '../../../lib/cloud/utils/notification.js';
 
 /**
  * Registers the notification API on the given Express app.
  * @param {Express.Application} app - Express application instance
  */
-export function setupNotificationServer(app) {
+export function setupNotificationService(app) {
   /**
    * POST /api/notify/:recipientId - Send notification to recipient (e.g. telegram id from edge config).
    * Body: recognition results array (JSON).

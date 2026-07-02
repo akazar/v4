@@ -126,7 +126,7 @@ Bridges **video frames** to **recognition** and **overlay** drawing for dashboar
 
 ### Server pairing
 
-**`lib/cloud/streaming-server/streaming-server.js`** — Socket.IO namespaces, room routing, **`sfu-server-recognition.js`** integration for server-side inferencing.
+**`server/services/streaming-service.js`** — Socket.IO namespaces, room routing, **`sfu-server-recognition.js`** integration for server-side inferencing.
 
 ### Node streamers (optional)
 

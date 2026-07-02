@@ -80,4 +80,4 @@ title: Навчання моделі та дашборд
 
 ### Сервер
 
-**`lib/cloud/model-training-server.js`** — запис у **`db/models`**; фільтр розширень.
+**`server/services/model-training-service.js`** — запис у **`db/models`**; фільтр розширень.

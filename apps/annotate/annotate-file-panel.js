@@ -1,6 +1,6 @@
 /**
  * Left panel: lists COCO JSON files in apps/annotate/annotation-list and allows delete.
- * Requires GET/DELETE routes from annotate-export-server.js.
+ * Requires GET/DELETE routes from annotate-export-service.js.
  */
 
 const LIST_URL = '/api/annotate/annotation-list';

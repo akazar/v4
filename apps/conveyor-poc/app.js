@@ -408,7 +408,7 @@ async function runPipeline() {
         } else {
             entries.push('lib/edge/webrtc-publisher.node.js');
             if (hasLocalRecognition) {
-                entries.push('lib/cloud/streaming-server/i420-jpeg.js');
+                entries.push('lib/cloud/streaming-service/i420-jpeg.js');
                 entries.push(
                     localRecognitionModel === 'MEDIAPIPE'
                         ? 'lib/cloud/recognition/mediapipe/recognize-mediapipe.js'

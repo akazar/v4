@@ -7,7 +7,7 @@
  *   - P2P: one PeerConnection per viewer, signaling via `viewer-request-offer` / `offer` / `answer` / `ice-candidate`.
  *   - SFU: one `sfu-publisher-offer`; the server relays to viewers.
  *
- * Signaling handshake matches lib/cloud/streaming-server/streaming-server.js exactly,
+ * Signaling handshake matches server/services/streaming-service.js exactly,
  * so this publisher is a drop-in replacement for the logic originally in streamer.js.
  */
 

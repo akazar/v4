@@ -46,6 +46,6 @@ There is **no ONNX script tag** here—the heavy work happens server-side (headl
 
 **`runRecognition(dataUrl, model)`** — performs **`fetch`** to **`RECOGNITION_SERVER_URL + '/api/recognize'`** with **`POST`**, **`Content-Type: application/json`**, and a JSON body where **`image`** is the data URL string and **`config`** spreads **`CONFIG`** while overriding **`serverRecognition.model`** with the selected **`model`**. Parses **`success`** and **`detections`** from the JSON response, builds a canvas via **`dataUrlToCanvas`**, and **`drawBoundingBoxes`** using each detection’s **`coordinates`**, **`size`**, **`class`**, and **`confidence`**.
 
-**Server counterpart:** **`lib/cloud/recognition-server.js`** **`setupRecognitionServer`** — **`POST /api/recognize`** body **`image`**, optional **`mime`**, **`config`**.
+**Server counterpart:** **`server/services/recognition-service.js`** **`setupRecognitionService`** — **`POST /api/recognize`** body **`image`**, optional **`mime`**, **`config`**.
 
 **Uses:** **`lib/edge/image-format.js`**, **`bounding-boxes.js`**, **`actions.js`** (if wired for post-detect hooks).

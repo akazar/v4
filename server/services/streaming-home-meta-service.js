@@ -9,7 +9,7 @@ let homeStreamsPayload = { v: 1, entries: [], hidden: [] };
 /**
  * @param {import('express').Express} app
  */
-export function setupStreamingHomeMetaServer(app) {
+export function setupStreamingHomeMetaService(app) {
   app.post('/api/streaming/home-streams-sync', (req, res) => {
     const body = req.body;
     if (!body || body.v !== 1 || !Array.isArray(body.entries)) {

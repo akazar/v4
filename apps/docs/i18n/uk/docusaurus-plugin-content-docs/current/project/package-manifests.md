@@ -50,7 +50,7 @@ title: package.json і package-lock.json
 | `scripts.recognize:mediapipe` | **`lib/cloud/recognition/mediapipe/recognize-mediapipe.js`**. |
 | `scripts.docs:*` | Делегує в **`apps/docs`** через **`npm run … --prefix apps/docs`**. |
 | `engines.node` | **>= 18** для основного застосунку (у docs окремо Node 20). |
-| `dependencies` | Лише **прямі** пакунки з semver `^`. Споживачі: **`server/main.js`**, **`lib/cloud/**`**, **`server/hosting-server.js`**, модулі стримінгу тощо. |
+| `dependencies` | Лише **прямі** пакунки з semver `^`. Споживачі: **`server/main.js`**, **`lib/cloud/**`**, **`server/services/hosting-service.js`**, модулі стримінгу тощо. |
 
 **Як це використовується:** усе, що стартує через `npm start` або читає маніфест, резолвить **import** у `node_modules` з цього списку.
 

@@ -82,4 +82,4 @@ Declarative sections with **ids** consumed by scripts above; **`app.js`** is cla
 
 ### Server
 
-**`lib/cloud/model-training-server.js`** — persists under **`db/models`**; lists allowed extensions.
+**`server/services/model-training-service.js`** — persists under **`db/models`**; lists allowed extensions.

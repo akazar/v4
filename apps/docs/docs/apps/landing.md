@@ -50,4 +50,4 @@ Same component pattern with **Ukrainian** copy and **language link** back to **`
 
 **Variables / rules** — layout for hero, accordion, feature grid, module cards, responsive typography (not enumerated here). **Used only** by landing HTML.
 
-**What uses this code:** **`server/hosting-server.js`** **`sendFile`** / **`static(landingPath)`**; **no imports** from `lib/`.
+**What uses this code:** **`server/services/hosting-service.js`** **`sendFile`** / **`static(landingPath)`**; **no imports** from `lib/`.

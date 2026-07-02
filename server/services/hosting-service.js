@@ -1,5 +1,5 @@
 /**
- * hosting-server.js — Front-end hosting for the v4 app.
+ * hosting-service.js — Front-end hosting for the v4 app.
  * Registers Express routes and static middleware for: root landing page, /factory (production demo),
  * /ua (Ukrainian landing), /config-creator, /config-creator-adv, /config-manager, /camera-stream, /image-upload, /model-training,
  * /model-training/dashboard,
@@ -12,7 +12,7 @@ import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-import { getIceServersForNode } from '../lib/ice-servers.js';
+import { getIceServersForNode } from '../../lib/ice-servers.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -21,7 +21,7 @@ const __dirname = path.dirname(__filename);
  * Sets up front-end hosting routes for the Express app
  * @param {Express} app - Express application instance
  */
-export function setupFrontendHosting(app) {
+export function setupHostingService(app) {
   // WebRTC ICE (STUN/TURN) for browsers and docs — from ICE_SERVERS env (JSON array string).
   app.get('/api/ice', (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -37,25 +37,25 @@ export function setupFrontendHosting(app) {
   });
 
   // Path definitions
-  const v4Root = path.join(__dirname, '..');
-  const appsPath = path.join(__dirname, '..', 'apps');
-  const landingPath = path.join(__dirname, '..', 'apps', 'landing');
-  const configCreatorPath = path.join(__dirname, '..', 'apps', 'config-creator');
-  const configCreatorAdvPath = path.join(__dirname, '..', 'apps', 'config-creator-adv');
-  const configManagerPath = path.join(__dirname, '..', 'apps', 'config-manager');
-  const cameraStreamPath = path.join(__dirname, '..', 'apps', 'camera-stream');
-  const imageUploadPath = path.join(__dirname, '..', 'apps', 'image-upload');
-  const serverDetectionPath = path.join(__dirname, '..', 'apps', 'server-detection');
-  const serverReasoningPath = path.join(__dirname, '..', 'apps', 'server-reasoning');
-  const comparePath = path.join(__dirname, '..', 'apps', 'compare');
-  const factoryPath = path.join(__dirname, '..', 'apps', 'factory');
-  const debugPath = path.join(__dirname, '..', 'apps', 'debug');
-  const streamingPath = path.join(__dirname, '..', 'apps', 'streaming');
-  const annotatePath = path.join(__dirname, '..', 'apps', 'annotate');
-  const modelTrainingPath = path.join(__dirname, '..', 'apps', 'model-training');
-  const conveyorPocPath = path.join(__dirname, '..', 'apps', 'conveyor-poc');
+  const v4Root = path.join(__dirname, '..', '..');
+  const appsPath = path.join(v4Root, 'apps');
+  const landingPath = path.join(appsPath, 'landing');
+  const configCreatorPath = path.join(appsPath, 'config-creator');
+  const configCreatorAdvPath = path.join(appsPath, 'config-creator-adv');
+  const configManagerPath = path.join(appsPath, 'config-manager');
+  const cameraStreamPath = path.join(appsPath, 'camera-stream');
+  const imageUploadPath = path.join(appsPath, 'image-upload');
+  const serverDetectionPath = path.join(appsPath, 'server-detection');
+  const serverReasoningPath = path.join(appsPath, 'server-reasoning');
+  const comparePath = path.join(appsPath, 'compare');
+  const factoryPath = path.join(appsPath, 'factory');
+  const debugPath = path.join(appsPath, 'debug');
+  const streamingPath = path.join(appsPath, 'streaming');
+  const annotatePath = path.join(appsPath, 'annotate');
+  const modelTrainingPath = path.join(appsPath, 'model-training');
+  const conveyorPocPath = path.join(appsPath, 'conveyor-poc');
   const uiKitPath = path.join(appsPath, 'ui-kit');
-  const docsBuildPath = path.join(__dirname, '..', 'apps', 'docs', 'build');
+  const docsBuildPath = path.join(appsPath, 'docs', 'build');
 
   /**
    * Resolve a pre-rendered docs HTML file for client-router paths (e.g. /documentation/docs/intro).

@@ -1,7 +1,7 @@
 import OpenAI from "openai";
 import { GoogleGenAI } from "@google/genai";
-import { normalizeBase64Image } from "./utils/image-format.js";
-import { setLastReasoningResult } from "./shared-state.js";
+import { normalizeBase64Image } from "../../lib/cloud/utils/image-format.js";
+import { setLastReasoningResult } from "../../lib/cloud/shared-state.js";
 
 /** Lazy clients (read process.env on first use, after .env is loaded). */
 let _openai = undefined;
@@ -98,7 +98,7 @@ async function reasonWithGemini({ modelId, prompt, mimeType, base64Data }) {
  * POST /api/reasoning — body: { model, prompt, imageBase64 }
  * @param {import('express').Application} app - Express application instance
  */
-export function setupReasoningServer(app) {
+export function setupReasoningService(app) {
   app.post("/api/reasoning", async (req, res) => {
     try {
       const { model, prompt, imageBase64 } = req.body ?? {};

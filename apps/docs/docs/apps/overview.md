@@ -43,7 +43,7 @@ Each app has a dedicated doc page with **visual elements** and **user workflows*
 
 ## Code
 
-### Static mount layout (`server/hosting-server.js`)
+### Static mount layout (`server/services/hosting-service.js`)
 
 | URL prefix | Filesystem | Typical entry |
 |------------|------------|----------------|
@@ -62,7 +62,7 @@ import … from '/lib/edge/…';
 import … from '../../db/configs/config.js';
 ```
 
-- **Leading `/`** resolves against origin (requires **`setupFrontendHosting`** exposing **`v4Root`**).
+- **Leading `/`** resolves against origin (requires **`setupHostingService`** exposing **`v4Root`**).
 - **Relative `../..`** resolves from **`apps/<app>/script.js`** into **`db/configs/`**.
 
 ### Per-app script entrypoints (representative)

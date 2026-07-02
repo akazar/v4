@@ -43,6 +43,6 @@ title: Server detection
 
 **`runRecognition(dataUrl, model)`** — **`fetch`** на **`RECOGNITION_SERVER_URL + '/api/recognize'`**, **`POST`**, JSON з **`image`** (data URL) і **`config`** (spread **`CONFIG`**, перевизначення **`serverRecognition.model`**). Очікує **`success`** і **`detections`**; **`dataUrlToCanvas`**, **`drawBoundingBoxes`** за **`coordinates`**, **`size`**, **`class`**, **`confidence`**.
 
-**Сервер:** **`lib/cloud/recognition-server.js`**, **`POST /api/recognize`**.
+**Сервер:** **`server/services/recognition-service.js`**, **`POST /api/recognize`**.
 
 **Edge:** **`image-format`**, **`bounding-boxes`**, опційно **`actions`**.

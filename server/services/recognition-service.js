@@ -1,16 +1,16 @@
 /**
- * Recognition API: exposes setupRecognitionServer(app) to register POST /api/recognize on the main app.
+ * Recognition API: exposes setupRecognitionService(app) to register POST /api/recognize on the main app.
  * Accepts image as base64 or data URL and optional config; uses shared image-format normalizer.
  */
 
 import path from 'path';
 import { fileURLToPath, pathToFileURL } from 'url';
-import { normalizeBase64Image } from './utils/image-format.js';
-import { recognize as recognizeYolo } from './recognition/yolo/recognize-yolo.mjs';
-import { recognize as recognizeMediapipe } from './recognition/mediapipe/recognize-mediapipe.js';
-import { orchestrateServerActions } from './action-servers/server-actions-orchestrator.js';
-import { serverRecognitionActions } from './action-servers/actions-runner.js';
-import { setLastRecognitionResults } from './shared-state.js';
+import { normalizeBase64Image } from '../../lib/cloud/utils/image-format.js';
+import { recognize as recognizeYolo } from '../../lib/cloud/recognition/yolo/recognize-yolo.mjs';
+import { recognize as recognizeMediapipe } from '../../lib/cloud/recognition/mediapipe/recognize-mediapipe.js';
+import { orchestrateServerActions } from '../../lib/cloud/action-services/server-actions-orchestrator.js';
+import { serverRecognitionActions } from '../../lib/cloud/action-services/actions-runner.js';
+import { setLastRecognitionResults } from '../../lib/cloud/shared-state.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -85,7 +85,7 @@ async function runDeclarativeServerRecognitionActions(config, detections) {
  * Registers the recognition API on the given Express app.
  * @param {Express.Application} app - Express application instance
  */
-export function setupRecognitionServer(app) {
+export function setupRecognitionService(app) {
   /**
    * POST /api/recognize
    * Body: { image: string (base64), mime?: string, config?: object }

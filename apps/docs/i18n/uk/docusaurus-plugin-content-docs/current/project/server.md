@@ -55,25 +55,25 @@ title: server/
 
 **Порядок підключення:**
 
-1. **`setupFrontendHosting(app)`** — `server/hosting-server.js`.
-2. **`setupApiServer(app)`** — CORS, JSON, **`/health`**, **`/api/describe`**, завантаження **`.env`** через **`api-server.js`**.
-3. **`setupRecognitionServer(app)`** — **`POST /api/recognize`**.
-4. **`setupReasoningServer(app)`** — **`POST /api/reasoning`**.
-5. **`setupNotificationServer`**, **`setupDbServer`**, **`setupConfigurationServer`**.
-6. **`setupAnnotateExportServer`**, **`setupModelTrainingServer`**, **`setupStreamingHomeMetaServer`**.
-7. **`setupStreamingServer(server)`** — Socket.IO на **`server`**.
-8. **`setupCapturedStreamServer(app)`** — Puppeteer.
+1. **`setupHostingService(app)`** — `server/services/hosting-service.js`.
+2. **`setupApiService(app)`** — CORS, JSON, **`/health`**, **`/api/describe`**, завантаження **`.env`** через **`api-service.js`**.
+3. **`setupRecognitionService(app)`** — **`POST /api/recognize`**.
+4. **`setupReasoningService(app)`** — **`POST /api/reasoning`**.
+5. **`setupNotificationService`**, **`setupDbService`**, **`setupConfigurationService`**.
+6. **`setupAnnotateExportService`**, **`setupModelTrainingService`**, **`setupStreamingHomeMetaService`**.
+7. **`setupStreamingService(server)`** — Socket.IO на **`server`**.
+8. **`setupCapturedStreamService(app)`** — Puppeteer.
 9. **`server.listen(PORT, …)`**.
 
 **Хто викликає:** `npm start` → **`package.json` → scripts.start**.
 
-**Використовує:** перелічені **`lib/cloud/*`** і **`./hosting-server.js`**.
+**Використовує:** перелічені **`lib/cloud/*`** і **`./hosting-service.js`**.
 
-### `server/hosting-server.js`
+### `server/services/hosting-service.js`
 
 | Експорт | Параметри | Повертає | Роль |
 |---------|-----------|----------|------|
-| **`setupFrontendHosting`** | `app` (Express) | void | **`app.get`** і **`express.static`**. |
+| **`setupHostingService`** | `app` (Express) | void | **`app.get`** і **`express.static`**. |
 
 **Константи шляхів:** `v4Root`, `appsPath`, `landingPath`, шляхи до кожного апу, `factoryPath`, `uiKitPath`, `docsBuildPath` (`apps/docs/build`) — усі через **`path.join(__dirname, '..', …)`** від **`server/`**.
 

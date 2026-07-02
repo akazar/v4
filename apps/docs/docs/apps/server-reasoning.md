@@ -46,6 +46,6 @@ Requires the main server and properly configured **API keys** in `.env`. This UI
 
 **`runReasoning(imageSource, model, prompt)`** — converts **`imageSource`** with **`toDataUrl`** to **`imageBase64`**, then **`POST`**s to **`…/api/reasoning`** with JSON properties **`model`**, **`prompt`**, and **`imageBase64`**; returns **`data.reasoning`**; throws when **`res.ok`** is false.
 
-**Server counterpart:** **`lib/cloud/reasoning-server.js`** — reads **`GEMINI_API_KEY` / `OPENAI_API_KEY`**, **`parseModelSelector`**, vision calls.
+**Server counterpart:** **`server/services/reasoning-service.js`** — reads **`GEMINI_API_KEY` / `OPENAI_API_KEY`**, **`parseModelSelector`**, vision calls.
 
 **DOM:** `#fileInput`, `#urlInput`, `#promptInput`, `#modelSelect`, `#reasoningBtn`, `#reasoningResultText`.

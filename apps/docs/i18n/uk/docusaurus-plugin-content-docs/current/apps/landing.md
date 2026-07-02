@@ -50,4 +50,4 @@ title: Лендінг (EN і UA)
 
 Стилі hero, акордеону, сітки, карток, типографіка. **Лише** для лендінгу.
 
-**Віддача:** **`server/hosting-server.js`**; **немає** import з `lib/`.
+**Віддача:** **`server/services/hosting-service.js`**; **немає** import з `lib/`.

@@ -66,7 +66,7 @@ The form is organized into **cards** (sections). Each section can be **included 
 
 **Used by:** `apps/config-creator/index.html` (**`<script src="app.js">`**).
 
-**Uses:** **`configuration-server`** **`POST /api/configurations`**; browser **Blob**/**URL.createObjectURL** for download.
+**Uses:** **`configuration-service`** **`POST /api/configurations`**; browser **Blob**/**URL.createObjectURL** for download.
 
 ### `apps/config-creator/index.html`
 

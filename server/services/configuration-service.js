@@ -78,7 +78,7 @@ function configObjectToJsSource(config) {
     return `const CONFIG = ${serialized};\n\nexport default CONFIG;\nexport { CONFIG };\n`;
 }
 
-export function setupConfigurationServer(app) {
+export function setupConfigurationService(app) {
     app.get('/api/configurations', async (req, res) => {
         try {
             const entries = await fs.readdir(CONFIG_PUBLIC_DIR, { withFileTypes: true });

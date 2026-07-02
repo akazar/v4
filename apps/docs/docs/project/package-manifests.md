@@ -50,7 +50,7 @@ The **`apps/docs/package.json`** (under this documentation site) is **separate**
 | `scripts.recognize:mediapipe` | Runs **`lib/cloud/recognition/mediapipe/recognize-mediapipe.js`** for CLI MediaPipe. |
 | `scripts.docs:*` | Delegate to **`apps/docs`** (`npm run … --prefix apps/docs`) for the documentation site. |
 | `engines.node` | Declares **>= 18** for the main app (docs app separately requires Node 20 in its own `package.json`). |
-| `dependencies` | **Direct** packages only; versions use semver ranges (`^`). Consumers of these APIs: **`server/main.js`**, **`lib/cloud/**`**, **`server/hosting-server.js`**, streaming modules, etc. |
+| `dependencies` | **Direct** packages only; versions use semver ranges (`^`). Consumers of these APIs: **`server/main.js`**, **`lib/cloud/**`**, **`server/services/hosting-service.js`**, streaming modules, etc. |
 
 **How other parts use it:** Anything started via `npm start` or toolchains that read the root manifest resolves **imports** against `node_modules` entries declared here.
 

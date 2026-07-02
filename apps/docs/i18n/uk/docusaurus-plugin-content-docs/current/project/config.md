@@ -43,7 +43,7 @@ title: config/
 | **`CONFIG`** | Об’єкт: **`id`**, **`name`**, **`description`**, **`ui`**, **`localRecognition`**, **`boundingBoxStyles`**, **`localRegularActionFunctions`**, **`manualRecognitionActionFunctions`**, **`serverRecognition`**, **`serverReasoning`**, **`serverReasoningActionFunctions`**, **`serverRegularActionFunctions`** тощо. |
 | **`export default CONFIG`**, **`export { CONFIG }`** | Подвійний ESM-експорт. |
 
-**Використовують:** **`apps/camera-stream/script.js`**, **`image-upload`**, **`server-detection`**, **`server-reasoning`** — статичний import; **`lib/cloud/recognition-server.js`**, **`api-server.js`** — серверні дефолти та списки дій.
+**Використовують:** **`apps/camera-stream/script.js`**, **`image-upload`**, **`server-detection`**, **`server-reasoning`** — статичний import; **`server/services/recognition-service.js`**, **`api-service.js`** — серверні дефолти та списки дій.
 
 ### `db/configs/config-factory.js`
 
@@ -57,9 +57,9 @@ title: config/
 
 Зазвичай **`export default CONFIG`**. Ім’я файлу **без `.js`** стає **`id`** в API.
 
-**Споживачі:** **`configuration-server.js`** — **`getConfiguration(id)`** і **`import()`** з `db/configs/public`, fallback **`db/configs/config.js`**; браузер — **`GET /db/configs/public/…`** як текст (Config Manager View).
+**Споживачі:** **`configuration-service.js`** — **`getConfiguration(id)`** і **`import()`** з `db/configs/public`, fallback **`db/configs/config.js`**; браузер — **`GET /db/configs/public/…`** як текст (Config Manager View).
 
-### `lib/cloud/configuration-server.js`
+### `server/services/configuration-service.js`
 
 | Символ | Параметри | Логіка |
 |--------|-----------|--------|
@@ -67,6 +67,6 @@ title: config/
 | **`isSafeConfigName(name)`** | рядок | Безпечні символи; без dotfiles. |
 | **`getConfiguration(id)`** | id без `.js` | Спроба public, інакше **`config.js`**. |
 | **`configObjectToJsSource(config)`** | об’єкт | **`JSON.stringify`** + обгортка **`export default`**. |
-| **`setupConfigurationServer(app)`** | Express | GET список, GET один, POST збереження, DELETE. |
+| **`setupConfigurationService(app)`** | Express | GET список, GET один, POST збереження, DELETE. |
 
 **Зв’язки:** **`apps/config-manager/app.js`**, **`apps/debug/script.js`**, **`apps/config-creator/app.js`**.

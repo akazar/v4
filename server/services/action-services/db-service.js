@@ -1,10 +1,10 @@
-import { createDb, readDb, updateDb, addDb, deleteDb } from '../utils/db.js';
+import { createDb, readDb, updateDb, addDb, deleteDb } from '../../../lib/cloud/utils/db.js';
 
 /**
  * Registers the DB API on the given Express app.
  * @param {Express.Application} app - Express application instance
  */
-export function setupDbServer(app) {
+export function setupDbService(app) {
   /**
    * POST /api/db/:dbId - Store recognition results for the given db id (e.g. from edge config).
    * Body: recognition results array (JSON).

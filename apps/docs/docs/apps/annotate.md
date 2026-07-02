@@ -72,4 +72,4 @@ IIFE; **`window.annotateCollectSidecarImage`** returns a **Promise** that resolv
 
 ### Server
 
-**`lib/cloud/annotate-export-server.js`** — accepts export uploads, writes **`apps/annotate/annotation-list`**; serves list/delete for panel.
+**`server/services/annotate-export-service.js`** — accepts export uploads, writes **`apps/annotate/annotation-list`**; serves list/delete for panel.

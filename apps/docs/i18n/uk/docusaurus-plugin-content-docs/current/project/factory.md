@@ -52,4 +52,4 @@ title: apps/factory/
 
 **`config-factory.js`** на диску — довідковий пресет; **жива** сторінка factory завжди отримує об’єкт через API.
 
-**Хостинг:** **`server/hosting-server.js`**, шлях **`/factory`**.
+**Хостинг:** **`server/services/hosting-service.js`**, шлях **`/factory`**.

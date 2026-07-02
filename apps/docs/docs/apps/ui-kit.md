@@ -32,7 +32,7 @@ There is **no end-user workflow** beyond the fact that when you open any app tha
 
 **Parameters:** none (not a script). **Selectors** target shared class names (e.g. `.btn`, theme colors).
 
-**Hosting:** `express.static` mount **`/ui-kit`** → **`apps/ui-kit`** (`server/hosting-server.js`), guaranteeing **`/ui-kit/ui-kit.css`** resolves even when generic `apps` static order would not.
+**Hosting:** `express.static` mount **`/ui-kit`** → **`apps/ui-kit`** (`server/services/hosting-service.js`), guaranteeing **`/ui-kit/ui-kit.css`** resolves even when generic `apps` static order would not.
 
 **Used by:** `apps/landing`, `apps/camera-stream`, `apps/config-creator`, `apps/streaming` HTML shells, etc.
 

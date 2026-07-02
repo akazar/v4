@@ -1,23 +1,23 @@
 /**
  * main.js — Entry point for the v4 server.
- * Creates the Express app, wires front-end hosting (hosting-server.js) and API logic (action-servers/api-server.js),
+ * Creates the Express app, wires front-end hosting (hosting-service.js) and API logic (action-services/api-service.js),
  * then starts the HTTP server on PORT (default 3001).
  */
 
 import http from 'http';
 import express from 'express';
-import { setupFrontendHosting } from './hosting-server.js';
-import { setupApiServer } from '../lib/cloud/action-servers/api-server.js';
-import { setupRecognitionServer } from '../lib/cloud/recognition-server.js';
-import { setupReasoningServer } from '../lib/cloud/reasoning-server.js';
-import { setupNotificationServer } from '../lib/cloud/action-servers/notification-server.js';
-import { setupDbServer } from '../lib/cloud/action-servers/db-server.js';
-import { setupConfigurationServer } from '../lib/cloud/configuration-server.js';
-import { setupStreamingServer } from '../lib/cloud/streaming-server/streaming-server.js';
-import { setupStreamingHomeMetaServer } from '../lib/cloud/streaming-home-meta-server.js';
-import { setupCapturedStreamServer } from '../lib/cloud/captured-stream-server.js';
-import { setupAnnotateExportServer } from '../lib/cloud/annotate-export-server.js';
-import { setupModelTrainingServer } from '../lib/cloud/model-training-server.js';
+import { setupHostingService } from './services/hosting-service.js';
+import { setupApiService } from './services/action-services/api-service.js';
+import { setupRecognitionService } from './services/recognition-service.js';
+import { setupReasoningService } from './services/reasoning-service.js';
+import { setupNotificationService } from './services/action-services/notification-service.js';
+import { setupDbService } from './services/action-services/db-service.js';
+import { setupConfigurationService } from './services/configuration-service.js';
+import { setupStreamingService } from './services/streaming-service.js';
+import { setupStreamingHomeMetaService } from './services/streaming-home-meta-service.js';
+import { setupCapturedStreamService } from './services/captured-stream-service.js';
+import { setupAnnotateExportService } from './services/annotate-export-service.js';
+import { setupModelTrainingService } from './services/model-training-service.js';
 
 const PORT = process.env.PORT || 3001;
 
@@ -33,40 +33,40 @@ const app = express();
 const server = http.createServer(app);
 
 // Setup front-end hosting routes
-setupFrontendHosting(app);
+setupHostingService(app);
 
-// Setup server logic (API endpoints, middleware)
-setupApiServer(app);
+// Setup service logic (API endpoints, middleware)
+setupApiService(app);
 
 // Setup recognition API (POST /api/recognize)
-setupRecognitionServer(app);
+setupRecognitionService(app);
 
 // Setup reasoning API (POST /api/reasoning)
-setupReasoningServer(app);
+setupReasoningService(app);
 
 // Setup notification API (POST /api/notify)
-setupNotificationServer(app);
+setupNotificationService(app);
 
 // Setup database API (POST /api/db)
-setupDbServer(app);
+setupDbService(app);
 
 // Setup configuration API (GET /api/configurations)
-setupConfigurationServer(app);
+setupConfigurationService(app);
 
 // Save COCO exports from VIA annotator to apps/annotate/annotation-list
-setupAnnotateExportServer(app);
+setupAnnotateExportService(app);
 
 // Simulated trained weights to db/models
-setupModelTrainingServer(app);
+setupModelTrainingService(app);
 
 // Home stream metadata API (for Node streamers to resolve sourceUrl by streamId)
-setupStreamingHomeMetaServer(app);
+setupStreamingHomeMetaService(app);
 
 // Setup streaming signaling (Socket.IO on the HTTP server)
-setupStreamingServer(server);
+setupStreamingService(server);
 
 // Puppeteer-based capture preview (streaming/captured-stream-streamer)
-setupCapturedStreamServer(app);
+setupCapturedStreamService(app);
 
 // Start the server
 server.listen(PORT, () => {

@@ -57,22 +57,28 @@ Focused on **server** and **hybrid** flows:
 | `actions.js` | `action`, `localRecognitionActions`, `localRecognitionActionsFromConfig`, … | **recognitionResults** + function list or config rows | Camera stream, factory, image upload |
 | `ui.js` | `injectTopButtons` | **`doc`**, **`config`** with **`config.ui`** | Factory demo |
 
-### `lib/cloud/` (server + hybrid)
+### `server/services/` (Express API wiring)
 
 | Module | Export | Role |
 |--------|--------|------|
-| `recognition-server.js` | `setupRecognitionServer(app)` | **`POST /api/recognize`** — body **`image`**, optional **`mime`**, **`config`**; loads **`db/configs/config.js`** default; dispatches YOLO/MediaPipe **server** recognizers; **`serverRecognitionActions`**, **`setLastRecognitionResults`**. |
-| `reasoning-server.js` | `setupReasoningServer(app)` | **`POST /api/reasoning`** — **`model`**, **`prompt`**, **`imageBase64`**; **`parseModelSelector`**; **OpenAI** / **Gemini** lazy clients from env; **`setLastReasoningResult`**. |
-| `configuration-server.js` | `setupConfigurationServer(app)` | **`GET /api/configurations`**, **`GET/POST/DELETE …/:id`**; reads **`db/configs/public`**; **`getConfiguration(id)`** dynamic `import`; **`configObjectToJsSource`**. |
-| `streaming-server/streaming-server.js` | `setupStreamingServer(server)` | Socket.IO signaling, registry (**`lib/cloud/streaming-server/*.js`** family). |
-| `action-servers/api-server.js` | `setupApiServer(app)` | CORS, JSON, **`/health`**, **`/api/describe`**, **`.env` loader**; pulls **`serverReasoningActionFunctions`** from **`config.js`**. |
-| `model-training-server.js` | `setupModelTrainingServer(app)` | List/save/delete under **`db/models`**. |
-| `annotate-export-server.js` | `setupAnnotateExportServer(app)` | Receives COCO/VIA exports into **`apps/annotate/annotation-list`**. |
-| `captured-stream-server.js` | `setupCapturedStreamServer(app)` | Puppeteer-based capture endpoints for streaming workflow. |
+| `recognition-service.js` | `setupRecognitionService(app)` | **`POST /api/recognize`** — body **`image`**, optional **`mime`**, **`config`**; loads **`db/configs/config.js`** default; dispatches YOLO/MediaPipe **server** recognizers; **`serverRecognitionActions`**, **`setLastRecognitionResults`**. |
+| `reasoning-service.js` | `setupReasoningService(app)` | **`POST /api/reasoning`** — **`model`**, **`prompt`**, **`imageBase64`**; **`parseModelSelector`**; **OpenAI** / **Gemini** lazy clients from env; **`setLastReasoningResult`**. |
+| `configuration-service.js` | `setupConfigurationService(app)` | **`GET /api/configurations`**, **`GET/POST/DELETE …/:id`**; reads **`db/configs/public`**; **`getConfiguration(id)`** dynamic `import`; **`configObjectToJsSource`**. |
+| `streaming-service.js` | `setupStreamingService(server)` | Socket.IO signaling, registry (**`lib/cloud/streaming-service/*.js`** family). |
+| `action-services/api-service.js` | `setupApiService(app)` | CORS, JSON, **`/health`**, **`/api/describe`**, **`.env` loader**; pulls **`serverReasoningActionFunctions`** from **`config.js`**. |
+| `model-training-service.js` | `setupModelTrainingService(app)` | List/save/delete under **`db/models`**. |
+| `annotate-export-service.js` | `setupAnnotateExportService(app)` | Receives COCO/VIA exports into **`apps/annotate/annotation-list`**. |
+| `captured-stream-service.js` | `setupCapturedStreamService(app)` | Puppeteer-based capture endpoints for streaming workflow. |
+| `hosting-service.js` | `setupHostingService(app)` | Static hosting for apps, docs, **`/lib`**, **`/db/configs`**. |
+
+### `lib/cloud/` (shared server libraries)
+
+| Module | Export | Role |
+|--------|--------|------|
 | `shared-state.js` | getters/setters | Last reasoning / recognition results for action orchestrators. |
 
 ### `lib/scheduled-actions-manager.js`
 
 Used by **`apps/streaming/dashboard.js`** (`createScheduledActionsManager`) to align timed **config actions** with streaming recognition events.
 
-**Cross-cutting rule:** Browser code **imports `/lib/...`** only because **`hosting-server.js`** exposes the repo root as static files.
+**Cross-cutting rule:** Browser code **imports `/lib/...`** only because **`server/services/hosting-service.js`** exposes the repo root as static files.

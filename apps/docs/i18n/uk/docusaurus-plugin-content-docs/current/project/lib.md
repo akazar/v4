@@ -57,22 +57,28 @@ title: lib/
 | `actions.js` | `action`, `localRecognitionActionsFromConfig`, … | Масив результатів + функції / рядки конфігу | camera-stream, factory, image-upload |
 | `ui.js` | `injectTopButtons` | **`doc`**, **`config.ui`** | factory |
 
-### `lib/cloud/` (сервер + гібрид)
+### `server/services/` (Express API)
 
 | Модуль | Експорт | Роль |
 |--------|---------|------|
-| `recognition-server.js` | `setupRecognitionServer(app)` | **`POST /api/recognize`**, тіло **`image`**, опційно **`mime`**, **`config`** |
-| `reasoning-server.js` | `setupReasoningServer(app)` | **`POST /api/reasoning`**, **`model`**, **`prompt`**, **`imageBase64`** |
-| `configuration-server.js` | `setupConfigurationServer(app)` | CRUD-стиль для **`db/configs/public`** |
-| `streaming-server/streaming-server.js` | `setupStreamingServer(server)` | Socket.IO, реєстр, сімейство **`streaming-server/*.js`** |
-| `action-servers/api-server.js` | `setupApiServer(app)` | CORS, JSON, **`/health`**, **`.env`**, **`/api/describe`** |
-| `model-training-server.js` | `setupModelTrainingServer(app)` | Файли в **`db/models`** |
-| `annotate-export-server.js` | `setupAnnotateExportServer(app)` | Експорт у **`apps/annotate/annotation-list`** |
-| `captured-stream-server.js` | `setupCapturedStreamServer(app)` | Puppeteer для стримінгу |
+| `recognition-service.js` | `setupRecognitionService(app)` | **`POST /api/recognize`**, тіло **`image`**, опційно **`mime`**, **`config`** |
+| `reasoning-service.js` | `setupReasoningService(app)` | **`POST /api/reasoning`**, **`model`**, **`prompt`**, **`imageBase64`** |
+| `configuration-service.js` | `setupConfigurationService(app)` | CRUD-стиль для **`db/configs/public`** |
+| `streaming-service.js` | `setupStreamingService(server)` | Socket.IO, реєстр, сімейство **`lib/cloud/streaming-service/*.js`** |
+| `action-services/api-service.js` | `setupApiService(app)` | CORS, JSON, **`/health`**, **`.env`**, **`/api/describe`** |
+| `model-training-service.js` | `setupModelTrainingService(app)` | Файли в **`db/models`** |
+| `annotate-export-service.js` | `setupAnnotateExportService(app)` | Експорт у **`apps/annotate/annotation-list`** |
+| `captured-stream-service.js` | `setupCapturedStreamService(app)` | Puppeteer для стримінгу |
+| `hosting-service.js` | `setupHostingService(app)` | Статика apps, docs, **`/lib`**, **`/db/configs`** |
+
+### `lib/cloud/` (спільні серверні бібліотеки)
+
+| Модуль | Експорт | Роль |
+|--------|---------|------|
 | `shared-state.js` | getters/setters | Останні результати для оркестраторів дій |
 
 ### `lib/scheduled-actions-manager.js`
 
 **`apps/streaming/dashboard.js`** викликає **`createScheduledActionsManager`**, щоб узгодити таймерні дії конфігу з подіями розпізнавання.
 
-**Правило:** браузерні **`import '/lib/…'`** працюють лише тому, що **`hosting-server.js`** віддає корінь репозиторію як статику.
+**Правило:** браузерні **`import '/lib/…'`** працюють лише тому, що **`server/services/hosting-service.js`** віддає корінь репозиторію як статику.
