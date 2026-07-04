@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stream Pipe</title>
+  <link rel="stylesheet" href="/ui-kit/ui-kit.css" />
+  <link rel="stylesheet" href="/streaming/styles.css" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="/shell/shell.css" />
+</head>
+<body>
+  <div class="stream-pipe-shell">
+    <aside class="panel panel-home" id="panelHome">
+      <h1 class="panel-title">Stream Pipe</h1>
+
+      <div class="panel-section">
+        <h2>Create a new streamer</h2>
+        <div class="row" style="margin-bottom: 0.5rem;">
+          <label for="sourceNameInput">Stream Name</label>
+          <input id="sourceNameInput" type="text" placeholder="Enter stream name" />
+        </div>
+        <div class="home-source-tabs">
+          <div class="home-source-tablist row" role="tablist" aria-label="Stream source">
+            <button type="button" class="home-source-tab active" role="tab" aria-selected="true" id="tab-source-camera" aria-controls="panel-source-camera" data-home-source-tab="camera">
+              Local camera
+            </button>
+            <button type="button" class="home-source-tab" role="tab" aria-selected="false" id="tab-source-m3u8" aria-controls="panel-source-m3u8" data-home-source-tab="m3u8">
+              M3U8 URL
+            </button>
+            <button type="button" class="home-source-tab" role="tab" aria-selected="false" id="tab-source-capture" aria-controls="panel-source-capture" data-home-source-tab="capture">
+              Web capture
+            </button>
+            <button type="button" class="home-source-tab" role="tab" aria-selected="false" id="tab-source-qr" aria-controls="panel-source-qr" data-home-source-tab="qr">
+              QR
+            </button>
+          </div>
+          <div id="panel-source-camera" class="home-source-panel" role="tabpanel" aria-labelledby="tab-source-camera">
+            <div class="row stream-mode-row" style="margin-top: 0.5rem;">
+              <span class="stream-mode-label">Streaming type:</span>
+              <label class="stream-mode-option">
+                <input type="radio" name="streamModeChoice" value="p2p" checked />
+                Peer-to-peer WebRTC
+              </label>
+              <label class="stream-mode-option">
+                <input type="radio" name="streamModeChoice" value="sfu" />
+                WebRTC server streaming
+              </label>
+            </div>
+          </div>
+          <div id="panel-source-m3u8" class="home-source-panel" role="tabpanel" aria-labelledby="tab-source-m3u8" hidden>
+            <div class="row" style="margin-top: 0.5rem;">
+              <input id="sourceUrlInput" type="url" placeholder="https://example.com/playlist.m3u8" />
+            </div>
+          </div>
+          <div id="panel-source-capture" class="home-source-panel" role="tabpanel" aria-labelledby="tab-source-capture" hidden>
+            <p class="home-capture-hint" style="margin: 0.5rem 0 0; font-size: 0.85rem; color: var(--text-muted);">
+              Capture a region of an external page (server-side) and stream it over WebRTC.
+            </p>
+            <div class="inputs home-capture-inputs" style="margin-top: 0.75rem;">
+              <div class="input-group">
+                <label for="homeCapturePageUrl">Page URL</label>
+                <input id="homeCapturePageUrl" type="url" placeholder="https://example.com/dashboard" />
+              </div>
+              <div class="input-group">
+                <label for="homeCaptureSelector">CSS selector of block to capture</label>
+                <input id="homeCaptureSelector" type="text" placeholder="#player, .chart-container" spellcheck="false" />
+              </div>
+              <div class="input-group">
+                <label for="homeCaptureInterval">Screenshot interval (ms)</label>
+                <input id="homeCaptureInterval" type="number" min="200" max="60000" step="100" value="1000" />
+              </div>
+            </div>
+            <div class="row stream-mode-row" style="margin-top: 0.75rem;">
+              <span class="stream-mode-label">Streaming type:</span>
+              <label class="stream-mode-option">
+                <input type="radio" name="streamModeChoiceCapture" value="p2p" checked />
+                Peer-to-peer WebRTC
+              </label>
+              <label class="stream-mode-option">
+                <input type="radio" name="streamModeChoiceCapture" value="sfu" />
+                WebRTC server streaming
+              </label>
+            </div>
+          </div>
+          <div id="panel-source-qr" class="home-source-panel" role="tabpanel" aria-labelledby="tab-source-qr" hidden>
+            <div class="row stream-mode-row" style="margin-top: 0.5rem;">
+              <span class="stream-mode-label">Streaming type:</span>
+              <label class="stream-mode-option">
+                <input type="radio" name="streamModeChoice" value="p2p" checked />
+                Peer-to-peer WebRTC
+              </label>
+              <label class="stream-mode-option">
+                <input type="radio" name="streamModeChoice" value="sfu" />
+                WebRTC server streaming
+              </label>
+            </div>
+            <p class="home-capture-hint" style="margin: 0.5rem 0 0; font-size: 0.85rem; color: var(--text-muted);">
+              Same as local camera — create a streamer, then scan the QR code to open the camera streamer on a mobile device.
+            </p>
+          </div>
+        </div>
+        <div class="row" style="margin-top: 0.75rem;">
+          <button id="openStreamerBtn" type="button">Create streamer</button>
+        </div>
+        <div class="status" id="createStatus"></div>
+      </div>
+
+      <div class="panel-section">
+        <h2>Available streams</h2>
+        <div class="row">
+          <button id="saveSelectedStreamsBtn" type="button">Save active stream</button>
+        </div>
+        <div id="streamsContainer" class="streams-list"></div>
+        <div class="status" id="viewerStatus"></div>
+        <div class="streamer-status" id="streamerStatus"></div>
+      </div>
+
+      <div class="panel-section">
+        <h2>Saved streams</h2>
+        <p class="saved-streams-hint" style="margin: 0 0 0.75rem; font-size: 0.85rem; color: var(--text-muted);">
+          Open a saved set to start the first stream and view it in the center panel.
+        </p>
+        <div id="savedStreamsContainer" class="streams-list"></div>
+        <div class="status" id="savedStreamsStatus"></div>
+      </div>
+
+      <!-- Hidden streamer elements -->
+      <video id="streamerPreview" class="streamer-hidden" muted playsinline crossorigin="anonymous"></video>
+      <canvas id="captureCanvas" class="streamer-hidden" width="640" height="360"></canvas>
+    </aside>
+
+    <main class="panel panel-viewer" id="panelViewer">
+      <div id="viewerMount"></div>
+    </main>
+
+    <aside class="panel panel-history" id="panelHistory">
+      <h2 class="panel-title">Recognition history</h2>
+      <p class="history-hint">Detections from the active stream when recognition is enabled. Filtered by selected config.</p>
+      <div id="historyEmpty" class="status">No detections yet.</div>
+      <div class="history-table-wrap">
+        <table class="history-table" id="historyTable" hidden>
+          <thead>
+            <tr>
+              <th>Time</th>
+              <th>Class</th>
+              <th>Confidence</th>
+            </tr>
+          </thead>
+          <tbody id="historyBody"></tbody>
+        </table>
+      </div>
+    </aside>
+  </div>
+
+  <div id="qrModal" class="qr-modal hidden">
+    <div class="qr-modal-backdrop"></div>
+    <div class="qr-modal-box">
+      <button id="qrModalClose" class="qr-modal-close" aria-label="Close">&#x2715;</button>
+      <p id="qrModalLabel" class="qr-modal-label"></p>
+      <div id="qrModalCanvas"></div>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.7/dist/hls.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/ort.min.js"></script>
+  <script type="module" src="app.js"></script>
+  <script type="module" src="/shell/shell.js"></script>
+</body>
+</html>

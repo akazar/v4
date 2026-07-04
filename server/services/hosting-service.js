@@ -4,7 +4,7 @@
  * /ua (Ukrainian landing), /config-creator, /config-creator-adv, /config-manager, /camera-stream, /image-upload, /model-training,
  * /model-training/dashboard,
  * /server-detection,
- * /server-reasoning, /compare, /streaming, /annotate, /debug, and /documentation (docs build). Serves the v4 root for shared lib/ and db/configs/.
+ * /server-reasoning, /compare, /streaming, /stream-pipe, /annotate, /debug, and /documentation (docs build). Serves the v4 root for shared lib/ and db/configs/.
  */
 
 import { existsSync } from 'fs';
@@ -54,6 +54,7 @@ export function setupHostingService(app) {
   const annotatePath = path.join(appsPath, 'annotate');
   const modelTrainingPath = path.join(appsPath, 'model-training');
   const conveyorPocPath = path.join(appsPath, 'conveyor-poc');
+  const streamPipePath = path.join(appsPath, 'stream-pipe');
   const uiKitPath = path.join(appsPath, 'ui-kit');
   const docsBuildPath = path.join(appsPath, 'docs', 'build');
 
@@ -272,6 +273,15 @@ export function setupHostingService(app) {
   });
   app.get('/conveyor-poc/', (req, res) => {
     res.sendFile(path.join(conveyorPocPath, 'index.html'));
+  });
+
+  // Stream Pipe unified streaming app at /stream-pipe
+  app.use('/stream-pipe', express.static(streamPipePath));
+  app.get('/stream-pipe', (req, res) => {
+    res.sendFile(path.join(streamPipePath, 'index.html'));
+  });
+  app.get('/stream-pipe/', (req, res) => {
+    res.sendFile(path.join(streamPipePath, 'index.html'));
   });
 
   // VIA image annotator at /annotate

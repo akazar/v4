@@ -16,6 +16,9 @@ const ICON = {
   streaming: S(
     '<rect x="2" y="7" width="15" height="10" rx="1"/><path d="M17 10l5-3v10l-5-3v-4z"/>'
   ),
+  streamPipe: S(
+    '<rect x="2" y="4" width="5" height="16" rx="1"/><rect x="9" y="4" width="6" height="16" rx="1"/><rect x="17" y="4" width="5" height="16" rx="1"/>'
+  ),
   configManager: S(
     '<path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>'
   ),
@@ -96,6 +99,7 @@ const NAV_GROUPS = [
       { href: '/factory', name: 'Production demo', icon: ICON.factory },
       { href: '/camera-stream', name: 'Camera stream', icon: ICON.camera },
       { href: '/streaming', name: 'Streaming', icon: ICON.streaming },
+      { href: '/stream-pipe', name: 'Stream Pipe', icon: ICON.streamPipe },
     ],
   },
   {
