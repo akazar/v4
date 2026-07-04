@@ -135,20 +135,60 @@
     </main>
 
     <aside class="panel panel-history" id="panelHistory">
-      <h2 class="panel-title">Recognition history</h2>
-      <p class="history-hint">Detections from the active stream when recognition is enabled. Filtered by selected config.</p>
-      <div id="historyEmpty" class="status">No detections yet.</div>
-      <div class="history-table-wrap">
-        <table class="history-table" id="historyTable" hidden>
-          <thead>
-            <tr>
-              <th>Time</th>
-              <th>Class</th>
-              <th>Confidence</th>
-            </tr>
-          </thead>
-          <tbody id="historyBody"></tbody>
-        </table>
+      <div class="history-panel-head">
+        <h2 class="panel-title">Recognition history</h2>
+        <p class="history-hint">Detections from the active stream when recognition is enabled. Filtered by selected config.</p>
+
+        <div class="history-filters" id="historyFilters">
+          <div class="history-filter-dates">
+            <div class="history-filter-field">
+              <label for="historyFilterFrom">From</label>
+              <input type="datetime-local" id="historyFilterFrom" class="history-filter-input" />
+            </div>
+            <div class="history-filter-field">
+              <label for="historyFilterTo">To</label>
+              <input type="datetime-local" id="historyFilterTo" class="history-filter-input" />
+            </div>
+          </div>
+          <fieldset class="history-filter-classes" title="Leave all unchecked to include every class">
+            <legend>Classes</legend>
+            <div id="historyFilterClasses" class="history-filter-classes-list">
+              <span class="history-filter-classes-empty">No classes yet</span>
+            </div>
+          </fieldset>
+          <div class="history-filter-toolbar">
+            <div class="history-filter-field history-filter-field--min">
+              <label for="historyFilterMinConf">Min %</label>
+              <input
+                type="number"
+                id="historyFilterMinConf"
+                class="history-filter-input"
+                min="0"
+                max="100"
+                step="1"
+                placeholder="Any"
+              />
+            </div>
+            <button type="button" id="historyFilterReset" class="history-filter-reset">Reset</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="history-panel-body">
+        <div id="historyEmpty" class="status">No detections yet.</div>
+        <div id="historyNoResults" class="status" hidden>No results match the filters.</div>
+        <div class="history-table-wrap">
+          <table class="history-table" id="historyTable" hidden>
+            <thead>
+              <tr>
+                <th>Time</th>
+                <th>Class</th>
+                <th>Confidence</th>
+              </tr>
+            </thead>
+            <tbody id="historyBody"></tbody>
+          </table>
+        </div>
       </div>
     </aside>
   </div>
