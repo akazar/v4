@@ -5,6 +5,7 @@
   "type": "module",
   "main": "server/main.js",
   "scripts": {
+    "postinstall": "puppeteer browsers install chrome",
     "start": "node server/main.js",
     "recognize:yolo": "node lib/cloud/recognition/yolo/recognize-yolo.mjs",
     "recognize:mediapipe": "node lib/cloud/recognition/mediapipe/recognize-mediapipe.js",

@@ -7,6 +7,13 @@ import { randomBytes } from 'node:crypto';
 import puppeteer from 'puppeteer';
 
 const jsonParser = express.json({ limit: '32kb' });
+const browserExecutablePath =
+  process.env.PUPPETEER_EXECUTABLE_PATH || process.env.GOOGLE_CHROME_BIN || process.env.CHROME_BIN;
+const puppeteerLaunchOptions = {
+  headless: 'new',
+  ...(browserExecutablePath ? { executablePath: browserExecutablePath } : {}),
+  args: ['--no-sandbox', '--disable-setuid-sandbox'],
+};
 
 function makeSessionId() {
   return randomBytes(16).toString('hex');
@@ -107,7 +114,7 @@ export function setupCapturedStreamService(app) {
     let browser;
 
     try {
-      browser = await puppeteer.launch({ headless: 'new' });
+      browser = await puppeteer.launch(puppeteerLaunchOptions);
       const page = await browser.newPage();
       await page.setViewport({ width: 1280, height: 720, deviceScaleFactor: 1 });
 
