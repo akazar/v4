@@ -292,9 +292,10 @@ export function createHomePanel({
         removeStream(streamId);
       });
 
-      actions.appendChild(playBtn);
-      actions.appendChild(stopBtn);
-      if (qrStreamIds.has(streamId)) {
+      if (!qrStreamIds.has(streamId)) {
+        actions.appendChild(playBtn);
+        actions.appendChild(stopBtn);
+      } else {
         actions.appendChild(qrBtn);
       }
       actions.appendChild(removeBtn);
@@ -538,6 +539,7 @@ export function createHomePanel({
     const modal = document.getElementById("qrModal");
     const canvas = document.getElementById("qrModalCanvas");
     const label = document.getElementById("qrModalLabel");
+    const urlEl = document.getElementById("qrModalUrl");
     if (!modal || !canvas || !label) return;
 
     canvas.innerHTML = "";
@@ -547,6 +549,12 @@ export function createHomePanel({
     }
 
     label.textContent = streamId;
+    if (urlEl) {
+      urlEl.href = url;
+      urlEl.textContent = url;
+      urlEl.title = url;
+    }
+
     qrInstance = new QRCode(canvas, {
       text: url,
       width: 220,
@@ -557,6 +565,43 @@ export function createHomePanel({
     });
 
     modal.classList.remove("hidden");
+  }
+
+  async function copyQrModalUrl() {
+    const urlEl = document.getElementById("qrModalUrl");
+    const copyBtn = document.getElementById("qrModalCopyBtn");
+    const url = urlEl?.href;
+    if (!url || url === "#") return;
+
+    const showCopied = () => {
+      if (!copyBtn) return;
+      const prevTitle = copyBtn.title;
+      copyBtn.title = "Copied!";
+      copyBtn.classList.add("qr-modal-copy--done");
+      setTimeout(() => {
+        copyBtn.title = prevTitle || "Copy link";
+        copyBtn.classList.remove("qr-modal-copy--done");
+      }, 1500);
+    };
+
+    try {
+      await navigator.clipboard.writeText(url);
+      showCopied();
+    } catch {
+      try {
+        const ta = document.createElement("textarea");
+        ta.value = url;
+        ta.style.position = "fixed";
+        ta.style.left = "-9999px";
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        document.body.removeChild(ta);
+        showCopied();
+      } catch (err) {
+        console.warn("Copy failed", err);
+      }
+    }
   }
 
   function hideQrModal() {
@@ -645,6 +690,9 @@ export function createHomePanel({
   });
 
   document.getElementById("qrModalClose")?.addEventListener("click", hideQrModal);
+  document.getElementById("qrModalCopyBtn")?.addEventListener("click", () => {
+    void copyQrModalUrl();
+  });
   document.querySelector(".qr-modal-backdrop")?.addEventListener("click", hideQrModal);
 
   sourceNameInput?.addEventListener("keydown", (e) => {
