@@ -177,12 +177,14 @@ export function createHomePanel({
       return `/streaming/captured-stream-streamer.html?${q.toString()}`;
     }
     const source = (streamSourceUrls.get(streamId) || "").trim();
-    const page = source && looksLikeM3u8Url(source)
-      ? "m3u8-streamer.html"
-      : "streamer.html";
+    if (source && looksLikeM3u8Url(source)) {
+      const modeQ = mode === "sfu" ? `&streamMode=${encodeURIComponent("sfu")}` : "";
+      const sourceQ = `&source=${encodeURIComponent(source)}`;
+      return `/streaming/m3u8-streamer.html?streamId=${encodeURIComponent(streamId)}${modeQ}${sourceQ}`;
+    }
     const modeQ = mode === "sfu" ? `&streamMode=${encodeURIComponent("sfu")}` : "";
     const sourceQ = source ? `&source=${encodeURIComponent(source)}` : "";
-    return `/streaming/${page}?streamId=${encodeURIComponent(streamId)}${modeQ}${sourceQ}`;
+    return `/stream-pipe/streamer.html?streamId=${encodeURIComponent(streamId)}${modeQ}${sourceQ}`;
   }
 
   function buildStreamMeta(streamId) {

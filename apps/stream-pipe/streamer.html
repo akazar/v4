@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Streamer</title>
+  <link rel="stylesheet" href="streamer.css" />
+</head>
+<body>
+  <video id="localVideo" autoplay playsinline muted></video>
+
+  <div class="streamer-overlay-top">
+    <div id="streamIdText" class="streamer-id"></div>
+    <div id="streamModeText" class="streamer-mode"></div>
+  </div>
+
+  <div class="streamer-overlay-bottom">
+    <button type="button" id="startBtn" class="streamer-btn streamer-btn--start streamer-btn--active">
+      Start stream
+    </button>
+    <button type="button" id="stopBtn" class="streamer-btn streamer-btn--stop" disabled>
+      Stop stream
+    </button>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script type="module" src="streamer.js"></script>
+</body>
+</html>
