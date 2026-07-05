@@ -96,3 +96,38 @@ body {
   background: rgba(180, 50, 50, 0.55);
   color: #fff;
 }
+
+.streamer-flip-btn {
+  position: fixed;
+  top: max(1rem, env(safe-area-inset-top));
+  right: max(1rem, env(safe-area-inset-right));
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  background: rgba(0, 0, 0, 0.45);
+  color: #fff;
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  transition: background 0.15s, border-color 0.15s, opacity 0.15s;
+}
+
+.streamer-flip-btn:disabled {
+  cursor: default;
+  opacity: 0.45;
+}
+
+.streamer-flip-btn:not(:disabled):active {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.55);
+}
+
+.streamer-flip-btn[hidden] {
+  display: none;
+}
