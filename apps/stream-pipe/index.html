@@ -23,31 +23,25 @@
         <div class="home-source-tabs">
           <div class="home-source-tablist row" role="tablist" aria-label="Stream source">
             <button type="button" class="home-source-tab active" role="tab" aria-selected="true" id="tab-source-camera" aria-controls="panel-source-camera" data-home-source-tab="camera">
-              Local camera
+              Local
             </button>
             <button type="button" class="home-source-tab" role="tab" aria-selected="false" id="tab-source-m3u8" aria-controls="panel-source-m3u8" data-home-source-tab="m3u8">
               M3U8 URL
             </button>
             <button type="button" class="home-source-tab" role="tab" aria-selected="false" id="tab-source-capture" aria-controls="panel-source-capture" data-home-source-tab="capture">
-              Web capture
+              Web
             </button>
             <button type="button" class="home-source-tab" role="tab" aria-selected="false" id="tab-source-qr" aria-controls="panel-source-qr" data-home-source-tab="qr">
               QR
             </button>
+            <button type="button" class="home-source-tab" role="tab" aria-selected="false" id="tab-source-ip" aria-controls="panel-source-ip" data-home-source-tab="ip">
+              IP
+            </button>
+            <button type="button" class="home-source-tab" role="tab" aria-selected="false" id="tab-source-edge" aria-controls="panel-source-edge" data-home-source-tab="edge">
+              Edge
+            </button>
           </div>
-          <div id="panel-source-camera" class="home-source-panel" role="tabpanel" aria-labelledby="tab-source-camera">
-            <div class="row stream-mode-row" style="margin-top: 0.5rem;">
-              <span class="stream-mode-label">Streaming type:</span>
-              <label class="stream-mode-option">
-                <input type="radio" name="streamModeChoice" value="p2p" checked />
-                Peer-to-peer WebRTC
-              </label>
-              <label class="stream-mode-option">
-                <input type="radio" name="streamModeChoice" value="sfu" />
-                WebRTC server streaming
-              </label>
-            </div>
-          </div>
+          <div id="panel-source-camera" class="home-source-panel" role="tabpanel" aria-labelledby="tab-source-camera"></div>
           <div id="panel-source-m3u8" class="home-source-panel" role="tabpanel" aria-labelledby="tab-source-m3u8" hidden>
             <div class="row" style="margin-top: 0.5rem;">
               <input id="sourceUrlInput" type="url" placeholder="https://example.com/playlist.m3u8" />
@@ -84,20 +78,36 @@
             </div>
           </div>
           <div id="panel-source-qr" class="home-source-panel" role="tabpanel" aria-labelledby="tab-source-qr" hidden>
-            <div class="row stream-mode-row" style="margin-top: 0.5rem;">
-              <span class="stream-mode-label">Streaming type:</span>
-              <label class="stream-mode-option">
-                <input type="radio" name="streamModeChoice" value="p2p" checked />
-                Peer-to-peer WebRTC
-              </label>
-              <label class="stream-mode-option">
-                <input type="radio" name="streamModeChoice" value="sfu" />
-                WebRTC server streaming
-              </label>
-            </div>
             <p class="home-capture-hint" style="margin: 0.5rem 0 0; font-size: 0.85rem; color: var(--text-muted);">
               Same as local camera — create a streamer, then scan the QR code to open the camera streamer on a mobile device.
             </p>
+          </div>
+          <div id="panel-source-ip" class="home-source-panel" role="tabpanel" aria-labelledby="tab-source-ip" hidden>
+            <div class="input-group" style="margin-top: 0.5rem;">
+              <label for="homeIpCameraSelect">IP Cameras</label>
+              <select id="homeIpCameraSelect">
+                <option value="" disabled selected>No IP Cameras</option>
+              </select>
+            </div>
+          </div>
+          <div id="panel-source-edge" class="home-source-panel" role="tabpanel" aria-labelledby="tab-source-edge" hidden>
+            <div class="input-group" style="margin-top: 0.5rem;">
+              <label for="homeEdgeDeviceSelect">Edge Devices</label>
+              <select id="homeEdgeDeviceSelect">
+                <option value="" disabled selected>No Edge devices</option>
+              </select>
+            </div>
+          </div>
+          <div id="homeStreamModeRow" class="row stream-mode-row" style="margin-top: 0.5rem;">
+            <span class="stream-mode-label">Streaming type:</span>
+            <label class="stream-mode-option">
+              <input type="radio" name="streamModeChoice" value="p2p" checked />
+              Peer-to-peer WebRTC
+            </label>
+            <label class="stream-mode-option">
+              <input type="radio" name="streamModeChoice" value="sfu" />
+              WebRTC server streaming
+            </label>
           </div>
         </div>
         <div class="row" style="margin-top: 0.75rem;">

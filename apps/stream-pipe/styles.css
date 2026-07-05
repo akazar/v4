@@ -51,7 +51,6 @@ body {
 }
 
 .panel-section {
-  margin-bottom: 1.25rem;
   padding-bottom: 1rem;
   border-bottom: 1px solid var(--border);
 }
@@ -73,6 +72,7 @@ body {
 .panel-home .home-source-tablist {
   flex-wrap: wrap;
   width: 100%;
+  margin-bottom: 15px;
 }
 
 .panel-home input[type='text'],

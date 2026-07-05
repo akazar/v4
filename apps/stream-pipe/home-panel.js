@@ -29,6 +29,9 @@ export function createHomePanel({
   const panelSourceM3u8 = document.getElementById("panel-source-m3u8");
   const panelSourceCapture = document.getElementById("panel-source-capture");
   const panelSourceQr = document.getElementById("panel-source-qr");
+  const panelSourceIp = document.getElementById("panel-source-ip");
+  const panelSourceEdge = document.getElementById("panel-source-edge");
+  const homeStreamModeRow = document.getElementById("homeStreamModeRow");
   const homeCapturePageUrl = document.getElementById("homeCapturePageUrl");
   const homeCaptureSelector = document.getElementById("homeCaptureSelector");
   const homeCaptureInterval = document.getElementById("homeCaptureInterval");
@@ -113,6 +116,8 @@ export function createHomePanel({
     if (!panelSourceM3u8?.hidden) return "m3u8";
     if (!panelSourceCapture?.hidden) return "capture";
     if (!panelSourceQr?.hidden) return "qr";
+    if (!panelSourceIp?.hidden) return "ip";
+    if (!panelSourceEdge?.hidden) return "edge";
     return "camera";
   }
 
@@ -124,11 +129,18 @@ export function createHomePanel({
           ? "capture"
           : tab === "qr"
             ? "qr"
-            : "camera";
+            : tab === "ip"
+              ? "ip"
+              : tab === "edge"
+                ? "edge"
+                : "camera";
     if (panelSourceCamera) panelSourceCamera.hidden = t !== "camera";
     if (panelSourceM3u8) panelSourceM3u8.hidden = t !== "m3u8";
     if (panelSourceCapture) panelSourceCapture.hidden = t !== "capture";
     if (panelSourceQr) panelSourceQr.hidden = t !== "qr";
+    if (panelSourceIp) panelSourceIp.hidden = t !== "ip";
+    if (panelSourceEdge) panelSourceEdge.hidden = t !== "edge";
+    if (homeStreamModeRow) homeStreamModeRow.hidden = t === "capture";
     homeSourceTabButtons.forEach((btn) => {
       const on = btn.dataset.homeSourceTab === t;
       btn.classList.toggle("active", on);

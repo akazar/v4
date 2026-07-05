@@ -164,6 +164,8 @@ input[type='url'] {
   align-items: center;
   gap: 0.75rem;
   flex-wrap: wrap;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .stream-mode-label {
